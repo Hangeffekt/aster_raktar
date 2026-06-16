@@ -99,6 +99,7 @@ class SaleController extends Controller
         ->first();
 
         $Transactions = Transaction::where('inner_table_id', $sale->sale_id)
+            ->where('type', 'OUT')
             ->with(['product.brand', 'product.catalog'])
             ->paginate();
 
@@ -134,15 +135,16 @@ class SaleController extends Controller
                 })
                 ->where('status', '!=', 'PENDING')
                 ->select('id', 'type', 'qty', 'sale_price', 'net_price')
-                ->orderBy('created_at', 'DESC')
+                ->orderByRaw("CASE WHEN status = 'STORNO' THEN 1 ELSE 2 END ASC")
+                ->orderBy('created_at', 'ASC')
                 ->get();
 
-            $currentStock = 0;
-            foreach ($transactions as $t) {
-                $currentStock += $t->qty;
+                $currentStock = 0;
+                foreach ($transactions as $t) {
+                    $currentStock += $t->qty;
             }
             
-            $incomingShipments = $transactions->whereIn('type', ['SETTLE', 'IN']);
+            $incomingShipments = $transactions->whereIn('type', ['SETTLE', 'IN', 'STORNO']);
 
             $remainingToFind = $currentStock;
             $fifoPrices = [];
@@ -172,39 +174,29 @@ class SaleController extends Controller
                     continue;
 
                 if ($batch['qty'] >= $saleQty) {
-                    // 1. ESET: Ez a szállítmány teljesen fedezi a hiányzó mennyiséget
                     
-                    // Mentés az adatbázisba ($saleQty darabszámmal és a $batch['net_price'] árral)
-                    // DB::table('transactions')->insert([... 'qty' => $saleQty, 'net_price' => $batch['net_price'] ...]);
-                    Transaction::where('id', $FinishTransaction->id)->update(['status' => 'COMPLETED', 'net_price' => $fifoPrices[$key]['net_price']]);
+                    Transaction::where('id', $FinishTransaction->id)->update(['status' => 'COMPLETED', 'net_price' => $fifoPrices[$key]['net_price'], 'reference' => $fifoPrices[$key]['id']]);
                     
-                    // Levonjuk a tömbből is, ha később még kellene a frissített készlet
                     $fifoPrices[$key]['qty'] -= $saleQty; 
                     
-                    $saleQty = 0; // Mindent eladtunk, a következő körben a break kiléptet
+                    $saleQty = 0;
                 } else {
-                    // 2. ESET: Ez a szállítmány nem elég, az egészet kiürítjük, és megyünk a következőre
-                    $takeAmount = $batch['qty']; // Amennyi van benne (pl. 2 db, miközben 3-at akartunk)
-                    
-                    // Mentés az adatbázisba ($takeAmount darabszámmal és a $batch['net_price'] árral)
-                    // DB::table('transactions')->insert([... 'qty' => $takeAmount, 'net_price' => $batch['net_price'] ...]);
+                    $takeAmount = $batch['qty'];
+
                     Transaction::where('id', $FinishTransaction->id)->update(['net_price' => $fifoPrices[$key]['net_price']]);
                     
-                    $fifoPrices[$key]['qty'] = 0; // Kiürítettük a szállítmányt
-                    $saleQty -= $takeAmount; // Csökkentjük a még eladandó mennyiséget (marad 1 db)
+                    $fifoPrices[$key]['qty'] = 0;
+                    $saleQty -= $takeAmount;
                 }
             }
 
-            // BIZTONSÁGI ELLENŐRZÉS: 
-            // Ha a ciklus lefutott, de a $saleQty még mindig nagyobb, mint 0, 
-            // az azt jelenti, hogy több árut akartál eladni, mint amennyi valójában raktáron volt (negatív készlet).
             if ($saleQty > 0) {
                 // Itt kezelheted a hibát (pl. hibaüzenet, vagy a maradékot beírod az aktuális legfrissebb áron)
             }
         
         }
 
-        Sale::where('sale_id', $sale->sale_id)->update(['payment_status' => $request->payment_status, 'sale_status' => 'CLOSED']);
+        Sale::where('sale_id', $sale->sale_id)->update(['payment_status' => $request->payment_status, 'sale_status' => 'COMPLETED']);
         return redirect()->back()->with("success", "Sikeres mentés!");
     }
 

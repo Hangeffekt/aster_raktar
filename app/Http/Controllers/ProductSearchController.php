@@ -95,6 +95,7 @@ class ProductSearchController extends Controller
             'sale_price' => 'required|numeric',
             'qty' => 'required|numeric'
         ]);
+        
         $ArrivalItem = ArrivalItem::create($validated);
         $arrival = Arrival::where("arrival_id", $request->arrival_table_id)->update(["arrival_status" => "not_closed"]);
         

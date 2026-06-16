@@ -129,22 +129,21 @@ class ArrivalController extends Controller
         ]);
 
         //close items
-        $total_net_value = 0;
         $closeArrivalItems = ArrivalItem::where('arrival_table_id', $request->arrival_id)->where("finished", null)->get();
         foreach($closeArrivalItems as $closeArrivalItem){
-            $total_net_value += $closeArrivalItem->net_price*$closeArrivalItem->item_qty;
-            ArrivalItem::where("arrival_table_id", $request->arrival_id)->update(["finished"=>"1"]);
-
-            Transaction::create(['product_id' => $closeArrivalItem->item_id,
-            'product_name' => $closeArrivalItem->item_name,
+           
+        Transaction::create(['product_id' => $closeArrivalItem->item_id,
             'type' => 'IN',
             'inner_table_id' => $request->arrival_id,
             'qty' => $closeArrivalItem->qty,
+            'status' => 'COMPLETED',
             'net_price' => $closeArrivalItem->net_price,
             'sale_price' => $closeArrivalItem->sale_price,]);
         }
+
         //close note
-        $closeArrival = Arrival::where("arrival_id", $request->arrival_id)->update(["total_net_value"=>$total_net_value, "arrival_status"=>"closed"]);
+        ArrivalItem::where("arrival_table_id", $request->arrival_id)->delete();
+        $closeArrival = Arrival::where("arrival_id", $request->arrival_id)->update(["arrival_status"=>"closed"]);
         
         return redirect("/arrivals")->with("success", "Sikeres lezárás!");
     }

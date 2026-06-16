@@ -90,6 +90,7 @@ class SaleStornoController extends Controller
 
         foreach($Transactions as $Transaction){
             Transaction::where('id', $Transaction->id)->update(['status' => 'STORNOED']);
+            $net_price = Transaction::where('inner_table_id', array_slice(explode(',', $Transaction->reference), 0, 0))->first();
             Transaction::create(['product_id' => $Transaction->product_id, 'inner_table_id' => $stornoSale->sale_id, 'qty' => $Transaction->qty * -1, 'sale_price' => $Transaction->sale_price, 'status' => 'STORNO']);
 
             if(isset($request['qty_'.$Transaction->id]) && $request['sale_qty_'.$Transaction->id] > 0 )

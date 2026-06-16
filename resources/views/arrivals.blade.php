@@ -30,15 +30,6 @@
                                 <a href="{{ route('arrivals.edit', $Arrival->arrival_id)}}" class="btn btn-warning">Edit</a>
                             @endif
                         </td>
-                        <td>
-                            @if($Arrival->total_net_value == null || $Arrival->total_net_value == 0)
-                            <form action="{{ route('arrivals.destroy', $Arrival->arrival_id)}}" method="post">
-                                @csrf
-                                @method ('DELETE')
-                                <button class="btn btn-danger" type="submit">Delete</button>
-                            </form>
-                            @endif
-                        </td>
                     </tr>
                     @endforeach
                 </tbody>
