@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('sales', function (Blueprint $table) {
-            $table->integer("sale_id")->autoIncrement();
+            $table->id("sale_id");
             $table->integer('customer_code')->nullable();
             $table->integer('sale_mode')->nullable();
             $table->integer('sale_value')->nullable();

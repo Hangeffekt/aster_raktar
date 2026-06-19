@@ -13,6 +13,7 @@ use App\Http\Controllers\ArrivalItemController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\SaleStornoController;
+use App\Http\Controllers\TransferController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -57,4 +58,6 @@ Route::post("sales/history", [SaleController::class, "history"])->name("history"
 
 Route::resource('cart', CartController::class);
 Route::resource('salestorno', SaleStornoController::class);
+
+Route::resource('transfer', TransferController::class);
 

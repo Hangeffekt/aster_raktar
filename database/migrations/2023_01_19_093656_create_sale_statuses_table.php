@@ -15,7 +15,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('sale_statuses', function (Blueprint $table) {
-            $table->integer("sale_status_id")->autoIncrement();
+            $table->id("sale_status_id");
             $table->string('sale_status_name')->nullable();
             $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable();
             $table->timestamp('created_at')->useCurrent();

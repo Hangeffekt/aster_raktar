@@ -14,7 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('supliers', function (Blueprint $table) {
-            $table->integer("suplier_id")->autoIncrement();
+            $table->id("suplier_id");
+            $table->uuid('uuid');
             $table->string('suplier_name')->nullable();
             $table->string('suplier_settlement')->nullable();
             $table->string('suplier_address')->nullable();

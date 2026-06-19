@@ -6,10 +6,10 @@
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
         <a class="nav-link active" aria-current="page" href="#">Kezdőlap</a>
-        <a class="nav-link" href="/arrivals">Bevétel</a>
-        <a class="nav-link" href="/sales">Kivétel</a>
-        <a class="nav-link" href="/supliernotes">Szállítólevél</a>
-        <a class="nav-link" href="/products">Törzsadat</a>
+        <a class="nav-link" href="/arrivals">Arrival</a>
+        <a class="nav-link" href="/sales">Sale</a>
+        <a class="nav-link" href="/transfer">Transfer</a>
+        <a class="nav-link" href="/products">Main datas</a>
       </div>
     </div>
   </div>

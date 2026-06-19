@@ -22,9 +22,9 @@
                     @foreach($Catalogs as $Catalog)
                     <tr class="table-dark">
                         <td>{{ $Catalog->catalog_name }}</td>
-                        <td><a href="{{ route('catalogs.edit', $Catalog->catalog_id)}}" class="btn btn-warning">Edit</a></td>
+                        <td><a href="{{ route('catalogs.edit', $Catalog->uuid)}}" class="btn btn-warning">Edit</a></td>
                         <td>
-                        <form action="{{ route('catalogs.destroy', $Catalog->catalog_id)}}" method="post">
+                        <form action="{{ route('catalogs.destroy', $Catalog->uuid)}}" method="post">
                                 @csrf
                                 @method ('DELETE')
                                 <button class="btn btn-danger" type="submit">Delete</button>

@@ -14,8 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::create('taxes', function (Blueprint $table) {
-            $table->integer("tax_id")->autoIncrement();
-            $table->string('tax_value')->nullable();
+            $table->id("tax_id");
+            $table->uuid('uuid');
+            $table->integer('tax_value');
             $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable();
             $table->timestamp('created_at')->useCurrent();
         });

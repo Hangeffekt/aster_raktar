@@ -6,17 +6,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class Brand extends Model
+class Transfer extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['uuid','brand_name'];
-    protected $primaryKey = 'brand_id';
+    protected $fillable = ['uuid', 'suplier_id'];
+    protected $primaryKey = 'transfer_id';
 
     protected static function booted()
     {
-        static::creating(function ($brand) {
-            $brand->uuid = (string) Str::uuid();
+        static::creating(function ($transfer) {
+            $transfer->uuid = (string) Str::uuid();
         });
     }
 

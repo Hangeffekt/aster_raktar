@@ -134,8 +134,7 @@ class SaleController extends Controller
                         ->where('product_id', $FinishTransaction->product_id);
                 })
                 ->where('status', '!=', 'PENDING')
-                ->select('id', 'type', 'qty', 'sale_price', 'net_price')
-                ->orderByRaw("CASE WHEN status = 'STORNO' THEN 1 ELSE 2 END ASC")
+                ->select('id', 'type', 'qty', 'sale_price', 'net_price', 'created_at')
                 ->orderBy('created_at', 'ASC')
                 ->get();
 
@@ -144,7 +143,7 @@ class SaleController extends Controller
                     $currentStock += $t->qty;
             }
             
-            $incomingShipments = $transactions->whereIn('type', ['SETTLE', 'IN', 'STORNO']);
+            $incomingShipments = $transactions->whereIn('type', ['SETTLE', 'IN', 'STORNO'])->sortByDesc('created_at');
 
             $remainingToFind = $currentStock;
             $fifoPrices = [];
@@ -158,12 +157,11 @@ class SaleController extends Controller
                     'id' => $shipment->id,
                     'qty' => $takenFromThis,
                     'net_price' => $shipment->net_price,
-                    'sale_price' => $shipment->sale_price
                 ];
 
                 $remainingToFind -= $takenFromThis;
             }
-
+            
             $saleQty = $FinishTransaction->qty * -1;
             
             foreach ($fifoPrices as $key => $batch) {
@@ -197,7 +195,7 @@ class SaleController extends Controller
         }
 
         Sale::where('sale_id', $sale->sale_id)->update(['payment_status' => $request->payment_status, 'sale_status' => 'COMPLETED']);
-        return redirect()->back()->with("success", "Sikeres mentés!");
+        return redirect()->back()->with("success", "Successful save!");
     }
 
     /**

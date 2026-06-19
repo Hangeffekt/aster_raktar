@@ -14,15 +14,14 @@ return new class extends Migration
     public function up()
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->integer("product_id")->autoIncrement();
-            $table->string('brand_id')->nullable();
+            $table->id("product_id");
+            $table->uuid('uuid');
+            $table->foreignId('brand_id')->nullable();
             $table->string('product_name')->nullable();
             $table->integer('ean')->nullable();
-            /*$table->integer('net_price')->nullable();
             $table->integer('sale_price')->nullable();
-            $table->integer('qty')->nullable();*/
-            $table->integer('tax_id')->nullable();
-            $table->string('catalog_id')->nullable();
+            $table->foreignId('tax_id')->nullable();
+            $table->foreignId('catalog_id')->nullable();
             $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable();
             $table->timestamp('created_at')->useCurrent();
         });

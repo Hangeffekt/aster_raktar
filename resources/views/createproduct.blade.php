@@ -28,23 +28,14 @@
         <select name="tax_id" id="" class="form-select">
             <option>-- Kérjük válasszon --</option>
             @foreach($Taxes as $Tax)
-                <option value="{{ $Tax->tax_value }}"
-                @if(old('tax_id') && old('tax_id') == $Tax->tax_value)
+                <option value="{{ $Tax->tax_id }}"
+                @if(old('tax_id') && old('tax_id') == $Tax->tax_id)
                     selected
                 @endif
                 >{{ $Tax->tax_value }}</option>
             @endforeach
         </select>
         @error('tax_id')
-            <div class="alert alert-danger">{{ $message }}</div>
-        @enderror
-    </div>
-    <div class="form-group">
-        <label>Nettó ár</label>
-        <input type="number" name="net_price" id="" value="{{ old('net_price') }}" class="form-control">
-	    <div id="warning-nettoar" class="warning-nettoar">Figyelem, lehetséges magas érték</div>
-        <div>Bruttó ár: <span id="bruttoar"></span> Ft</div>
-        @error('net_price')
             <div class="alert alert-danger">{{ $message }}</div>
         @enderror
     </div>

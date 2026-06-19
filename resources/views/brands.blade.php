@@ -21,10 +21,10 @@
                 <tbody>
                     @foreach($Brands as $Brand)
                     <tr class="table-dark">
-                        <td>{{ $Brand->brand_id }} {{ $Brand->brand_name }}</td>
-                        <td><a href="{{ route('brands.edit', $Brand->brand_id)}}" class="btn btn-warning">Edit</a></td>
+                        <td>{{ $Brand->brand_name }}</td>
+                        <td><a href="{{ route('brands.edit', $Brand->uuid)}}" class="btn btn-warning">Edit</a></td>
                         <td>
-                            <form action="{{ route('brands.destroy', $Brand->brand_id)}}" method="post">
+                            <form action="{{ route('brands.destroy', $Brand->uuid)}}" method="post">
                                 @csrf
                                 @method ('DELETE')
                                 <button class="btn btn-danger" type="submit">Delete</button>

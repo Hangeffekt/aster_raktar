@@ -50,8 +50,7 @@ class ProductController extends Controller
             'brand_id' => 'required|numeric',
             'product_name' => 'required|unique:products',
             'ean' => 'required|numeric',
-            'net_price' => 'required|numeric',
-            'sale_price' => 'required|numeric',
+            'sale_price' => 'numeric',
             'tax_id' => 'required|numeric',
             'catalog_id' => 'required|numeric'
         ]);
@@ -104,7 +103,6 @@ class ProductController extends Controller
             'brand_id' => 'required|numeric',
             'product_name' => 'required|unique:products,product_name,'.$product->product_id.',product_id',
             'ean' => 'required|numeric',
-            'net_price' => 'required|numeric',
             'sale_price' => 'required|numeric',
             'tax_id' => 'required|numeric',
             'catalog_id' => 'required|numeric'

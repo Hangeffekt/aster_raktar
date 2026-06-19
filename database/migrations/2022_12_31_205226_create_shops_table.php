@@ -14,11 +14,13 @@ return new class extends Migration
     public function up()
     {
         Schema::create('shops', function (Blueprint $table) {
-            $table->integer("shop_id")->autoIncrement();
-            $table->string('shop_name')->nullable();
+            $table->id("shop_id");
+            $table->uuid('uuid');
+            $table->string('shop_name');
             $table->string('shop_address')->nullable();
             $table->string('shop_phone')->nullable();
             $table->string('shop_email')->nullable();
+            $table->integer('tax_number')->nullable();
             $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable();
             $table->timestamp('created_at')->useCurrent();
         });

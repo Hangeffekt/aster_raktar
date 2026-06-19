@@ -13,10 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('brands', function (Blueprint $table) {
-            $table->id("brand_id");
+        Schema::create('payment_type', function (Blueprint $table) {
+            $table->id('payment_id');
             $table->uuid('uuid');
-            $table->string('brand_name');
+            $table->string('payment_type');
             $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable();
             $table->timestamp('created_at')->useCurrent();
         });
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('brands');
+        //
     }
 };

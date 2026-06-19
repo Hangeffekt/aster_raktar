@@ -2,7 +2,7 @@
 
 @section("content")
 
-<form action="{{ route('brands.update', $editBrand->brand_id) }}" method="post">
+<form action="{{ route('brands.update', $editBrand->uuid) }}" method="post">
     @csrf
     @method('PATCH')
     <div class="form-control">
