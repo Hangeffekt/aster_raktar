@@ -14,6 +14,7 @@ use App\Http\Controllers\SaleController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\SaleStornoController;
 use App\Http\Controllers\TransferController;
+use App\Http\Controllers\PaymentTypeController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -60,4 +61,5 @@ Route::resource('cart', CartController::class);
 Route::resource('salestorno', SaleStornoController::class);
 
 Route::resource('transfer', TransferController::class);
+Route::resource('paymenttypes', PaymentTypeController::class);
 

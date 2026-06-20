@@ -61,9 +61,9 @@ class SaleStornoController extends Controller
     public function edit(Sale $salestorno)
     {
         $Sale = DB::table('sales as s')
-        ->join('sale_statuses as st', 'st.sale_status_id', '=', 's.payment_status')
+        ->join('payment_types as st', 'st.payment_id', '=', 's.payment_type')
         ->where('s.sale_id', '=', $salestorno->sale_id)
-        ->select('st.sale_status_name', 's.sale_id', 's.customer_code', 's.sale_status')
+        ->select('st.payment_type', 's.sale_id', 's.customer_code', 's.sale_status')
         ->first();
 
         $Transactions = Transaction::where('inner_table_id', $salestorno->sale_id)
@@ -85,7 +85,7 @@ class SaleStornoController extends Controller
     {
         $oldSale = Sale::where('sale_id', $id)->first();
         Sale::where('sale_id', $id)->update(['sale_status' => "STORNOED"]);
-        $stornoSale = Sale::create(['payment_status' => $oldSale->payment_status, 'sale_status' => 'STORNO']);
+        $stornoSale = Sale::create(['payment_type' => $oldSale->payment_type, 'sale_status' => 'STORNO']);
         $Transactions = Transaction::where('inner_table_id', $id)->get();
 
         foreach($Transactions as $Transaction){

@@ -21,13 +21,13 @@
                 <tbody>
                     @foreach($Arrivals as $Arrival)
                     <tr class="table-dark">
-                        <td>{{ $Arrival->suplier_id }}</td>
-                        <td>{{ $Arrival->total_net_value }}</td>
+                        <td>{{ $Arrival->suplier_name }}</td>
+                        <td>net value</td>
                         <td>
-                            @if($Arrival->arrival_status == "closed")
-                                <a href="{{ route('arrivals.edit', $Arrival->arrival_id)}}" class="btn btn-info">Info</a>
+                            @if($Arrival->arrival_status == "COMPLETED")
+                                <a href="{{ route('arrivals.edit', $Arrival->uuid)}}" class="btn btn-info">Info</a>
                             @else
-                                <a href="{{ route('arrivals.edit', $Arrival->arrival_id)}}" class="btn btn-warning">Edit</a>
+                                <a href="{{ route('arrivals.edit', $Arrival->uuid)}}" class="btn btn-warning">Edit</a>
                             @endif
                         </td>
                     </tr>

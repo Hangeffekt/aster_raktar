@@ -29,13 +29,13 @@ return new class extends Migration
             
             $table->enum('type', ['IN', 'OUT', 'SETTLE', 'TRANSFER']);
             $table->string('document_type')->nullable(); 
-            $table->foreignId('inner_table_id');
+            $table->uuid('inner_table_id')->nullable();
             $table->enum('status', ['PENDING', 'COMPLETED', 'CANCELLED', 'STORNOED', 'STORNO'])->default('PENDING');
 
-            $table->integer('qty');
+            $table->integer('qty')->default(0);
 
-            $table->integer('net_price');
-            $table->integer('sale_price');
+            $table->integer('net_price')->nullable(); 
+            $table->integer('sale_price')->nullable(); 
             
             $table->string('reference')->nullable();
 
@@ -44,12 +44,10 @@ return new class extends Migration
             $table->index('product_id');
             $table->index('type');
             $table->index('created_at');
-            $table->index('inner_table_id');
             
             $table->index(['product_id', 'created_at']);
 
             $table->foreign('product_id')->references('product_id')->on('products');
-            $table->foreign('inner_table_id')->references('sale_id')->on('sales');
         });
     }
 

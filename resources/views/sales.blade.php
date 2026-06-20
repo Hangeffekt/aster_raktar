@@ -29,11 +29,11 @@
                         <td>
                             @foreach($Groups as $group)
                                 @if($group->inner_table_id == $Sale->sale_id)
-                                    {{$group->total_sum * -1}}
+                                    {{$group->total_sum}}
                                 @endif
                             @endforeach
                         </td>
-                        <td>{{ $Sale->payment_status }}</td>
+                        <td>{{ $Sale->payment_type }}</td>
                         <td>{{ $Sale->sale_status }}</td>
                             @if($Sale->sale_status == 'PENDING')
                                 <td><a class="btn btn-warning edit_item" type="button" href="{{ route('sales.edit', $Sale->sale_id) }}">Edit transaction</a></td>

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Sale;
 use App\Models\Brand;
 use App\Models\Catalog;
-use App\Models\SaleStatus;
+use App\Models\PaymentType;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -24,7 +24,7 @@ class SaleController extends Controller
         $Sales = Sale::whereDate("created_at", "=", $d)->limit(500)->paginate();
         $Brands = Brand::get();
         $Catalogs = Catalog::get();
-        $SaleStatuses = SaleStatus::get();
+        $SaleStatuses = PaymentType::get();
         $Today = Transaction::whereDate('created_at', $d)
                             ->where('type', 'OUT')
                             ->selectRaw('SUM(sale_price * qty) as total_sum')
@@ -40,12 +40,12 @@ class SaleController extends Controller
         $Cashes= DB::table('sales as s')
                 ->join('transactions as t', 's.sale_id', '=', 't.inner_table_id')
                 ->select(
-                    's.payment_status', 
+                    's.payment_type', 
                     DB::raw('SUM(t.sale_price * t.qty) as total_calculated_sum')
                 )
                 ->whereDate('t.created_at', $d)
                 ->where('t.type', 'OUT')
-                ->groupBy('s.payment_status')
+                ->groupBy('s.payment_type')
                 ->get();
 
         return view('sales', compact('Sales', 'Brands', 'Catalogs', 'Groups', 'SaleStatuses', 'Today', 'Cashes'));
@@ -93,10 +93,10 @@ class SaleController extends Controller
     public function edit(Sale $sale)
     {
         $Sale = DB::table('sales as s')
-        ->join('sale_statuses as st', 'st.sale_status_id', '=', 's.payment_status')
-        ->where('s.sale_id', '=', $sale->sale_id)
-        ->select('st.sale_status_name', 's.sale_id', 's.customer_code', 's.sale_status', 's.created_at', 's.updated_at')
-        ->first();
+            ->join('payment_types as st', 'st.payment_id', '=', 's.payment_type')
+            ->where('s.sale_id', '=', $sale->sale_id)
+            ->select('st.payment_type', 's.sale_id', 's.customer_code', 's.sale_status', 's.created_at', 's.updated_at')
+            ->first();
 
         $Transactions = Transaction::where('inner_table_id', $sale->sale_id)
             ->where('type', 'OUT')
@@ -105,8 +105,8 @@ class SaleController extends Controller
 
         $Brands = Brand::get();
         $Catalogs = Catalog::get();
-        $SaleStatus = SaleStatus::get();
-        
+        $SaleStatus = PaymentType::get();
+
         return view('editsale', compact('Transactions', 'Sale', 'Brands', 'Catalogs', 'SaleStatus'));
     }
 
@@ -194,7 +194,8 @@ class SaleController extends Controller
         
         }
 
-        Sale::where('sale_id', $sale->sale_id)->update(['payment_status' => $request->payment_status, 'sale_status' => 'COMPLETED']);
+        $payment_id = PaymentType::where('uuid', $request->payment_type)->first();
+        Sale::where('sale_id', $sale->sale_id)->update(['payment_type' => $payment_id->payment_id, 'sale_status' => 'COMPLETED']);
         return redirect()->back()->with("success", "Successful save!");
     }
 
@@ -218,7 +219,7 @@ class SaleController extends Controller
         $Sales = Sale::whereDate("created_at", "=", $d)->limit(500)->paginate();
         $Brands = Brand::get();
         $Catalogs = Catalog::get();
-        $SaleStatuses = SaleStatus::get();
+        $SaleStatuses = PaymentType::get();
         $Today = Transaction::whereDate('created_at', $d)
                             ->where('type', 'OUT')
                             ->selectRaw('SUM(sale_price * qty) as total_sum')
@@ -233,12 +234,12 @@ class SaleController extends Controller
         $Cashes= DB::table('sales as s')
                 ->join('transactions as t', 's.sale_id', '=', 't.inner_table_id')
                 ->select(
-                    's.payment_status', 
+                    's.payment_type', 
                     DB::raw('SUM(t.sale_price * t.qty) as total_calculated_sum')
                 )
                 ->whereDate('t.created_at', $d)
                 ->where('t.type', 'OUT')
-                ->groupBy('s.payment_status')
+                ->groupBy('s.payment_type')
                 ->get();
 
         return view('/sales', compact('Sales', 'Brands', 'Catalogs', 'SaleStatuses', 'Today', 'Groups', 'Cashes'));

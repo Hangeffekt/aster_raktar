@@ -2,15 +2,15 @@
 
 @section("content")
 
-<form action="{{ route('arrivals.store') }}" method="post">
+<form action="{{ route('arrivals.store') }}" method="post" class="col-xl-3 col-md-6 col-sm-12">
 @csrf
     <div class="form-group">
         <label for="">Suplier name</label>
         <select name="suplier_id" id="" class="form-select">
             <option>-- Kérjük válasszon --</option>
             @foreach($Supliers as $Suplier)
-                <option value="{{ $Suplier->suplier_name }}"
-                @if(old('suplier_id') && old('suplier_id') == $Suplier->suplier_name)
+                <option value="{{ $Suplier->suplier_id }}"
+                @if(old('suplier_id') && old('suplier_id') == $Suplier->suplier_id)
                     selected
                 @endif
                 >{{ $Suplier->suplier_name }}</option>
@@ -48,7 +48,7 @@
             <div class="alert alert-danger">{{ $message }}</div>
         @enderror
     </div>
-    <input type="submit" value="Mentés" class="btn btn-success">
+    <input type="submit" value="Save" class="btn btn-success">
     </div>
 </form>
 

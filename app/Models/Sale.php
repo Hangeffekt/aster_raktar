@@ -9,6 +9,6 @@ class Sale extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['customer_code', 'employee_code', 'sale_status', 'payment_status'];
+    protected $fillable = ['customer_code', 'employee_code', 'sale_status', 'payment_type'];
     protected $primaryKey = 'sale_id';
 }

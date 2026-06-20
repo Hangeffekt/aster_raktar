@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('payment_type', function (Blueprint $table) {
+        Schema::create('payment_types', function (Blueprint $table) {
             $table->id('payment_id');
             $table->uuid('uuid');
             $table->string('payment_type');

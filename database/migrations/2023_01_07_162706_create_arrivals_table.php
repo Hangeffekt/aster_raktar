@@ -15,13 +15,14 @@ return new class extends Migration
     {
         Schema::create('arrivals', function (Blueprint $table) {
             $table->id("arrival_id");
-            $table->string('suplier_id')->nullable();
-            $table->date('arrival_date')->nullable();
+            $table->uuid('uuid');
+            $table->integer('suplier_id');
+            $table->date('arrival_date');
             $table->date('payment_date')->nullable();
             $table->string('suplier_note_number')->nullable();
             $table->string('invoice_number')->nullable();
             $table->integer('total_net_value')->nullable();
-            $table->string('arrival_status')->nullable();
+            $table->enum('arrival_status', ['PENDING', 'COMPLETED', 'CANCELLED', 'STORNOED', 'STORNO'])->default('PENDING');
             $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable();
             $table->timestamp('created_at')->useCurrent();
         });

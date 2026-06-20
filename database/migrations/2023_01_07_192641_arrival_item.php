@@ -15,13 +15,11 @@ return new class extends Migration
     {
         Schema::create('arrival_items', function (Blueprint $table) {
             $table->id("arrival_item_id");
-            $table->integer('arrival_table_id')->nullable();
-            $table->integer('item_id')->nullable();
-            $table->string('item_name')->nullable();
-            $table->integer('net_price')->nullable();
-            $table->integer('sale_price')->nullable();
-            $table->string('qty')->nullable();
-            $table->integer('finished')->nullable();
+            $table->uuid('arrival_table_id');
+            $table->integer('item_id');
+            $table->integer('net_price');
+            $table->integer('sale_price');
+            $table->string('qty');
             $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable();
             $table->timestamp('created_at')->useCurrent();
         });

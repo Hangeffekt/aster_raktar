@@ -40,7 +40,7 @@ class CatalogController extends Controller
         $validated = $request->validate([
             'catalog_name' => 'required|unique:catalogs'
         ]);
-        $Catalog = Catalog::create($validated);
+        Catalog::create($validated);
 
         return redirect("/catalogs")->with("success", "Sikeres felvétel!");
     }
@@ -82,7 +82,7 @@ class CatalogController extends Controller
             'catalog_name' => 'required|unique:catalogs'
         ]);
 
-        $updateCatalog = Catalog::where('catalog_id', $catalog->catalog_id)->update($validated);
+        Catalog::where('catalog_id', $catalog->catalog_id)->update($validated);
         
         return redirect("/catalogs")->with("success", "Sikeres frissítés!");
     }

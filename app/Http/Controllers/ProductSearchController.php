@@ -88,18 +88,16 @@ class ProductSearchController extends Controller
     public function update(Request $request)
     {
         $validated = $request->validate([
-            'arrival_table_id' => 'required|numeric',
+            'arrival_table_id' => 'required',
             'item_id' => 'required|numeric',
-            'item_name' => 'required',
             'net_price' => 'required|numeric',
             'sale_price' => 'required|numeric',
             'qty' => 'required|numeric'
         ]);
         
-        $ArrivalItem = ArrivalItem::create($validated);
-        $arrival = Arrival::where("arrival_id", $request->arrival_table_id)->update(["arrival_status" => "not_closed"]);
+        ArrivalItem::create($validated);
         
-        return redirect()->back()->with("success", "Sikeres felvétel!");
+        return redirect()->back()->with("success", "Succesfull create!");
     }
 
     /**

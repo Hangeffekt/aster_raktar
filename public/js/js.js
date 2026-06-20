@@ -38,6 +38,9 @@ $(document).ready(function(){
                     else if(url[1] == "sales"){
                         html += '<form action="' + $("#product_list").attr("data-url") + '" method="post"><h5 class="mt-3">' + response["Product"]["product_name"] + '</h5><input type="hidden" name="sale_product_name" value="' + response["Product"]["brand_id"] + ' ' + response["Product"]["product_name"] + '"><input type="hidden" name="sale_product_id" value="' + response["Product"]["product_id"] + '"><input type="hidden" name="_token" value="' + $('meta[name="csrf-token"]').attr('content') + '"><div class="row"><div class="col mb-3"><label for="">Sale price</label><input type="text" name="sale_product_value" class="form-control" value="' + response["Product"]["sale_price"] + '"></div><div class="col mb-3"><label for="">Qty</label><input type="text" name="sale_product_qty" class="form-control" value="1"></div><div class="col mb-3"></div><div class="mb-3"><input type="submit" value="Save" class="btn btn-success"></div></form>';
                     }
+                    else if(url[1] == "transfer"){
+                        html += '<form action="' + $("#product_list").attr("data-url") + '" method="post"><h5 class="mt-3">' + response["Product"]["product_name"] + '</h5><input type="hidden" name="sale_product_name" value="' + response["Product"]["brand_id"] + ' ' + response["Product"]["product_name"] + '"><input type="hidden" name="sale_product_id" value="' + response["Product"]["product_id"] + '"><input type="hidden" name="_token" value="' + $('meta[name="csrf-token"]').attr('content') + '"><div class="row"><div class="col mb-3"><label for="">Sale price</label><input type="text" name="sale_product_value" class="form-control" value="' + response["Product"]["sale_price"] + '"></div><div class="col mb-3"><label for="">Qty</label><input type="text" name="sale_product_qty" class="form-control" value="1"></div><div class="col mb-3"></div><div class="mb-3"><input type="submit" value="Save" class="btn btn-success"></div></form>';
+                    }
                     $('#product_list').empty('').append(html);
                 }
                 else{
@@ -73,6 +76,11 @@ $(document).ready(function(){
                         });
                     }
                     else if(url[1] == "sales"){
+                        $.each(response["Products"], function( index, value ) {
+                            html += '<form action="' + $("#product_list").attr("data-url") + '" method="post"><h5 class="mt-3 ">' + value["product_name"] + '</h5><input type="hidden" name="inner_table_id" value="' + table_id + '"><input type="hidden" name="product_id" value="' + value["product_id"] + '"><input type="hidden" name="_token" value="' + $('meta[name="csrf-token"]').attr('content') + '"><div class="row"><div class="col mb-3"><label for="">Sale price</label><input type="text" name="sale_price" class="form-control" value="' + value["sale_price"] + '"></div><div class="col mb-3"><label for="">Qty</label><input type="text" name="qty" class="form-control" value="1"></div><div class="col mb-3"></div><div class="mb-3"><input type="submit" value="Save" class="btn btn-success"></div></form>';
+                        });
+                    }
+                    else if(url[1] == "transfer"){
                         $.each(response["Products"], function( index, value ) {
                             html += '<form action="' + $("#product_list").attr("data-url") + '" method="post"><h5 class="mt-3 ">' + value["product_name"] + '</h5><input type="hidden" name="inner_table_id" value="' + table_id + '"><input type="hidden" name="product_id" value="' + value["product_id"] + '"><input type="hidden" name="_token" value="' + $('meta[name="csrf-token"]').attr('content') + '"><div class="row"><div class="col mb-3"><label for="">Sale price</label><input type="text" name="sale_price" class="form-control" value="' + value["sale_price"] + '"></div><div class="col mb-3"><label for="">Qty</label><input type="text" name="qty" class="form-control" value="1"></div><div class="col mb-3"></div><div class="mb-3"><input type="submit" value="Save" class="btn btn-success"></div></form>';
                         });

@@ -4,7 +4,7 @@
 
 @include("components.sideMenu")
 <div class="col-9">
-    @if($Transfer->status != 'COMPLETED')
+    @if($Transfer->status == 'PENDING')
         @include("components.productSearch")
     @endif
     @if(count($Transactions) != 0)

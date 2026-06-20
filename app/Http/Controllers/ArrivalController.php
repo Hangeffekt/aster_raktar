@@ -7,8 +7,8 @@ use App\Models\Suplier;
 use App\Models\ArrivalItem;
 use App\Models\Brand;
 use App\Models\Catalog;
-use App\Models\Product;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -24,10 +24,13 @@ class ArrivalController extends Controller
 
         $d = Carbon::now()->format('Y-m-d');
         $days7 = Carbon::now()->addDays(7)->format('Y-m-d');
-        $notCloseds = Arrival::where("arrival_status",  "not_closed")->get();
-        $productArrivals = Arrival::where("arrival_date", "<=", $days7)->get();
+        $notCloseds = Arrival::where("arrival_status",  "PENDING")->get();
+        $productArrivals = Arrival::where("arrival_date", "<=", $days7)->where('arrival_status', 'PENDING')->get();
         $productPayments = Arrival::where("payment_date", "<=", $days7)->get();
-        $Arrivals = Arrival::paginate(50);
+        $Arrivals = DB::table('arrivals as a')
+                    ->join('supliers as s', 's.suplier_id', '=', 'a.suplier_id')
+                    ->selectRaw('s.suplier_name, a.arrival_status, a.uuid')
+                    ->paginate(50);
 
         return view('arrivals', compact('Arrivals','notCloseds', 'productArrivals', 'productPayments'));
     }
@@ -85,10 +88,10 @@ class ArrivalController extends Controller
     public function edit(Arrival $arrival)
     {
         $editArrival = Arrival::findOrFail($arrival->arrival_id) ?? [];
-        if(!empty($editArrival) && $editArrival->arrival_status == "not_closed")
-            $Arrivalitems = ArrivalItem::where('arrival_table_id', $arrival->arrival_id)->with(['product'])->paginate(50);
+        if(!empty($editArrival) && $editArrival->arrival_status == "PENDING")
+            $Arrivalitems = ArrivalItem::where('arrival_table_id', $arrival->uuid)->with(['product'])->paginate(50);
         else if(!empty($editArrival))
-            $Arrivalitems = Transaction::where(['inner_table_id' => $arrival->arrival_id, "type" => "IN"])->with(['product'])->paginate(50);
+            $Arrivalitems = Transaction::where(['inner_table_id' => $arrival->uuid, "type" => "IN"])->with(['product'])->paginate(50);
         $Brands = Brand::get();
         $Catalogs = Catalog::get();
 
@@ -128,10 +131,14 @@ class ArrivalController extends Controller
             'closeNote' => 'required'
         ]);
 
+        $sumOfNetPrice = 0;
+
         //close items
-        $closeArrivalItems = ArrivalItem::where('arrival_table_id', $request->arrival_id)->where("finished", null)->get();
+        $closeArrivalItems = ArrivalItem::where('arrival_table_id', $request->arrival_id)->get();
         foreach($closeArrivalItems as $closeArrivalItem){
-           
+        
+        $sumOfNetPrice += $closeArrivalItem->qty * $closeArrivalItem->net_price;
+
         Transaction::create(['product_id' => $closeArrivalItem->item_id,
             'type' => 'IN',
             'inner_table_id' => $request->arrival_id,
@@ -143,8 +150,8 @@ class ArrivalController extends Controller
 
         //close note
         ArrivalItem::where("arrival_table_id", $request->arrival_id)->delete();
-        $closeArrival = Arrival::where("arrival_id", $request->arrival_id)->update(["arrival_status"=>"closed"]);
+        Arrival::where("uuid", $request->arrival_id)->update(["arrival_status"=>"COMPLETED", 'total_net_value' => $sumOfNetPrice]);
         
-        return redirect("/arrivals")->with("success", "Sikeres lezárás!");
+        return redirect("/arrivals")->with("success", "Succesfull close!");
     }
 }

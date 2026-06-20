@@ -16,9 +16,9 @@ return new class extends Migration
         Schema::create('sales', function (Blueprint $table) {
             $table->id("sale_id");
             $table->integer('customer_code')->nullable();
-            $table->integer('sale_mode')->nullable();
+            $table->integer('payment_type')->nullable();
             $table->integer('sale_value')->nullable();
-            $table->string('sale_status')->nullable();
+            $table->enum('sale_status', ['PENDING', 'COMPLETED', 'CANCELLED', 'STORNOED', 'STORNO'])->default('PENDING');
             $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable();
             $table->timestamp('created_at')->useCurrent();
         });

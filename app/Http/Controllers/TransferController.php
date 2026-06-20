@@ -33,7 +33,7 @@ class TransferController extends Controller
                 ->groupBy('inner_table_id')
                 ->get();
 
-        return view('transfer', compact('Transfers', 'Groups', 'Brands', 'Catalogs'));
+        return view('Transfer/transfer', compact('Transfers', 'Groups', 'Brands', 'Catalogs'));
     }
 
     /**
@@ -43,7 +43,7 @@ class TransferController extends Controller
      */
     public function create()
     {
-        return view("createtransfer", [
+        return view("Transfer/createtransfer", [
             'Supliers' => Suplier::get()
         ]);
     }
@@ -86,7 +86,7 @@ class TransferController extends Controller
     {
         $Transfer = DB::table('transfers as t')
         ->where('t.transfer_id', '=', $transfer->transfer_id)
-        ->select('t.transfer_id', 't.created_at', 't.updated_at')
+        ->select('t.transfer_id', 't.uuid', 't.status', 't.created_at', 't.updated_at')
         ->first();
 
         $Transactions = Transaction::where('inner_table_id', $transfer->transfer_id)
@@ -97,7 +97,7 @@ class TransferController extends Controller
         $Brands = Brand::get();
         $Catalogs = Catalog::get();
 
-        return view('edittransfer', compact('Transactions', 'Transfer', 'Brands', 'Catalogs'));
+        return view('Transfer/edittransfer', compact('Transactions', 'Transfer', 'Brands', 'Catalogs'));
     }
 
     /**

@@ -6,16 +6,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class Arrival extends Model
+class PaymentType extends Model
 {
     use HasFactory;
-    protected $fillable = ['uuid','suplier_id','arrival_date','payment_date','suplier_note_number','invoice_number',];
-    protected $primaryKey = 'arrival_id';
+
+    protected $fillable = ['uuid','payment_type'];
+    protected $primaryKey = 'payment_id';
 
     protected static function booted()
     {
-        static::creating(function ($arrival) {
-            $arrival->uuid = (string) Str::uuid();
+        static::creating(function ($payment_type) {
+            $payment_type->uuid = (string) Str::uuid();
         });
     }
 

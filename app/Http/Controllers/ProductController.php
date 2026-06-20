@@ -58,7 +58,7 @@ class ProductController extends Controller
 
         $product_id = Product::orderby('created_at', 'desc')->first();
 
-        Transaction::create(['product_id' => $product_id->product_id, 'type' => 'SETTLE', 'qty' => 0]);
+        Transaction::create(['product_id' => $product_id->product_id, 'type' => 'SETTLE', 'qty' => 0, 'status' => 'COMPLETED']);
 
         return redirect("/products")->with("success", "Sikeres felvétel!");
     }
