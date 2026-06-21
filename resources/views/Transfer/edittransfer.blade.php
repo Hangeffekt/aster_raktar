@@ -26,14 +26,14 @@
                         <td>{{ $Transfer->sale_price }}</td>
                         <td>{{ $Transfer->qty * -1 }}</td>
                         <td>
-                            @php $total_value = $Transfer->sale_price * $Sale->qty * -1 @endphp
+                            @php $total_value = $Transfer->sale_price * $Transfer->qty * -1 @endphp
                             {{ $total_value }}
                         </td>
                         @if($Transfer->status == "PENDING")
-                        <td><button class="btn btn-warning edit_item" type="button" data-bs-toggle="collapse" data-bs-target="#editProduct{{ $Sale->id }}" aria-expanded="false" aria-controls="collapseExample">Edit item</button></td>
+                        <td><button class="btn btn-warning edit_item" type="button" data-bs-toggle="collapse" data-bs-target="#editProduct{{ $Transfer->uuid }}" aria-expanded="false" aria-controls="collapseExample">Edit item</button></td>
                         <td>
                             @if($Transfer->status != "COMPLETED" )
-                            <form action="{{ route('cart.destroy', $Sale->id)}}" method="post">
+                            <form action="{{ route('transferitem.destroy', $Transfer->uuid)}}" method="post">
                                 @csrf
                                 @method ('DELETE')
                                 <button class="btn btn-danger" type="submit">Delete</button>
@@ -44,19 +44,19 @@
                             <td colspan="2"></td>
                         @endif
                     </tr>
-                    <tr class="collapse" id="editProduct{{ $Sale->id }}">
+                    <tr class="collapse" id="editProduct{{ $Transfer->uuid }}">
                         <td colspan="6">
-                            <form action="{{ route('cart.update', $Transfer->uuid) }}" method="post">
+                            <form action="{{ route('transferitem.update', $Transfer->uuid) }}" method="post">
                                 @csrf
                                 @method('PATCH')
                                 <div class="row">
                                     <div class="col">
                                         <label for="">Sale price</label>
-                                        <input type="text" name="sale_price" class="form-control" value="{{ $Sale->sale_price }}">
+                                        <input type="text" name="sale_price" class="form-control" value="{{ $Transfer->sale_price }}">
                                     </div>
                                     <div class="col">
                                         <label for="">Qty</label>
-                                        <input type="text" name="qty" class="form-control" value="{{ $Sale->qty * -1 }}">
+                                        <input type="text" name="qty" class="form-control" value="{{ $Transfer->qty * -1 }}">
                                     </div>
                                     <input type="submit" value="Save" class="mt-3 btn btn-success">
                                 </div>
@@ -67,7 +67,7 @@
                 </tbody>
             </table>
         </div>
-        {{ $Transfers->onEachSide(4)->links() }}
+        {{ $Transactions->onEachSide(4)->links() }}
     @else
         <div class="col-12 alert alert-info">There are no transfer!</div>
     @endif

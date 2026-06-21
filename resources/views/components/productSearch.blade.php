@@ -64,7 +64,7 @@
                     </div>
                     <div id="product_list" data-url="@if(Request::is('arrivals/*/edit')){{route('productsearchstore')}}
                                                     @elseif(Request::is('sales/*/edit')){{route('cart.store')}}
-                                                    @elseif(Request::is('transfer/*/edit')){{route('transfer.store')}}
+                                                    @elseif(Request::is('transfer/*/edit')){{route('transferitem.store')}}
                                                     @endif"
                                                     data-bs-target="@if(Request::is('arrivals/*/edit')){{ $editArrival->uuid }}
                                                     @elseif(Request::is('sales/*/edit')){{ $Sale->sale_id }}

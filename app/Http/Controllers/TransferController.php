@@ -89,8 +89,8 @@ class TransferController extends Controller
         ->select('t.transfer_id', 't.uuid', 't.status', 't.created_at', 't.updated_at')
         ->first();
 
-        $Transactions = Transaction::where('inner_table_id', $transfer->transfer_id)
-            ->where('type', 'OUT')
+        $Transactions = Transaction::where('inner_table_id', $transfer->uuid)
+            ->where('type', 'TRANSFER')
             ->with(['product.brand', 'product.catalog'])
             ->paginate();
 
@@ -120,6 +120,9 @@ class TransferController extends Controller
      */
     public function destroy(Transfer $transfer)
     {
-        //
+        Transaction::where('inner_table_id', $transfer->uuid)->delete();
+        Transfer::findOrFail($transfer->transfer_id)->delete();
+
+        return redirect("/transfer/")->with("success", "Succesfull delete!");
     }
 }
