@@ -13,26 +13,19 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <td>Név</td>
-                        <td>Ár</td>
-                        <td></td>
-                        <td></td>
+                        <th>Name</th>
+                        <th>Sale price</th>
+                        <th></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($Products as $Product)
-                    <tr class="table-dark">
+                    <tr>
                         <td>{!! $Product->full_name !!}</td>
                         <td>{{ $Product->sale_price }}</td>
-                        <td><a href="{{ route('products.edit', $Product->product_id)}}" class="btn btn-warning">Edit</a></td>
-                        <td>
-                            <!--<form action="{{ route('products.destroy', $Product->product_id)}}" method="post">
-                                @csrf
-                                @method ('DELETE')
-                                <button class="btn btn-danger" type="submit">Delete</button>
-                            </form> -->
-                            <a href="" class="btn btn-info">Info</a>
-                        </td>
+                        <td><a href="{{ route('products.edit', $Product->uuid)}}" class="btn btn-warning">Edit</a></td>
+                        <td><a href="{{ route('products.show', $Product->uuid)}}" class="btn btn-info">Info</a></td>
                     </tr>
                     @endforeach
                 </tbody>

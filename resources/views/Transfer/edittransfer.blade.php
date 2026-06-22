@@ -12,16 +12,16 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <td>Product name</td>
-                        <td>Value</td>
-                        <td>Qty</td>
-                        <td>Total value</td>
-                        <td></td><td></td>
+                        <th>Product name</th>
+                        <th>Value</th>
+                        <th>Qty</th>
+                        <th>Total value</th>
+                        <th></th><th></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($Transactions as $Transfer)
-                    <tr class="table-dark">
+                    <tr>
                         <td>{!! $Transfer->product->full_name !!}</td>
                         <td>{{ $Transfer->sale_price }}</td>
                         <td>{{ $Transfer->qty * -1 }}</td>

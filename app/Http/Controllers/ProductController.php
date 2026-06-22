@@ -20,8 +20,8 @@ class ProductController extends Controller
     public function index()
     {
         return view('products', [
-        'Products' => Product::with(['brand', 'catalog', 'tax'])->get()
-    ]);
+            'Products' => Product::with(['brand', 'catalog', 'tax'])->get()
+        ]);
     }
 
     /**
@@ -71,7 +71,10 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        //
+        $Product = Product::findOrFail($product->product_id);
+        $History = Transaction::where('product_id', $product->product_id)->get();
+
+        return view('Product/productinfo', compact('Product', 'History'));
     }
 
     /**

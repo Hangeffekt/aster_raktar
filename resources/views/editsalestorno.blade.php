@@ -9,18 +9,18 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <td>Product name</td>
-                        <td>Original value</td>
-                        <td>Value</td>
-                        <td>Original qty</td>
-                        <td>Qty</td>
-                        <td>Total value</td>
-                        <td></td>
+                        <th>Product name</th>
+                        <th>Original value</th>
+                        <th>Value</th>
+                        <th>Original qty</th>
+                        <th>Qty</th>
+                        <th>Total value</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($Transactions as $Sale)
-                    <tr class="table-dark">
+                    <tr>
                         <input type="hidden" name="product_id" value="{{ $Sale->id }}">
                         <td>{!! $Sale->product->full_name !!}</td>
                         <td>{{ $Sale->sale_price }}</td>

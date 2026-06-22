@@ -1,4 +1,4 @@
-<div class="col-3 text-bg-info bg-gradient rounded-4">
+<div class="col-3 bg-gradient rounded-4">
     @if (Request::is('arrivals/*/edit'))
         <div class="card-body">
             <div class="mb-3">
@@ -52,6 +52,7 @@
         </div>
     @elseif (Request::is('arrivals'))
         <div class="card-body">
+            @include("components.calendar")
             <div class="mb-3">
                 <h5>Not closed notes <span class="badge bg-primary">
                     @if(count($notCloseds) != 0)
@@ -82,22 +83,19 @@
         </div>
     @elseif (Request::is('products', 'brands', 'catalogs', 'shops', 'taxes', 'supliers', 'paymenttypes'))
         <div class="list-group">
-            <a class="list-group-item list-group-item-action list-group-item-info @if(Request::is('products')) active @endif" href="/products">Products</a>
-            <a class="list-group-item list-group-item-action list-group-item-info @if(Request::is('brands')) active @endif" href="/brands">Brands</a>
-            <a class="list-group-item list-group-item-action list-group-item-info @if(Request::is('catalogs')) active @endif" href="/catalogs">Catalogs</a>
-            <a class="list-group-item list-group-item-action list-group-item-info @if(Request::is('shops')) active @endif" href="/shops">Shops</a>
-            <a class="list-group-item list-group-item-action list-group-item-info @if(Request::is('taxes')) active @endif" href="/taxes">Taxes</a>
-            <a class="list-group-item list-group-item-action list-group-item-info @if(Request::is('supliers')) active @endif" href="/supliers">Supliers</a>
-            <a class="list-group-item list-group-item-action list-group-item-info @if(Request::is('paymenttypes')) active @endif" href="/paymenttypes">Payment types</a>
+            <a class="list-group-item list-group-item-action @if(Request::is('products')) active @endif" href="/products">Products</a>
+            <a class="list-group-item list-group-item-action @if(Request::is('brands')) active @endif" href="/brands">Brands</a>
+            <a class="list-group-item list-group-item-action @if(Request::is('catalogs')) active @endif" href="/catalogs">Catalogs</a>
+            <a class="list-group-item list-group-item-action @if(Request::is('shops')) active @endif" href="/shops">Shops</a>
+            <a class="list-group-item list-group-item-action @if(Request::is('taxes')) active @endif" href="/taxes">Taxes</a>
+            <a class="list-group-item list-group-item-action @if(Request::is('supliers')) active @endif" href="/supliers">Supliers</a>
+            <a class="list-group-item list-group-item-action @if(Request::is('paymenttypes')) active @endif" href="/paymenttypes">Payment types</a>
         </div>
-    @elseif (Request::is('sales') || Request::is('sales/history'))
-        <div class="mb-3">
-            <h5>Calendar</h5>
-            <form action="sales/history" method="post">
-                @csrf
-                <input type="date" name="date">
-                <input type="submit" value="check" class="btn btn-success" name="history">
-            </form>
+    @elseif (Request::is('sales'))
+        <div class="card-body mb-3">
+            @include("components.calendar")
+        </div>
+        <div class="card-body  mb-3">
             <h5>Today</h5>
                 {{$Today * -1}} Ft
             @foreach($Cashes as $Cash)
@@ -117,11 +115,15 @@
             @endforeach
         </div>
     @elseif (Request::is('sales/*/edit'))
-        <div class="mb-3">
+        <div class="card-body mb-3 mt-3">
             <h5>Status</h5>
             {{ $Sale->sale_status ?? "" }}
+        </div>
+        <div class="card-body mb-3">
             <h5>Payment mode</h5>
             {{ $Sale->payment_type ?? "" }}
+        </div>
+        <div class="card-body mb-3">
             <h5>Cart value:</h5>
             <div>
                 @if(count($Transactions) != 0)
@@ -133,26 +135,36 @@
                             $net_value +=  $cartItem->sale_price * $cartItem->qty * -1;
                         @endphp
                     @endforeach
-                    {{ $net_value }} Ft.
+                    {{ $net_value }} Ft
                 @else
-                    0 Ft.
+                    0 Ft
                 @endif
             </div>
+        </div>
+        <div class="card-body mb-3">
             <h5>Created at</h5>
             {{ $Sale->created_at ?? "" }}
+        </div>
+        <div class="card-body mb-3">
             <h5>Updated at</h5>
             {{ $Sale->updated_at ?? "" }}
+        </div>
+        <div class="card-body mb-3">
             @if($Sale->sale_status == 'PENDING')
-                <form action="{{ route('sales.update', $Sale->sale_id) }}" method="post">
+                <form action="{{ route('sales.update', $Sale->uuid) }}" method="post">
                     @method('PATCH')
                     @csrf
-                    <label for="sale_status">Payment type</label>
-                    <select name="payment_type" class="form-select">
-                    @foreach($SaleStatus as $status)
-                        <option value="{{$status->uuid }}">{{$status->payment_type}}</option>
-                    @endforeach
-                    </select>
-                    <input type="submit" value="Close" class="btn btn-success">
+                    <div class="mb-3">
+                        <label for="sale_status">Payment type</label>
+                        <select name="payment_type" class="form-select">
+                        @foreach($SaleStatus as $status)
+                            <option value="{{$status->uuid }}">{{$status->payment_type}}</option>
+                        @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <input type="submit" value="Close" class="btn btn-success">
+                    </div>
                 </form>
             @endif
         </div>
@@ -194,6 +206,26 @@
                 </select>
                 <input type="submit" value="Close" class="btn btn-success">
             </form>
+        </div>
+    @elseif (Request::is('transfer'))
+        <div class="card-body">
+            @include("components.calendar")
+        </div>
+    @elseif (Request::is('transfer/*/edit'))
+        <div class="mb-3">
+            <h5>Status</h5>
+            {{ $Transfer->status ?? "" }}
+            <h5>Created at</h5>
+            {{ $Transfer->created_at ?? "" }}
+            <h5>Updated at</h5>
+            {{ $Transfer->updated_at ?? "" }}
+            @if($Transfer->status == 'PENDING')
+                <form action="{{ route('transfer.update', $Transfer->uuid) }}" method="post">
+                    @method('PATCH')
+                    @csrf
+                    <input type="submit" value="Close" class="btn btn-success">
+                </form>
+            @endif
         </div>
     @endif
 </div>

@@ -12,16 +12,16 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <td>Product name</td>
-                        <td>Value</td>
-                        <td>Qty</td>
-                        <td>Total value</td>
-                        <td></td><td></td>
+                        <th>Product name</th>
+                        <th>Value</th>
+                        <th>Qty</th>
+                        <th>Total value</th>
+                        <th></th><th></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($Transactions as $Sale)
-                    <tr class="table-dark">
+                    <tr>
                         <td>{!! $Sale->product->full_name !!}</td>
                         <td>{{ $Sale->sale_price }}</td>
                         <td>{{ $Sale->qty * -1 }}</td>
@@ -33,7 +33,7 @@
                         <td><button class="btn btn-warning edit_item" type="button" data-bs-toggle="collapse" data-bs-target="#editProduct{{ $Sale->id }}" aria-expanded="false" aria-controls="collapseExample">Edit item</button></td>
                         <td>
                             @if($Sale->status != "COMPLETED" )
-                            <form action="{{ route('cart.destroy', $Sale->id)}}" method="post">
+                            <form action="{{ route('cart.destroy', $Sale->uuid)}}" method="post">
                                 @csrf
                                 @method ('DELETE')
                                 <button class="btn btn-danger" type="submit">Delete</button>
@@ -46,7 +46,7 @@
                     </tr>
                     <tr class="collapse" id="editProduct{{ $Sale->id }}">
                         <td colspan="6">
-                            <form action="{{ route('cart.update', $Sale->id) }}" method="post">
+                            <form action="{{ route('cart.update', $Sale->uuid) }}" method="post">
                                 @csrf
                                 @method('PATCH')
                                 <div class="row">
@@ -56,7 +56,7 @@
                                     </div>
                                     <div class="col">
                                         <label for="">Qty</label>
-                                        <input type="text" name="qty" class="form-control" value="{{ $Sale->qty * -1 }}">
+                                        <input type="text" name="qty" class="form-control" value="{{ abs($Sale->qty) }}">
                                     </div>
                                     <input type="submit" value="Save" class="mt-3 btn btn-success">
                                 </div>

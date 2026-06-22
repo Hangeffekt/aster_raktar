@@ -13,14 +13,14 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <td>Név</td>
-                        <td></td>
-                        <td></td>
+                        <th>Name</th>
+                        <th></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($Catalogs as $Catalog)
-                    <tr class="table-dark">
+                    <tr>
                         <td>{{ $Catalog->catalog_name }}</td>
                         <td><a href="{{ route('catalogs.edit', $Catalog->uuid)}}" class="btn btn-warning">Edit</a></td>
                         <td>

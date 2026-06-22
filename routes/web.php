@@ -56,7 +56,6 @@ Route::post("editarrival/update", [ArrivalItemController::class, "update"])->nam
 Route::post("editarrival/delete", [ArrivalItemController::class, "destroy"])->name("arrivalItemDelete");
 
 Route::resource('sales', SaleController::class);
-Route::post("sales/history", [SaleController::class, "history"])->name("history");
 
 Route::resource('cart', CartController::class);
 Route::resource('salestorno', SaleStornoController::class);

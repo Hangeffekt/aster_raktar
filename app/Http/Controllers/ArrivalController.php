@@ -19,18 +19,22 @@ class ArrivalController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
 
-        $d = Carbon::now()->format('Y-m-d');
+        $dFromInput = $request->input('date-from') ?? Carbon::now()->format('Y-m-d');
+        $dFrom = Carbon::parse($dFromInput)->startOfDay()->toDateTimeString();
+        $dToInput = $request->input('date-to') ?? Carbon::now()->format('Y-m-d');
+        $dTo = Carbon::parse($dToInput)->endOfDay()->toDateTimeString();
         $days7 = Carbon::now()->addDays(7)->format('Y-m-d');
         $notCloseds = Arrival::where("arrival_status",  "PENDING")->get();
         $productArrivals = Arrival::where("arrival_date", "<=", $days7)->where('arrival_status', 'PENDING')->get();
         $productPayments = Arrival::where("payment_date", "<=", $days7)->get();
         $Arrivals = DB::table('arrivals as a')
                     ->join('supliers as s', 's.suplier_id', '=', 'a.suplier_id')
-                    ->selectRaw('s.suplier_name, a.arrival_status, a.uuid')
-                    ->paginate(50);
+                    ->selectRaw('s.suplier_name, a.arrival_status, a.uuid, a.created_at, a.updated_at')
+                    ->whereBetween("a.created_at", [$dFrom, $dTo])
+                    ->paginate(20);
 
         return view('arrivals', compact('Arrivals','notCloseds', 'productArrivals', 'productPayments'));
     }

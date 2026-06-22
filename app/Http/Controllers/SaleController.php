@@ -18,13 +18,20 @@ class SaleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $d = Carbon::now()->format('Y-m-d');
-        $Sales = Sale::whereDate("created_at", "=", $d)->limit(500)->paginate();
-        $Brands = Brand::get();
-        $Catalogs = Catalog::get();
-        $SaleStatuses = PaymentType::get();
+        $dFromInput = $request->input('date-from') ?? Carbon::now()->format('Y-m-d');
+        $dFrom = Carbon::parse($dFromInput)->startOfDay()->toDateTimeString();
+        $dToInput = $request->input('date-to') ?? Carbon::now()->format('Y-m-d');
+        $dTo = Carbon::parse($dToInput)->endOfDay()->toDateTimeString();
+        $Sales = DB::table('sales as s')
+                ->selectRaw('s.uuid, s.sale_status, t.payment_type, s.created_at, s.updated_at')
+                ->join('payment_types as t', 't.payment_id', '=', 's.payment_type')
+                ->whereBetween("s.created_at", [$dFrom, $dTo])
+                ->orderBy('s.created_at', 'asc')
+                ->paginate(20);
+                
         $Today = Transaction::whereDate('created_at', $d)
                             ->where('type', 'OUT')
                             ->selectRaw('SUM(sale_price * qty) as total_sum')
@@ -32,7 +39,7 @@ class SaleController extends Controller
                             ->total_sum;
         $Groups = DB::table('transactions')
                 ->selectRaw('inner_table_id, SUM(sale_price * qty * -1) as total_sum')
-                ->whereDate('created_at', $d)
+                ->whereBetween("created_at", [$dFrom, $dTo])
                 ->where('type', 'OUT')
                 ->groupBy('inner_table_id')
                 ->get();
@@ -48,7 +55,7 @@ class SaleController extends Controller
                 ->groupBy('s.payment_type')
                 ->get();
 
-        return view('sales', compact('Sales', 'Brands', 'Catalogs', 'Groups', 'SaleStatuses', 'Today', 'Cashes'));
+        return view('sales', compact('Sales', 'Groups', 'Today', 'Cashes'));
     }
 
     /**
@@ -95,10 +102,10 @@ class SaleController extends Controller
         $Sale = DB::table('sales as s')
             ->join('payment_types as st', 'st.payment_id', '=', 's.payment_type')
             ->where('s.sale_id', '=', $sale->sale_id)
-            ->select('st.payment_type', 's.sale_id', 's.customer_code', 's.sale_status', 's.created_at', 's.updated_at')
+            ->select('st.payment_type', 's.uuid', 's.sale_id', 's.customer_code', 's.sale_status', 's.created_at', 's.updated_at')
             ->first();
 
-        $Transactions = Transaction::where('inner_table_id', $sale->sale_id)
+        $Transactions = Transaction::where('inner_table_id', $sale->uuid)
             ->where('type', 'OUT')
             ->with(['product.brand', 'product.catalog'])
             ->paginate();
@@ -120,7 +127,7 @@ class SaleController extends Controller
      */
     public function update(Request $request, Sale $sale)
     {
-        $FinishTransactions = Transaction::where('inner_table_id', $sale->sale_id)
+        $FinishTransactions = Transaction::where('inner_table_id', $sale->uuid)
             ->where('type', 'OUT')
             ->get();
         
@@ -189,7 +196,7 @@ class SaleController extends Controller
             }
 
             if ($saleQty > 0) {
-                // Itt kezelheted a hibát (pl. hibaüzenet, vagy a maradékot beírod az aktuális legfrissebb áron)
+                Transaction::where('id', $FinishTransaction->id)->update(['status' => 'COMPLETED', 'reference' => 'NOTSET']);
             }
         
         }
@@ -211,37 +218,5 @@ class SaleController extends Controller
         $deleteSale->delete();
         
         return redirect("/sales")->with("success", "Sikeres törlés!");
-    }
-
-    public function history(Request $request)
-    {
-        $d = date('Y-m-d', strtotime($request->date));
-        $Sales = Sale::whereDate("created_at", "=", $d)->limit(500)->paginate();
-        $Brands = Brand::get();
-        $Catalogs = Catalog::get();
-        $SaleStatuses = PaymentType::get();
-        $Today = Transaction::whereDate('created_at', $d)
-                            ->where('type', 'OUT')
-                            ->selectRaw('SUM(sale_price * qty) as total_sum')
-                            ->first()
-                            ->total_sum;
-        $Groups = DB::table('transactions')
-                ->selectRaw('inner_table_id, SUM(sale_price * qty) as total_sum')
-                ->whereDate('created_at', $d)
-                ->where('type', 'OUT')
-                ->groupBy('inner_table_id')
-                ->get();
-        $Cashes= DB::table('sales as s')
-                ->join('transactions as t', 's.sale_id', '=', 't.inner_table_id')
-                ->select(
-                    's.payment_type', 
-                    DB::raw('SUM(t.sale_price * t.qty) as total_calculated_sum')
-                )
-                ->whereDate('t.created_at', $d)
-                ->where('t.type', 'OUT')
-                ->groupBy('s.payment_type')
-                ->get();
-
-        return view('/sales', compact('Sales', 'Brands', 'Catalogs', 'SaleStatuses', 'Today', 'Groups', 'Cashes'));
     }
 }

@@ -19,6 +19,11 @@ class Product extends Model
         });
     }
 
+    public function getRouteKeyName()
+    {
+        return 'uuid';
+    }
+
     public function brand() { return $this->belongsTo(Brand::class, 'brand_id'); }
     public function catalog() { return $this->belongsTo(Catalog::class, 'catalog_id'); }
     public function tax() { return $this->belongsTo(Tax::class, 'tax_id'); }

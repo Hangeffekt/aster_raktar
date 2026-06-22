@@ -13,16 +13,20 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <td>Suplier name</td>
-                        <td>Total net value</td>
-                        <td></td><td></td>
+                        <th>Suplier name</th>
+                        <th>Total net value</th>
+                        <th>Created at</th>
+                        <th>Updated at</th>
+                        <th></th><th></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($Arrivals as $Arrival)
-                    <tr class="table-dark">
+                    <tr>
                         <td>{{ $Arrival->suplier_name }}</td>
                         <td>net value</td>
+                        <td>{{ $Arrival->created_at }}</td>
+                        <td>{{ $Arrival->updated_at }}</td>
                         <td>
                             @if($Arrival->arrival_status == "COMPLETED")
                                 <a href="{{ route('arrivals.edit', $Arrival->uuid)}}" class="btn btn-info">Info</a>

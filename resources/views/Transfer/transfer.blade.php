@@ -10,24 +10,28 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <td>Suplier/Company</td>
-                        <td>Total value</td>
-                        <td>Status</td>
-                        <td></td><td></td>
+                        <th>Suplier</th>
+                        <th>Total value</th>
+                        <th>Status</th>
+                        <th>Created at</th>
+                        <th>Updated at</th>
+                        <th></th><th></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($Transfers as $Transfer)
-                    <tr class="table-dark">
+                    <tr>
                         <td>{{ $Transfer->suplier_name }}</td>
                         <td>
                             @foreach($Groups as $group)
-                                @if($group->inner_table_id == $Transfer->id)
+                                @if($group->inner_table_id == $Transfer->uuid)
                                     {{$group->total_sum * -1}}
                                 @endif
                             @endforeach
                         </td>
                         <td>{{ $Transfer->status }}</td>
+                        <td>{{ $Transfer->created_at }}</td>
+                        <td>{{ $Transfer->updated_at }}</td>
                             @if($Transfer->status == 'PENDING')
                                 <td><a class="btn btn-warning edit_item" type="button" href="{{ route('transfer.edit', $Transfer->uuid) }}">Edit transfer</a></td>
                             @elseif($Transfer->status == 'COMPLETED')

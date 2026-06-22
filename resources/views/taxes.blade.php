@@ -13,14 +13,14 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <td>Érték</td>
-                        <td></td>
-                        <td></td>
+                        <th>Value</th>
+                        <th></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($Taxes as $Tax)
-                    <tr class="table-dark">
+                    <tr>
                         <td>{{ $Tax->tax_value }}</td>
                         <td><a href="{{ route('taxes.edit', $Tax->uuid)}}" class="btn btn-warning">Edit</a></td>
                         <td>

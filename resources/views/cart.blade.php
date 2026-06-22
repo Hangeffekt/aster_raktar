@@ -14,16 +14,16 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <td>Product name</td>
-                        <td>Value</td>
-                        <td>Qty</td>
-                        <td>Total value</td>
-                        <td></td><td></td>
+                        <th>Product name</th>
+                        <th>Value</th>
+                        <th>Qty</th>
+                        <th>Total value</th>
+                        <th></th><th></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($cartItems as $Sale)
-                    <tr class="table-dark">
+                    <tr>
                         <td>{{ $Sale->sale_product_name }}</td>
                         <td>{{ $Sale->sale_product_value }}</td>
                         <td>{{ $Sale->sale_product_qty }}</td>

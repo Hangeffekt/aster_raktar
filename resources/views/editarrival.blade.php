@@ -16,16 +16,16 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <td>Product name</td>
-                                <td>Net price</td>
-                                <td>Sale price</td>
-                                <td>qty</td>
-                                <td></td><td></td>
+                                <th>Product name</th>
+                                <th>Net price</th>
+                                <th>Sale price</th>
+                                <th>qty</th>
+                                <th></th><th></th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($Arrivalitems as $Arrivalitem)
-                            <tr class="table-dark editItemValues">
+                            <tr>
                                 <td>{!! $Arrivalitem->product->full_name !!}</td>
                                 <td>{{ $Arrivalitem->net_price }}</td>
                                 <td>{{ $Arrivalitem->sale_price }}</td>

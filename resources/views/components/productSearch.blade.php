@@ -67,7 +67,7 @@
                                                     @elseif(Request::is('transfer/*/edit')){{route('transferitem.store')}}
                                                     @endif"
                                                     data-bs-target="@if(Request::is('arrivals/*/edit')){{ $editArrival->uuid }}
-                                                    @elseif(Request::is('sales/*/edit')){{ $Sale->sale_id }}
+                                                    @elseif(Request::is('sales/*/edit')){{ $Sale->uuid }}
                                                     @elseif(Request::is('transfer/*/edit')){{ $Transfer->uuid }}
                                                     @endif"></div>
                 </div>
