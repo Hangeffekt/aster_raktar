@@ -23,9 +23,9 @@
                     <tr>
                         <input type="hidden" name="product_id" value="{{ $Sale->id }}">
                         <td>{!! $Sale->product->full_name !!}</td>
-                        <td>{{ $Sale->sale_price }}</td>
-                        <td><input type="text" name="sale_price_{{ $Sale->id }}" class="form-control" value="{{ $Sale->sale_price }}"></td>
-                        <td>{{ $Sale->qty * -1 }}</td>
+                        <td>{{ $Sale->net_price }}</td>
+                        <td><input type="text" name="sale_price_{{ $Sale->id }}" class="form-control" value="{{ $Sale->net_price }}"></td>
+                        <td>{{ abs($Sale->qty) }}</td>
                         <td><input type="text" name="qty_{{ $Sale->id }}" class="form-control" value="{{ abs($Sale->qty) }}"></td>
                     </tr>
                     @endforeach

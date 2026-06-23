@@ -2,14 +2,14 @@
 
 @section("content")
 
-<form action="{{ route('products.update', $editProduct->product_id) }}" method="post">
+<form action="{{ route('products.update', $editProduct->uuid) }}" method="post">
     @csrf
     @method('PATCH')
     <div class="form-group"><label>Brand</label>
         <select name="brand_id" id="brand_id" class="form-select">
             <option>-- Kérjük válasszon --</option>
             @foreach($Brands as $Brand)
-                <option value="{{ $Brand->brand_name }}"
+                <option value="{{ $Brand->brand_id }}"
                 @if(old('brand_id') && old('brand_id') == $Brand->brand_id || $Brand->brand_id == $editProduct->brand_id)
                     selected
                 @endif
@@ -54,7 +54,7 @@
         <select name="catalog_id" id="" class="form-select">
             <option value="">-- Kérjük válasszon --</option>
             @foreach($Catalogs as $Catalog)
-                <option value="{{ $Catalog->catalog_name }}"
+                <option value="{{ $Catalog->catalog_id }}"
                 @if(old('catalog_id') && old('catalog_id') == $Catalog->catalog_id || $Catalog->catalog_id  == $editProduct->catalog_id)
                     selected
                 @endif

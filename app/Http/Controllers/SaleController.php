@@ -77,7 +77,7 @@ class SaleController extends Controller
     public function store(Request $request)
     {
         $Sale = Sale::create();
-        return redirect("/sales/".$Sale->sale_id."/edit")->with("success", "Sikeres felvétel!");
+        return redirect("/sales/".$Sale->uuid."/edit")->with("success", "Successful create!");
     }
 
     /**
@@ -108,7 +108,7 @@ class SaleController extends Controller
         $Transactions = Transaction::where('inner_table_id', $sale->uuid)
             ->where('type', 'OUT')
             ->with(['product.brand', 'product.catalog'])
-            ->paginate();
+            ->paginate(20);
 
         $Brands = Brand::get();
         $Catalogs = Catalog::get();
@@ -217,6 +217,6 @@ class SaleController extends Controller
         $deleteSale = Transaction::findOrFail($sale->sale_id);
         $deleteSale->delete();
         
-        return redirect("/sales")->with("success", "Sikeres törlés!");
+        return redirect("/sales")->with("success", "Successful delete!");
     }
 }

@@ -10,11 +10,13 @@ use App\Http\Controllers\SuplierController;
 use App\Http\Controllers\ArrivalController;
 use App\Http\Controllers\ProductSearchController;
 use App\Http\Controllers\ArrivalItemController;
+use App\Http\Controllers\ArrivalStornoController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\SaleStornoController;
 use App\Http\Controllers\TransferController;
 use App\Http\Controllers\TransferItemController;
+use App\Http\Controllers\TransferStornoController;
 use App\Http\Controllers\PaymentTypeController;
 /*
 |--------------------------------------------------------------------------
@@ -44,6 +46,7 @@ Route::resource('shops', ShopController::class);
 Route::resource('products', ProductController::class);
 
 Route::resource('arrivals', ArrivalController::class);
+Route::resource('arrivalstorno', ArrivalStornoController::class);
 Route::post("arrivals/closearrival", [ArrivalController::class, "closeArrival"])->name("closeArrival");
 
 Route::resource('productsearch', ProductSearchController::class);
@@ -62,6 +65,7 @@ Route::resource('salestorno', SaleStornoController::class);
 
 Route::resource('transfer', TransferController::class);
 Route::resource('transferitem', TransferItemController::class);
+Route::resource('transferstorno', TransferStornoController::class);
 
 Route::resource('paymenttypes', PaymentTypeController::class);
 

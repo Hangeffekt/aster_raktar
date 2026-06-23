@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Sale;
+use App\Models\Arrival;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
-class SaleStornoController extends Controller
+class ArrivalStornoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -55,23 +56,19 @@ class SaleStornoController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Sale  $salestorno
+     * @param  \App\Models\Arrival  $arrivalstorno
      * @return \Illuminate\Http\Response
      */
-    public function edit(Sale $salestorno)
+    public function edit(Arrival $arrivalstorno)
     {
-        $Sale = DB::table('sales as s')
-        ->join('payment_types as st', 'st.payment_id', '=', 's.payment_type')
-        ->where('s.sale_id', $salestorno->sale_id)
-        ->select('st.payment_type', 's.uuid', 's.customer_code', 's.sale_status')
+        $Arrival = Arrival::where('arrival_id', $arrivalstorno->arrival_id)
         ->first();
 
-        $Transactions = Transaction::where('inner_table_id', $salestorno->uuid)
-            ->where('type', 'OUT')
+        $Transactions = Transaction::where('inner_table_id', $arrivalstorno->uuid)
             ->with(['product.brand', 'product.catalog'])
-            ->paginate();
-        
-        return view('editsalestorno', compact('Transactions', 'Sale'));
+            ->paginate(20);
+            
+        return view('Arrival/arrivalstorno', compact('Transactions', 'Arrival'));
     }
 
     /**
@@ -83,11 +80,15 @@ class SaleStornoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $newSale = null;
-        $oldSale = Sale::where('uuid', $id)->first();
-        Sale::where('uuid', $id)->update(['sale_status' => "STORNOED"]);
-        $stornoSale = Sale::create(['payment_type' => $oldSale->payment_type,
-                            'sale_status' => 'STORNO']);
+        $newArrival = null;
+        $oldSale = Arrival::where('uuid', $id)->first();
+        Arrival::where('uuid', $id)->update(['arrival_status' => "STORNOED"]);
+        $stornoSale = Arrival::create(['arrival_status' => 'STORNO',
+                    'suplier_id' => $oldSale->suplier_id,
+                    'arrival_date' => $oldSale->arrival_date,
+                    'payment_date' => $oldSale->payment_date,
+                    'invoice_number' => $oldSale->invoice_number,
+                    'suplier_note_number' => $oldSale->suplier_note_number]);
         $Transactions = Transaction::where('inner_table_id', $id)->get();
 
         foreach($Transactions as $Transaction){
@@ -95,29 +96,31 @@ class SaleStornoController extends Controller
             Transaction::where('inner_table_id', array_slice(explode(',', $Transaction->reference), 0, 0))->first();
             Transaction::create(['product_id' => $Transaction->product_id,
                         'inner_table_id' => $stornoSale->uuid,
-                        'type' => $oldSale->type,
                         'qty' => $Transaction->qty * -1,
+                        'net_price' => $Transaction->net_price,
                         'sale_price' => $Transaction->sale_price,
                         'status' => 'STORNO']);
 
             if(isset($request['qty_'.$Transaction->id]) && $request['qty_'.$Transaction->id] > 0 )
             {
-                if($newSale == null)
-                    $newSale = Sale::create(['sale_status' => 'COMPLETED',
-                    'customer_code' => $oldSale->customer_code,
-                    'payment_type' => $oldSale->payment_type]);
+                if($newArrival == null)
+                    $newArrival = Arrival::create(['arrival_status' => 'COMPLETED',
+                    'suplier_id' => $oldSale->suplier_id,
+                    'arrival_date' => $oldSale->arrival_date,
+                    'payment_date' => $oldSale->payment_date,
+                    'invoice_number' => $oldSale->invoice_number,
+                    'suplier_note_number' => $oldSale->suplier_note_number]);
 
                 Transaction::create(['product_id' => $Transaction->product_id,
-                            'qty' => $request['qty_'.$Transaction->id] * -1,
-                            'net_price' => $Transaction->net_price,
-                            'sale_price' => $request['sale_price_'.$Transaction->id],
-                            'inner_table_id' => $newSale->uuid,
-                            'type' => 'OUT',
+                            'qty' => $request['qty_'.$Transaction->id],
+                            'net_price' => $request['sale_price_'.$Transaction->id],
+                            'sale_price' => $Transaction->sale_price,
+                            'inner_table_id' => $newArrival->uuid,
                             'status' => 'COMPLETED']);
             }
         }
 
-        return redirect('sales')->with("success", "Successfull save!");
+        return redirect('arrivals')->with("success", "Succesfull save!");
     }
 
     /**

@@ -10,7 +10,7 @@ class Transfer extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['uuid', 'suplier_id'];
+    protected $fillable = ['uuid', 'suplier_id', 'status'];
     protected $primaryKey = 'transfer_id';
 
     protected static function booted()

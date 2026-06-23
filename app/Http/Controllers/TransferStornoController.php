@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Sale;
+use App\Models\Transfer;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\DB;
 
-class SaleStornoController extends Controller
+class TransferStornoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -55,23 +55,20 @@ class SaleStornoController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Sale  $salestorno
+     * @param  \App\Models\Transfer  $transferstorno
      * @return \Illuminate\Http\Response
      */
-    public function edit(Sale $salestorno)
+    public function edit(Transfer $transferstorno)
     {
-        $Sale = DB::table('sales as s')
-        ->join('payment_types as st', 'st.payment_id', '=', 's.payment_type')
-        ->where('s.sale_id', $salestorno->sale_id)
-        ->select('st.payment_type', 's.uuid', 's.customer_code', 's.sale_status')
+        $Transfer = Transfer::where('transfer_id', $transferstorno->transfer_id)
         ->first();
 
-        $Transactions = Transaction::where('inner_table_id', $salestorno->uuid)
-            ->where('type', 'OUT')
+        $Transactions = Transaction::where('inner_table_id', $transferstorno->uuid)
+            ->where('type', 'TRANSFER')
             ->with(['product.brand', 'product.catalog'])
             ->paginate();
         
-        return view('editsalestorno', compact('Transactions', 'Sale'));
+        return view('Transfer/transferstorno', compact('Transactions', 'Transfer'));
     }
 
     /**
@@ -83,11 +80,11 @@ class SaleStornoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $newSale = null;
-        $oldSale = Sale::where('uuid', $id)->first();
-        Sale::where('uuid', $id)->update(['sale_status' => "STORNOED"]);
-        $stornoSale = Sale::create(['payment_type' => $oldSale->payment_type,
-                            'sale_status' => 'STORNO']);
+        $newTransfer = null;
+        $oldSale = Transfer::where('uuid', $id)->first();
+        Transfer::where('uuid', $id)->update(['status' => "STORNOED"]);
+        $stornoSale = Transfer::create(['status' => 'STORNO',
+                    'suplier_id' => $oldSale->suplier_id]);
         $Transactions = Transaction::where('inner_table_id', $id)->get();
 
         foreach($Transactions as $Transaction){
@@ -95,29 +92,29 @@ class SaleStornoController extends Controller
             Transaction::where('inner_table_id', array_slice(explode(',', $Transaction->reference), 0, 0))->first();
             Transaction::create(['product_id' => $Transaction->product_id,
                         'inner_table_id' => $stornoSale->uuid,
-                        'type' => $oldSale->type,
-                        'qty' => $Transaction->qty * -1,
+                        'type' => 'TRANSFER',
+                        'qty' => $Transaction->qty,
+                        'net_price' => $Transaction->net_price,
                         'sale_price' => $Transaction->sale_price,
                         'status' => 'STORNO']);
 
             if(isset($request['qty_'.$Transaction->id]) && $request['qty_'.$Transaction->id] > 0 )
             {
-                if($newSale == null)
-                    $newSale = Sale::create(['sale_status' => 'COMPLETED',
-                    'customer_code' => $oldSale->customer_code,
-                    'payment_type' => $oldSale->payment_type]);
+                if($newTransfer == null)
+                    $newTransfer = Transfer::create(['status' => 'COMPLETED',
+                    'suplier_id' => $oldSale->suplier_id,]);
 
                 Transaction::create(['product_id' => $Transaction->product_id,
-                            'qty' => $request['qty_'.$Transaction->id] * -1,
-                            'net_price' => $Transaction->net_price,
+                            'type' => 'TRANSFER',
+                            'qty' => $request['qty_'.$Transaction->id],
+                            'net_price' => $Transaction->sale_price,
                             'sale_price' => $request['sale_price_'.$Transaction->id],
-                            'inner_table_id' => $newSale->uuid,
-                            'type' => 'OUT',
+                            'inner_table_id' => $newTransfer->uuid,
                             'status' => 'COMPLETED']);
             }
         }
 
-        return redirect('sales')->with("success", "Successfull save!");
+        return redirect('transfer')->with("success", "Succesfull save!");
     }
 
     /**

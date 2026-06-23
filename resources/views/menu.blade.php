@@ -10,6 +10,7 @@
         <a class="nav-link" href="/sales">Sale</a>
         <a class="nav-link" href="/transfer">Transfer</a>
         <a class="nav-link" href="/products">Main datas</a>
+        <a class="nav-link" href="">Finance</a>
       </div>
     </div>
   </div>

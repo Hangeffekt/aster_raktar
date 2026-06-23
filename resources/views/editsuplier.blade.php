@@ -2,7 +2,7 @@
 
 @section("content")
 
-<form action="{{ route('supliers.update', $editSuplier->uuid) }}" method="post">
+<form action="{{ route('supliers.update', $editSuplier->uuid) }}" method="post" class="col-3">
     @csrf
     @method('PATCH')
     <div class="form-group">
@@ -53,6 +53,59 @@
         @error('suplier_email')
             <div class="alert alert-danger">{{ $message }}</div>
         @enderror
+    </div>
+    <div class="form-check mb-3">
+        <label for="">Generate order</label>
+        <input type="checkbox" name="generate_order" class="form-check-input"  value="{{ old('generate_order') }}">
+        @error('generate_order')
+            <div class="alert alert-danger">{{ $message }}</div>
+        @enderror
+    </div>
+    <h5 class="mb-3">Which day generate order?</h5>
+    <div class="form-check">
+        <input type="checkbox" name="generate_monday" class="form-check-input"  value="">
+        <label> Monday</label>
+    </div>
+    <div class="form-check">
+        <input type="checkbox" name="generate_tuesday" class="form-check-input"  value="">
+        <label> Tuesday</label>
+    </div>
+    <div class="form-check">
+        <input type="checkbox" name="generate_wednesday" class="form-check-input"  value="">
+        <label> Wednesday</label>
+    </div>
+    <div class="form-check">
+        <input type="checkbox" name="generate_thursday" class="form-check-input"  value="">
+        <label> Thursday</label>
+    </div>
+    <div class="form-check">
+        <input type="checkbox" name="generate_friday" class="form-check-input"  value="">
+        <label> Friday</label>
+    </div>
+    <h5 class="mb-3">Which week generate order?</h5>
+    <div class="form-check">
+        <input type="radio" name="generate_friday" class="form-check-input" name="week" value="every">
+        <label>Every</label>
+    </div>
+    <div class="form-check">
+        <input type="radio" name="generate_friday" class="form-check-input" name="week" value="second">
+        <label>Second</label>
+    </div>
+    <div class="form-check">
+        <input type="radio" name="generate_friday" class="form-check-input" name="week" value="third">
+        <label>Third</label>
+    </div>
+    <div class="form-check">
+        <input type="radio" name="generate_friday" class="form-check-input" name="week" value="thirdofthemonth">
+        <label>Third of the month</label>
+    </div>
+    <div class="form-check">
+        <input type="radio" name="generate_friday" class="form-check-input" name="week" value="fourth">
+        <label>Fourth</label>
+    </div>
+    <div class="form-controll mt-3 mb-3">
+        <label for="" class="form-label">Which date start</label>
+        <input class="form-control" type="date" name="date-start">
     </div>
     <input type="submit" value="Mentés" class="btn btn-success">
 </form>

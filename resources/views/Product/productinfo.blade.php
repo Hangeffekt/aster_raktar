@@ -29,6 +29,8 @@
                 <th>User</th>
                 <th>Transaction type</th>
                 <th>Transaction status</th>
+                <th>Net price</th>
+                <th>Sale price</th>
                 <th>Qty</th>
                 <th></th>
             </tr>
@@ -41,14 +43,16 @@
                 <td>{{ $Transaction->customer_id }}</td>
                 <td>{{ $Transaction->type }}</td>
                 <td>{{ $Transaction->status }}</td>
-                <td>{{ abs($Transaction->qty) }}</td>
+                <td>{{ abs($Transaction->net_price) }}</td>
+                <td>{{ abs($Transaction->sale_price) }}</td>
+                <td>{{ $Transaction->qty }}</td>
                 <td>
                     @if($Transaction->type == "IN")
-                        <a href="/arrival/{{ $Transaction->inner_table_id }}/edit" class="btn btn-warning">Edit</a></td>
+                        <a href="/arrivals/{{ $Transaction->inner_table_id }}/edit" class="btn btn-info">Info</a></td>
                     @elseif($Transaction->type == "OUT")
-                        <a href="/sales/{{ $Transaction->inner_table_id }}/edit" class="btn btn-warning">Edit</a></td>
+                        <a href="/sales/{{ $Transaction->inner_table_id }}/edit" class="btn btn-info">Info</a></td>
                     @elseif($Transaction->type == "TRANSFER")
-                        <a href="/transfer/{{ $Transaction->inner_table_id }}/edit" class="btn btn-warning">Edit</a></td>
+                        <a href="/transfer/{{ $Transaction->inner_table_id }}/edit" class="btn btn-info">Info</a></td>
                     @endif
                 </td>
             </tr>

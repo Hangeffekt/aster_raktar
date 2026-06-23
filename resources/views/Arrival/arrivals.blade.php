@@ -15,6 +15,7 @@
                     <tr>
                         <th>Suplier name</th>
                         <th>Total net value</th>
+                        <th>Status</th>
                         <th>Created at</th>
                         <th>Updated at</th>
                         <th></th><th></th>
@@ -25,15 +26,19 @@
                     <tr>
                         <td>{{ $Arrival->suplier_name }}</td>
                         <td>net value</td>
+                        <td>{{ $Arrival->arrival_status }}</td>
                         <td>{{ $Arrival->created_at }}</td>
                         <td>{{ $Arrival->updated_at }}</td>
-                        <td>
-                            @if($Arrival->arrival_status == "COMPLETED")
-                                <a href="{{ route('arrivals.edit', $Arrival->uuid)}}" class="btn btn-info">Info</a>
+                            @if($Arrival->arrival_status == "PENDING")
+                                <td><a href="{{ route('arrivals.edit', $Arrival->uuid)}}" class="btn btn-warning">Edit</a></td>
+                                <td></td>
+                            @elseif($Arrival->arrival_status == 'COMPLETED')
+                                <td><a class="btn btn-info edit_item" type="button" href="{{ route('arrivals.edit', $Arrival->uuid) }}">Info</a></td>
+                                <td><a class="btn btn-danger edit_item" type="button" href="{{ route('arrivalstorno.edit', $Arrival->uuid) }}">Storno</a></td>
                             @else
-                                <a href="{{ route('arrivals.edit', $Arrival->uuid)}}" class="btn btn-warning">Edit</a>
+                                <td><a class="btn btn-info edit_item" type="button" href="{{ route('arrivals.edit', $Arrival->uuid) }}">Info</a></td>
+                                <td></td>
                             @endif
-                        </td>
                     </tr>
                     @endforeach
                 </tbody>

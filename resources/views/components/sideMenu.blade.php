@@ -171,7 +171,23 @@
     @elseif (Request::is('salestorno/*/edit'))
     <div class="mb-3">
         <h5>Storno</h5>
-        <form action="{{ route('salestorno.update', $Sale->sale_id) }}" method="post">
+        <form action="{{ route('salestorno.update', $Sale->uuid) }}" method="post">
+            @csrf
+            @method("PATCH")
+            <input type="submit" value="Close" class="btn btn-success">
+    </div>
+    @elseif (Request::is('arrivalstorno/*/edit'))
+    <div class="mb-3">
+        <h5>Storno</h5>
+        <form action="{{ route('arrivalstorno.update', $Arrival->uuid) }}" method="post">
+            @csrf
+            @method("PATCH")
+            <input type="submit" value="Close" class="btn btn-success">
+    </div>
+    @elseif (Request::is('transferstorno/*/edit'))
+    <div class="mb-3">
+        <h5>Storno</h5>
+        <form action="{{ route('transferstorno.update', $Transfer->uuid) }}" method="post">
             @csrf
             @method("PATCH")
             <input type="submit" value="Close" class="btn btn-success">

@@ -19,7 +19,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return view('products', [
+        return view('Product/products', [
             'Products' => Product::with(['brand', 'catalog', 'tax'])->get()
         ]);
     }
@@ -60,7 +60,7 @@ class ProductController extends Controller
 
         Transaction::create(['product_id' => $product_id->product_id, 'type' => 'SETTLE', 'qty' => 0, 'status' => 'COMPLETED']);
 
-        return redirect("/products")->with("success", "Sikeres felvétel!");
+        return redirect("/products")->with("success", "Succesfull create!");
     }
 
     /**
@@ -90,7 +90,7 @@ class ProductController extends Controller
         $Taxes = Tax::get();
         $Catalogs = Catalog::get();
 
-        return view('editproduct', compact('editProduct', 'Brands', 'Taxes', 'Catalogs'));
+        return view('Product/editproduct', compact('editProduct', 'Brands', 'Taxes', 'Catalogs'));
     }
 
     /**
@@ -113,7 +113,7 @@ class ProductController extends Controller
 
         Product::where('product_id', $product->product_id)->update($validated);
 
-        return redirect("/products")->with("success", "Sikeres frissítés!");
+        return redirect("/products")->with("success", "Succesfull update!");
     }
 
     /**
@@ -127,6 +127,6 @@ class ProductController extends Controller
         $deleteProduct = Product::findOrFail($product->product_id);
         $deleteProduct->delete();
         
-        return redirect("/products")->with("success", "Sikeres törlés!");
+        return redirect("/products")->with("success", "Succesfull delete!");
     }
 }

@@ -5,7 +5,7 @@
 @include("components.sideMenu")
 <div class="col-9">
     <div class="col-12">
-        <h4>Brands</h4><a href="/brands/create" class="btn btn-warning">New product</a>
+        <h4>Brands</h4><a href="/brands/create" class="btn btn-warning">New brand</a>
     </div>
 
     @if(count($Brands) != 0)

@@ -36,7 +36,7 @@
                                 <td><a class="btn btn-warning edit_item" type="button" href="{{ route('transfer.edit', $Transfer->uuid) }}">Edit transfer</a></td>
                             @elseif($Transfer->status == 'COMPLETED')
                                 <td><a class="btn btn-info edit_item" type="button" href="{{ route('transfer.edit', $Transfer->uuid) }}">Info</a></td>
-                                <td><a class="btn btn-danger edit_item" type="button" href="{{ route('salestorno.edit', $Transfer->uuid) }}">Storno</a></td>
+                                <td><a class="btn btn-danger edit_item" type="button" href="{{ route('transferstorno.edit', $Transfer->uuid) }}">Storno</a></td>
                             @else
                                 <td><a class="btn btn-info edit_item" type="button" href="{{ route('transfer.edit', $Transfer->uuid) }}">Info</a></td>
                             @endif
