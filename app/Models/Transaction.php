@@ -10,7 +10,7 @@ class Transaction extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['uuid','product_id','type','document_type','inner_table_id', 'status', 'qty', 'net_price', 'sale_price', 'reference'];
+    protected $fillable = ['product_id','type','document_type','inner_table_id', 'status', 'qty', 'net_price', 'sale_price', 'reference'];
     protected $primaryKey = 'id';
 
     public function product() { return $this->belongsTo(Product::class, 'product_id'); }

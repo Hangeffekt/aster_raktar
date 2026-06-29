@@ -81,7 +81,7 @@
                 </span></h5>
             </div>
         </div>
-    @elseif (Request::is('products', 'brands', 'catalogs', 'shops', 'taxes', 'supliers', 'paymenttypes'))
+    @elseif (Request::is('products', 'brands', 'catalogs', 'shops', 'taxes', 'supliers', 'paymenttypes', 'users'))
         <div class="list-group">
             <a class="list-group-item list-group-item-action @if(Request::is('products')) active @endif" href="/products">Products</a>
             <a class="list-group-item list-group-item-action @if(Request::is('brands')) active @endif" href="/brands">Brands</a>
@@ -90,8 +90,16 @@
             <a class="list-group-item list-group-item-action @if(Request::is('taxes')) active @endif" href="/taxes">Taxes</a>
             <a class="list-group-item list-group-item-action @if(Request::is('supliers')) active @endif" href="/supliers">Supliers</a>
             <a class="list-group-item list-group-item-action @if(Request::is('paymenttypes')) active @endif" href="/paymenttypes">Payment types</a>
+            <a class="list-group-item list-group-item-action @if(Request::is('moduls')) active @endif" href="/moduls">Moduls</a>
+            <a class="list-group-item list-group-item-action @if(Request::is('users')) active @endif" href="/users">Users</a>
         </div>
-    @elseif (Request::is('sales'))
+    @elseif (Request::is('moduls', 'zones', 'lines'))
+        <div class="list-group">
+            <a class="list-group-item list-group-item-action @if(Request::is('moduls')) active @endif" href="/moduls">Moduls</a>
+            <a class="list-group-item list-group-item-action @if(Request::is('zones')) active @endif" href="/zones">Zones</a>
+            <a class="list-group-item list-group-item-action @if(Request::is('modul-locations')) active @endif" href="/modul-locations">Modul locations</a>
+        </div>
+            @elseif (Request::is('sales'))
         <div class="card-body mb-3">
             @include("components.calendar")
         </div>

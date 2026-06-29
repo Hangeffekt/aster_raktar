@@ -10,7 +10,7 @@ class PaymentType extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['uuid','payment_type'];
+    protected $fillable = ['payment_type'];
     protected $primaryKey = 'payment_id';
 
     protected static function booted()

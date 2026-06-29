@@ -13,7 +13,7 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>Név</th>
+                        <th>Name</th>
                         <th></th>
                         <th></th>
                     </tr>

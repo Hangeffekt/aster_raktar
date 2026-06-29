@@ -10,7 +10,7 @@ class Catalog extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['uuid','catalog_name'];
+    protected $fillable = ['catalog_name'];
     protected $primaryKey = 'catalog_id';
 
     protected static function booted()

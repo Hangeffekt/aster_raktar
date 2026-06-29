@@ -10,7 +10,7 @@ class Shop extends Model
 {
     use HasFactory;
     
-    protected $fillable = ['uuid','shop_name'];
+    protected $fillable = ['shop_name'];
     protected $primaryKey = 'shop_id';
 
     protected static function booted()

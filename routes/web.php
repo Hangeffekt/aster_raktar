@@ -18,6 +18,11 @@ use App\Http\Controllers\TransferController;
 use App\Http\Controllers\TransferItemController;
 use App\Http\Controllers\TransferStornoController;
 use App\Http\Controllers\PaymentTypeController;
+use App\Http\Controllers\ZoneController;
+use App\Http\Controllers\ModulController;
+use App\Http\Controllers\ModulLocatoinController;
+use App\Http\Controllers\UserController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -30,43 +35,47 @@ use App\Http\Controllers\PaymentTypeController;
 */
 
 Route::get('/', function () {
-    return view('index');
+    return view('Auth/login');
 });
 
-Route::resource('brands', BrandController::class);
+Route::middleware(['auth'])->get('/dashboard', function () {
+    return view('dashboard');
+});
 
-Route::resource('supliers', SuplierController::class);
+Route::middleware(['auth'])->resource('users', UserController::class);
+Route::middleware(['auth'])->resource('brands', BrandController::class);
+Route::middleware(['auth'])->resource('supliers', SuplierController::class);
+Route::middleware(['auth'])->resource('taxes', TaxController::class);
+Route::middleware(['auth'])->resource('catalogs', CatalogController::class);
+Route::middleware(['auth'])->resource('shops', ShopController::class);
+Route::middleware(['auth'])->resource('products', ProductController::class);
 
-Route::resource('taxes', TaxController::class);
+Route::middleware(['auth'])->resource('zones', ZoneController::class);
+Route::middleware(['auth'])->resource('moduls', ModulController::class);
+Route::middleware(['auth'])->resource('modul-locations', ModulLocatoinController::class);
 
-Route::resource('catalogs', CatalogController::class);
+Route::middleware(['auth'])->resource('arrivals', ArrivalController::class);
+Route::middleware(['auth'])->resource('arrivalstorno', ArrivalStornoController::class);
+Route::middleware(['auth'])->post("arrivals/closearrival", [ArrivalController::class, "closeArrival"])->name("closeArrival");
 
-Route::resource('shops', ShopController::class);
+Route::middleware(['auth'])->resource('productsearch', ProductSearchController::class);
 
-Route::resource('products', ProductController::class);
+Route::middleware(['auth'])->post("productsearch/store", [ProductSearchController::class, "store"])->name("productsearch");
+Route::middleware(['auth'])->post("productsearch/index", [ProductSearchController::class, "index"])->name("advancedproductsearch");
+Route::middleware(['auth'])->post("productsearch/update", [ProductSearchController::class, "update"])->name("productsearchstore");
 
-Route::resource('arrivals', ArrivalController::class);
-Route::resource('arrivalstorno', ArrivalStornoController::class);
-Route::post("arrivals/closearrival", [ArrivalController::class, "closeArrival"])->name("closeArrival");
+Route::middleware(['auth'])->post("editarrival/update", [ArrivalItemController::class, "update"])->name("arrivalItemEdit");
+Route::middleware(['auth'])->post("editarrival/delete", [ArrivalItemController::class, "destroy"])->name("arrivalItemDelete");
 
-Route::resource('productsearch', ProductSearchController::class);
+Route::middleware(['auth'])->resource('sales', SaleController::class);
 
-Route::post("productsearch/store", [ProductSearchController::class, "store"])->name("productsearch");
-Route::post("productsearch/index", [ProductSearchController::class, "index"])->name("advancedproductsearch");
-Route::post("productsearch/update", [ProductSearchController::class, "update"])->name("productsearchstore");
+Route::middleware(['auth'])->resource('cart', CartController::class);
+Route::middleware(['auth'])->resource('salestorno', SaleStornoController::class);
 
-Route::post("editarrival/update", [ArrivalItemController::class, "update"])->name("arrivalItemEdit");
-Route::post("editarrival/delete", [ArrivalItemController::class, "destroy"])->name("arrivalItemDelete");
+Route::middleware(['auth'])->resource('transfer', TransferController::class);
+Route::middleware(['auth'])->resource('transferitem', TransferItemController::class);
+Route::middleware(['auth'])->resource('transferstorno', TransferStornoController::class);
 
-Route::resource('sales', SaleController::class);
-
-Route::resource('cart', CartController::class);
-Route::resource('salestorno', SaleStornoController::class);
-
-Route::resource('transfer', TransferController::class);
-Route::resource('transferitem', TransferItemController::class);
-Route::resource('transferstorno', TransferStornoController::class);
-
-Route::resource('paymenttypes', PaymentTypeController::class);
+Route::middleware(['auth'])->resource('paymenttypes', PaymentTypeController::class);
 
 

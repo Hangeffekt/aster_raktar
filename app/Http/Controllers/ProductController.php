@@ -31,7 +31,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view("createproduct", [
+        return view("Product/createproduct", [
             'Brands' => Brand::get(),
             'Taxes' => Tax::get(),
             'Catalogs' => Catalog::get()

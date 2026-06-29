@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 class Product extends Model
 {
     use HasFactory;
-    protected $fillable = ['uuid','brand_id','product_name','ean','net_price','sale_price','qty','tax_id','catalog_id'];
+    protected $fillable = ['brand_id','product_name','ean','net_price','sale_price','qty','tax_id','catalog_id'];
     protected $primaryKey = 'product_id';
 
     protected static function booted()

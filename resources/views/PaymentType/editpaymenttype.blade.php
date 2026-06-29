@@ -1,7 +1,7 @@
 @extends('index')
 
 @section("content")
-
+<h4>Edit payment type</h4>
 <form action="{{ route('paymenttypes.update', $editPaymentTypes->uuid) }}" method="post" class="col-xl-3 col-md-6 col-sm-12">
     @csrf
     @method('PATCH')

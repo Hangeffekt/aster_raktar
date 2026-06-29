@@ -10,7 +10,7 @@ class Brand extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['uuid','brand_name'];
+    protected $fillable = ['brand_name'];
     protected $primaryKey = 'brand_id';
 
     protected static function booted()

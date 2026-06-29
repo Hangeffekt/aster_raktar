@@ -1,7 +1,7 @@
 @extends('index')
 
 @section("content")
-
+<h4>New payment type</h4>
 <form action="{{ route('paymenttypes.store') }}" method="post" class="col-xl-3 col-md-6 col-sm-12">
 @csrf
     <div class="form-group">

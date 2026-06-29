@@ -2,9 +2,10 @@
 
 @section("content")
 
-<form action="{{ route('shops.update', $editShop->shop_id) }}" method="post">
+<form action="{{ route('shops.update', $editShop->shop_id) }}">
     @csrf
     @method('PATCH')
+    <h4>Edit user</h4>
     <div class="form-group">
         <label for="">Név</label>
         <input type="text" name="shop_name" value="@if(old('shop_name')){{old('shop_name')}}@else{{ $editShop->shop_name }}@endif" class="form-control">

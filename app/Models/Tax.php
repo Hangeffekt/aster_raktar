@@ -10,7 +10,7 @@ class Tax extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['uuid','tax_value'];
+    protected $fillable = ['tax_value'];
     protected $primaryKey = 'tax_id';
 
     protected static function booted()

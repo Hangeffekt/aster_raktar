@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Transfer;
 use App\Models\Transaction;
-use Illuminate\Support\Facades\DB;
 
 class TransferStornoController extends Controller
 {

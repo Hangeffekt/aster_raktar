@@ -11,7 +11,7 @@
             <div class="alert alert-danger">{{ $message }}</div>
         @enderror
     </div>
-    <input type="submit" value="Mentés" class="btn btn-success">
+    <input type="submit" value="Save" class="btn btn-success">
 </form>
 
 @endsection
