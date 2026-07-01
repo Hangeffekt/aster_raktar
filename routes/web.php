@@ -22,6 +22,8 @@ use App\Http\Controllers\ZoneController;
 use App\Http\Controllers\ModulController;
 use App\Http\Controllers\ModulLocatoinController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\RoleHasPermissionsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,6 +51,8 @@ Route::middleware(['auth'])->resource('taxes', TaxController::class);
 Route::middleware(['auth'])->resource('catalogs', CatalogController::class);
 Route::middleware(['auth'])->resource('shops', ShopController::class);
 Route::middleware(['auth'])->resource('products', ProductController::class);
+Route::middleware(['auth'])->resource('roles', RoleController::class);
+Route::middleware(['auth'])->resource('permissions', RoleHasPermissionsController::class);
 
 Route::middleware(['auth'])->resource('zones', ZoneController::class);
 Route::middleware(['auth'])->resource('moduls', ModulController::class);

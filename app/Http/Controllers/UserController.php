@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -25,7 +26,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('User/createuser');
+        $Roles = Role::get();
+        return view('User/createuser', compact('Roles'));
     }
 
     /**
@@ -43,6 +45,9 @@ class UserController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make(Str::random(16)),
         ]);
+            
+        $user->assignRole($request->role);
+
         return redirect("/users")->with("success", "Successfull created!");
     }
 
@@ -63,16 +68,31 @@ class UserController extends Controller
     public function edit(User $user)
     {
         $editUser = User::where('id', $user->id)->first();
+        $Roles = Role::get();
 
-        return view('User/edituser', compact('editUser'));
+
+        return view('User/edituser', compact('editUser', 'Roles'));
     }
 
     /**
      * Update the specified resource in storage.
+     * 
+     * @param  \App\Models\User  $user
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, User $user)
     {
-        //
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255',
+        ]);
+        
+        User::where('id', $user->id)->update([
+            'name' => $validated['name'],
+            'email' => $validated['email']]);
+        $user->assignRole($request->role);
+
+        return redirect("/users")->with("success", "Successfull updated!");
     }
 
     /**
