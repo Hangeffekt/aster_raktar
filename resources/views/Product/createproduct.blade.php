@@ -2,6 +2,7 @@
 
 @section("content")
 <form action="{{ route('products.store') }}" method="post" class="col-3">
+    <h4>Create product</h4>
     @csrf
     <div class="form-group"><label>Brand</label>
         <select name="brand_id" id="brand_id" class="form-select">

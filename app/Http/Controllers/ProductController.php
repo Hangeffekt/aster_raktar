@@ -20,7 +20,10 @@ class ProductController extends Controller
     public function index()
     {
         return view('Product/products', [
-            'Products' => Product::with(['brand', 'catalog', 'tax'])->get()
+            'Products' => Product::with(['brand', 'catalog', 'tax'])->get(),
+            'Brands' => Brand::get(),
+            'Taxes' => Tax::get(),
+            'Catalogs' => Catalog::get()
         ]);
     }
 

@@ -3,6 +3,7 @@
 @section("content")
 
 <form action="{{ route('products.update', $editProduct->uuid) }}" method="post" class="col-3">
+    <h4>Edit product</h4>
     @csrf
     @method('PATCH')
     <div class="form-group"><label>Brand</label>

@@ -4,9 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\Catalog;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
 
-class CatalogController extends Controller
+class CatalogController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware(PermissionMiddleware::using('show main_datas_catalogs'), only: ['index','show']),
+            new Middleware(PermissionMiddleware::using('show main_datas_catalogs'), except: ['create','store','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('create catalog'), only: ['create','store']),
+            new Middleware(PermissionMiddleware::using('create catalog'), except: ['index','show','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('edit catalog'), only: ['edit','update']),
+            new Middleware(PermissionMiddleware::using('edit catalog'), except: ['index','show','create','store','destroy']),
+            new Middleware(PermissionMiddleware::using('delete catalog'), only: ['destroy']),
+            new Middleware(PermissionMiddleware::using('delete catalog'), except: ['index','create','store','edit','update']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +30,7 @@ class CatalogController extends Controller
      */
     public function index()
     {
-        return view('catalogs', [
+        return view('Catalog/catalogs', [
             'Catalogs' => Catalog::get()
         ]);
     }
@@ -26,7 +42,7 @@ class CatalogController extends Controller
      */
     public function create()
     {
-        return view('createcatalog');
+        return view('Catalog/createcatalog');
     }
 
     /**
@@ -42,7 +58,7 @@ class CatalogController extends Controller
         ]);
         Catalog::create($validated);
 
-        return redirect("/catalogs")->with("success", "Sikeres felvétel!");
+        return redirect("/catalogs")->with("success", "Successfull created!");
     }
 
     /**
@@ -66,7 +82,7 @@ class CatalogController extends Controller
     {
         $editCatalog = Catalog::findOrFail($catalog->catalog_id);
 
-        return view('editCatalog', compact('editCatalog'));
+        return view('Catalog/editCatalog', compact('editCatalog'));
     }
 
     /**
@@ -84,7 +100,7 @@ class CatalogController extends Controller
 
         Catalog::where('catalog_id', $catalog->catalog_id)->update($validated);
         
-        return redirect("/catalogs")->with("success", "Sikeres frissítés!");
+        return redirect("/catalogs")->with("success", "Successfull updated!");
     }
 
     /**
@@ -98,6 +114,6 @@ class CatalogController extends Controller
         $deleteCatalog = Catalog::findOrFail($catalog->catalog_id);
         $deleteCatalog->delete();
         
-        return redirect("/catalogs")->with("success", "Sikeres törlés!");
+        return redirect("/catalogs")->with("success", "Successfull deleted!");
     }
 }

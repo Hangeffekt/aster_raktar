@@ -4,9 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\Brand;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
 
-class BrandController extends Controller
+class BrandController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware(PermissionMiddleware::using('show main_datas_brands'), only: ['index','show']),
+            new Middleware(PermissionMiddleware::using('show main_datas_brands'), except: ['create','store','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('create brand'), only: ['create','store']),
+            new Middleware(PermissionMiddleware::using('create brand'), except: ['index','show','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('edit brand'), only: ['edit','update']),
+            new Middleware(PermissionMiddleware::using('edit brand'), except: ['index','show','create','store','destroy']),
+            new Middleware(PermissionMiddleware::using('delete brand'), only: ['destroy']),
+            new Middleware(PermissionMiddleware::using('delete brand'), except: ['index','create','store','edit','update']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +31,7 @@ class BrandController extends Controller
     public function index()
     {
         //
-        return view('brands', [
+        return view('Brand/brands', [
             'Brands' => Brand::get()
         ]);
     }
@@ -27,7 +43,7 @@ class BrandController extends Controller
      */
     public function create()
     {
-        return view('createbrand');
+        return view('Brand/createbrand');
     }
 
     /**
@@ -43,7 +59,7 @@ class BrandController extends Controller
         ]);
         $Brand = Brand::create($validated);
         
-        return redirect("/brands")->with("success", "Sikeres felvétel!");
+        return redirect("/brands")->with("success", "Successfull created!");
     }
 
     /**
@@ -67,7 +83,7 @@ class BrandController extends Controller
     {
         $editBrand = Brand::findOrFail($brand->brand_id);
 
-        return view('editBrand', compact('editBrand'));
+        return view('Brand/editBrand', compact('editBrand'));
     }
 
     /**
@@ -85,7 +101,7 @@ class BrandController extends Controller
 
         $update = Brand::where('brand_id', $brand->brand_id)->update($validated);
         
-        return redirect("/brands")->with("success", "Sikeres frissítés!");
+        return redirect("/brands")->with("success", "Successfull updated!");
     }
 
     /**
@@ -99,6 +115,6 @@ class BrandController extends Controller
         $deleteBrand = Brand::findOrFail($brand->brand_id);
         $deleteBrand->delete();
         
-        return redirect("/brands")->with("success", "Sikeres törlés!");
+        return redirect("/brands")->with("success", "Successfull deleted!");
     }
 }

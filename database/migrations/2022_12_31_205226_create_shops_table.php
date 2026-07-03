@@ -17,10 +17,13 @@ return new class extends Migration
             $table->id("shop_id");
             $table->uuid('uuid');
             $table->string('shop_name');
-            $table->string('shop_address')->nullable();
-            $table->string('shop_phone')->nullable();
-            $table->string('shop_email')->nullable();
-            $table->integer('tax_number')->nullable();
+            $table->integer('shop_zip_code');
+            $table->string('shop_settlement');
+            $table->string('shop_address');
+            $table->integer('shop_tax_number');
+            $table->integer('shop_phone');
+            $table->string('shop_email');
+            $table->integer('tax_number');
             $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable();
             $table->timestamp('created_at')->useCurrent();
         });

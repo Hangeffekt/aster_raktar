@@ -5,11 +5,23 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
 
-class RoleHasPermissionsController extends Controller
+class RoleHasPermissionsController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware(PermissionMiddleware::using('show main_datas_permissions'), only: ['index']),
+            new Middleware(PermissionMiddleware::using('show main_datas_permissions'), except: ['create','show','store','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('edit permission'), only: ['update']),
+            new Middleware(PermissionMiddleware::using('edit permission'), except: ['create','show','store','edit','index','destroy']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */
@@ -61,14 +73,29 @@ class RoleHasPermissionsController extends Controller
     public function update(Request $request, Permission $permission)
     {
         $Roles = Role::get();
+        $user = Auth::user();
         foreach($Roles as $Role){
-            if($request->has($Role->name)){
-                $Role->givePermissionTo($permission);
-                $permission->assignRole($Role);
+            if($Role->name == 'admin'){
+                if(Auth::user()->roles->first()?->name == 'admin'){
+                    if($request->has($Role->name)){
+                        $Role->givePermissionTo($permission);
+                        $permission->assignRole($Role);
+                    }
+                    else{
+                        $Role->revokePermissionTo($permission);
+                        $permission->removeRole($Role);         
+                    }
+                }
             }
             else{
-                $Role->revokePermissionTo($permission);
-                $permission->removeRole($Role);         
+                if($request->has($Role->name)){
+                    $Role->givePermissionTo($permission);
+                    $permission->assignRole($Role);
+                }
+                else{
+                    $Role->revokePermissionTo($permission);
+                    $permission->removeRole($Role);         
+                }
             }
         }
         

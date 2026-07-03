@@ -5,7 +5,8 @@
 @include("components.sideMenu")
 <div class="col-9">
     <div class="col-12">
-        <h4>Users</h4><a href="/users/create" class="btn btn-warning">New user</a>
+        <h4>Users</h4>
+        @can('create user')<a href="/users/create" class="btn btn-warning">New user</a>@endcan
     </div>
 
     @if(count($Users) != 0)
@@ -17,7 +18,7 @@
                         <th>Email</th>
                         <th>Updated at</th>
                         <th>Created at</th>
-                        <th></th>
+                        @can('edit user')<th></th>@endcan
                     </tr>
                 </thead>
                 <tbody>
@@ -25,9 +26,9 @@
                     <tr>
                         <td>{{ $User->name }}</td>
                         <td>{{ $User->email }}</td>
-                        <td>{{ $User->Updated_at ? $User->Updated_at : '-' }}</td>
+                        <td>{{ $User->updated_at ? $User->updated_at : '-' }}</td>
                         <td>{{ $User->created_at }}</td>
-                        <td><a href="{{ route('users.edit', $User->id)}}" class="btn btn-warning">Edit</a></td>
+                        @can('edit user')<td><a href="{{ route('users.edit', $User->id)}}" class="btn btn-warning">Edit</a></td>@endcan
                     </tr>
                     @endforeach
                 </tbody>

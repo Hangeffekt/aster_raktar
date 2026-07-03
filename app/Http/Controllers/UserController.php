@@ -8,9 +8,26 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
+use Illuminate\Validation\Rule;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
 
-class UserController extends Controller
+class UserController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware(PermissionMiddleware::using('show main_datas_users'), only: ['index','show']),
+            new Middleware(PermissionMiddleware::using('show main_datas_users'), except: ['create','store','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('create user'), only: ['create','store']),
+            new Middleware(PermissionMiddleware::using('create user'), except: ['index','show','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('edit user'), only: ['edit','update']),
+            new Middleware(PermissionMiddleware::using('edit user'), except: ['index','show','create','store','destroy']),
+            new Middleware(PermissionMiddleware::using('delete user'), only: ['destroy']),
+            new Middleware(PermissionMiddleware::using('delete user'), except: ['index','create','store','edit','update']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */
@@ -84,7 +101,7 @@ class UserController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255',
+            'email' => ['required','string','email','max:255',Rule::unique('users')->ignore($user->id, 'id')],
         ]);
         
         User::where('id', $user->id)->update([

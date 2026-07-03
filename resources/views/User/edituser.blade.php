@@ -3,6 +3,7 @@
 @section("content")
 
 <form action="{{ route('users.update', $editUser->id) }}" method="post" class="mx-auto col-3">
+    <h4>Edit user</h4>
     @csrf
     @method('PATCH')
     <h4>Edit user</h4>

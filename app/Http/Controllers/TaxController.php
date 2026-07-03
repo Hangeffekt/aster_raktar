@@ -4,9 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\Tax;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
 
-class TaxController extends Controller
+class TaxController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware(PermissionMiddleware::using('show main_datas_taxes'), only: ['index','show']),
+            new Middleware(PermissionMiddleware::using('show main_datas_taxes'), except: ['create','store','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('create tax'), only: ['create','store']),
+            new Middleware(PermissionMiddleware::using('create tax'), except: ['index','show','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('edit tax'), only: ['edit','update']),
+            new Middleware(PermissionMiddleware::using('edit tax'), except: ['index','show','create','store','destroy']),
+            new Middleware(PermissionMiddleware::using('delete tax'), only: ['destroy']),
+            new Middleware(PermissionMiddleware::using('delete tax'), except: ['index','create','store','edit','update']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +30,7 @@ class TaxController extends Controller
      */
     public function index()
     {
-        return view('taxes', [
+        return view('Tax/taxes', [
             'Taxes' => Tax::get()
         ]);
     }
@@ -26,7 +42,7 @@ class TaxController extends Controller
      */
     public function create()
     {
-        return view('createtax');
+        return view('Tax/createtax');
     }
 
     /**
@@ -42,7 +58,7 @@ class TaxController extends Controller
         ]);
         $Tax = Tax::create($validated);
 
-        return redirect("/taxes")->with("success", "Sikeres felvétel!");
+        return redirect("/taxes")->with("success", "Sikeres created!");
     }
 
     /**
@@ -66,7 +82,7 @@ class TaxController extends Controller
     {
         $editTax = Tax::findOrFail($tax->tax_id);
 
-        return view('editTax', compact('editTax'));
+        return view('Tax/editTax', compact('editTax'));
     }
 
     /**
@@ -84,7 +100,7 @@ class TaxController extends Controller
 
         $updateBrand = Tax::where('tax_id', $tax->tax_id)->update($validated);
         
-        return redirect("/taxes")->with("success", "Sikeres frissítés!");
+        return redirect("/taxes")->with("success", "Successfull updated!");
     }
 
     /**
@@ -98,6 +114,6 @@ class TaxController extends Controller
         $deleteBrand = Tax::findOrFail($tax->tax_id);
         $deleteBrand->delete();
         
-        return redirect("/taxes")->with("success", "Sikeres törlés!");
+        return redirect("/taxes")->with("success", "Successfull delete!");
     }
 }

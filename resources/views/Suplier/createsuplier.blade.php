@@ -3,9 +3,10 @@
 @section("content")
 
 <form action="{{ route('supliers.store') }}" method="post" class="col-3">
+    <h4>Create suplier</h4>
     @csrf
     <div class="form-group mb-3">
-        <label for="">Name</label>
+        <label for="">Company name</label>
         <input type="text" name="suplier_name" class="form-control"  value="{{ old('suplier_name') }}">
         @error('suplier_name')
             <div class="alert alert-danger">{{ $message }}</div>
@@ -47,7 +48,7 @@
         @enderror
     </div>
     <div class="form-group mb-3">
-        <label for="">E-mail</label>
+        <label for="">Email</label>
         <input type="text" name="suplier_email" class="form-control"  value="{{ old('suplier_email') }}">
         @error('suplier_email')
             <div class="alert alert-danger">{{ $message }}</div>

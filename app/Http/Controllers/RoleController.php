@@ -5,9 +5,26 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
 
-class RoleController extends Controller
+class RoleController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware(PermissionMiddleware::using('show main_datas_roles'), only: ['index','show']),
+            new Middleware(PermissionMiddleware::using('show main_datas_roles'), except: ['create','store','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('create role'), only: ['create','store']),
+            new Middleware(PermissionMiddleware::using('create role'), except: ['index','show','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('edit role'), only: ['edit','update']),
+            new Middleware(PermissionMiddleware::using('edit role'), except: ['index','show','create','store','destroy']),
+            new Middleware(PermissionMiddleware::using('delete role'), only: ['destroy']),
+            new Middleware(PermissionMiddleware::using('delete role'), except: ['index','create','show','store','edit','update']),
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -82,6 +99,9 @@ class RoleController extends Controller
      */
     public function destroy( Role $role)
     {
+        if($role->name == 'admin')
+            return redirect("/roles")->with("error", "You can not do this action!");
+        
         Role::findOrFail($role->id)->delete();
         
         return redirect("/roles")->with("success", "Successfull deleted!");

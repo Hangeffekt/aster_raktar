@@ -3,6 +3,7 @@
 @section("content")
 
 <form action="{{ route('catalogs.update', $editCatalog->uuid) }}" method="post">
+    <h4>Edit catalog</h4>
     @csrf
     @method('PATCH')
     <div class="form-group">

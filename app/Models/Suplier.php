@@ -10,7 +10,7 @@ class Suplier extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['suplier_name', 'suplier_settlement', 'suplier_zip_code', 'suplier_tax_number', 'suplier_phone', 'suplier_email'];
+    protected $fillable = ['suplier_name', 'suplier_settlement', 'suplier_address', 'suplier_zip_code', 'suplier_tax_number', 'suplier_phone', 'suplier_email'];
     protected $primaryKey = 'suplier_id';
 
     protected static function booted()

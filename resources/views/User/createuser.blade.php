@@ -1,7 +1,7 @@
 @extends('index')
 
 @section("content")
-
+<h4>Create user</h4>
 <form action="{{ route('users.store') }}" method="post" class="mx-auto col-3">
     @csrf
     <h4>Create user</h4>

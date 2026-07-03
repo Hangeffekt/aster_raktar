@@ -16,12 +16,12 @@ return new class extends Migration
         Schema::create('supliers', function (Blueprint $table) {
             $table->id("suplier_id");
             $table->uuid('uuid');
-            $table->string('suplier_name')->nullable();
-            $table->string('suplier_settlement')->nullable();
-            $table->string('suplier_address')->nullable();
-            $table->string('suplier_zip_code')->nullable();
-            $table->string('suplier_tax_number')->nullable();
-            $table->string('suplier_phone')->nullable();
+            $table->string('suplier_name');
+            $table->string('suplier_settlement');
+            $table->string('suplier_address');
+            $table->integer('suplier_zip_code');
+            $table->integer('suplier_tax_number');
+            $table->integer('suplier_phone')->nullable();
             $table->string('suplier_email')->nullable();
             $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable();
             $table->timestamp('created_at')->useCurrent();

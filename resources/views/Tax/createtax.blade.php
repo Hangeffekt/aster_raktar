@@ -2,12 +2,13 @@
 
 @section("content")
 
-<form action="{{ route('brands.store') }}" method="post">
+<form action="{{ route('taxes.store') }}" method="post" class="col-3">
+    <h4>Create tax</h4>
     @csrf
     <div class="form-group">
-        <label for="">Name</label>
-        <input type="text" name="brand_name" value="{{ old('brand_name') }}" class="form-control">
-        @error('brand_name')
+        <label for="">Value</label>
+        <input type="text" name="tax_value" value="{{ old('tax_value') }}" class="form-control">
+        @error('tax_value')
             <div class="alert alert-danger">{{ $message }}</div>
         @enderror
     </div>

@@ -15,7 +15,13 @@
                     <tr>
                         <th>Name</th>
                         @foreach($Roles as $Role)
-                            <th>{{ $Role->name }}</th>
+                            @if($Role->name == 'admin')
+                                @hasrole('admin')
+                                    <th>{{ $Role->name }}</th>
+                                @endhasrole
+                            @else
+                                <th>{{ $Role->name }}</th>
+                            @endif
                         @endforeach
                         <th></th>
                     </tr>
@@ -26,9 +32,17 @@
                         <form action="{{ route('permissions.update', $Permission->id)}}" method="post">
                             <td>{{ $Permission->name }}</td>
                                 @foreach($Roles as $Role)
-                                    <td>
-                                        <input type="checkbox" name="{{ $Role->name }}" {{ $Role->hasPermissionTo($Permission->name) ? 'checked' : '' }}>
-                                    </td>
+                                     @if($Role->name == 'admin')
+                                        @hasrole('admin')
+                                            <td>
+                                                <input type="checkbox" name="{{ $Role->name }}" {{ $Role->hasPermissionTo($Permission->name) ? 'checked' : '' }}>
+                                            </td>
+                                        @endhasrole
+                                    @else
+                                        <td>
+                                            <input type="checkbox" name="{{ $Role->name }}" {{ $Role->hasPermissionTo($Permission->name) ? 'checked' : '' }}>
+                                        </td>
+                                    @endif
                                 @endforeach
                             <td>
                                 @csrf

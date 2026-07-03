@@ -91,9 +91,9 @@
             @can('show main_datas_supliers')<a class="list-group-item list-group-item-action @if(Request::is('supliers')) active @endif" href="/supliers">Supliers</a>@endcan
             @can('show main_datas_payment_types')<a class="list-group-item list-group-item-action @if(Request::is('paymenttypes')) active @endif" href="/paymenttypes">Payment types</a>@endcan
             @can('show main_datas_moduls')<a class="list-group-item list-group-item-action @if(Request::is('moduls')) active @endif" href="/moduls">Moduls</a>@endcan
-            @can('show arrivals')<a class="list-group-item list-group-item-action @if(Request::is('users')) active @endif" href="/users">Users</a>@endcan
-            @can('show arrivals')<a class="list-group-item list-group-item-action @if(Request::is('roles')) active @endif" href="/roles">Roles</a>@endcan
-            @can('show arrivals')<a class="list-group-item list-group-item-action @if(Request::is('permissions')) active @endif" href="/permissions">Permissions</a>@endcan
+            @can('show main_datas_users')<a class="list-group-item list-group-item-action @if(Request::is('users')) active @endif" href="/users">Users</a>@endcan
+            @can('show main_datas_roles')<a class="list-group-item list-group-item-action @if(Request::is('roles')) active @endif" href="/roles">Roles</a>@endcan
+            @can('show main_datas_permissions')<a class="list-group-item list-group-item-action @if(Request::is('permissions')) active @endif" href="/permissions">Permissions</a>@endcan
         </div>
     @elseif (Request::is('moduls', 'zones', 'lines'))
         <div class="list-group">
