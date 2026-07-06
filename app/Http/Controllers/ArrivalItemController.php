@@ -35,7 +35,18 @@ class ArrivalItemController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        dd($request->all());
+        $validated = $request->validate([
+            'arrival_table_id' => 'required',
+            'item_id' => 'required|numeric',
+            'net_price' => 'required|numeric',
+            'sale_price' => 'required|numeric',
+            'qty' => 'required|numeric'
+        ]);
+        
+        ArrivalItem::create($validated);
+        
+        return redirect()->back()->with("success", "Succesfull create!");
     }
 
     /**
@@ -64,7 +75,6 @@ class ArrivalItemController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
@@ -83,12 +93,12 @@ class ArrivalItemController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Models\ArrivalItem  $arrivalitem
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy(ArrivalItem $arrivalitem)
     {
-        $deleteItem = ArrivalItem::findOrFail($request->arrival_item_id);
+        $deleteItem = ArrivalItem::findOrFail($arrivalitem->arrival_item_id);
         $deleteItem->delete();
         
         return redirect()->back()->with("success", "Sikeres törlés!");

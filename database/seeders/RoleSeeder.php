@@ -111,6 +111,27 @@ class RoleSeeder extends Seeder
         $permission = Permission::create(['name' => 'edit zone']);
         $permission = Permission::create(['name' => 'delete zone']);
 
+        //arrival
+        $permission = Permission::create(['name' => 'create arrival']);
+        $permission = Permission::create(['name' => 'edit arrival']);
+        $permission = Permission::create(['name' => 'delete arrival']);
+        $rolemanager->givePermissionTo(['create arrival', 'edit arrival', 'delete arrival']);
+        $roleStorekeeper->givePermissionTo(['create arrival', 'edit arrival', 'delete arrival']);
+
+        //edit arrival
+        $permission = Permission::create(['name' => 'create edit_arrival']);
+        $permission = Permission::create(['name' => 'edit edit_arrival']);
+        $permission = Permission::create(['name' => 'delete edit_arrival']);
+        $rolemanager->givePermissionTo(['create edit_arrival', 'edit edit_arrival', 'delete edit_arrival']);
+        $roleStorekeeper->givePermissionTo(['create edit_arrival', 'edit edit_arrival', 'delete edit_arrival']);
+
+        //storno arrival
+        $permission = Permission::create(['name' => 'create storno_arrival']);
+        $permission = Permission::create(['name' => 'edit storno_arrival']);
+        $permission = Permission::create(['name' => 'delete storno_arrival']);
+        $rolemanager->givePermissionTo(['create storno_arrival', 'edit storno_arrival', 'delete storno_arrival']);
+        $roleStorekeeper->givePermissionTo(['create storno_arrival', 'edit storno_arrival', 'delete storno_arrival']);
+
         $admin = User::first();
         $admin->assignRole('admin');
         $roleadmin->syncPermissions(Permission::all());

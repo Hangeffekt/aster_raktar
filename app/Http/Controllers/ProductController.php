@@ -9,16 +9,43 @@ use App\Models\Catalog;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\ProductPostRequest;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
 
 class ProductController extends Controller
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware(PermissionMiddleware::using('show main_datas_products'), only: ['index','show']),
+            new Middleware(PermissionMiddleware::using('show main_datas_products'), except: ['create','store','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('create product'), only: ['create','store']),
+            new Middleware(PermissionMiddleware::using('create product'), except: ['index','show','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('edit product'), only: ['edit','update']),
+            new Middleware(PermissionMiddleware::using('edit product'), except: ['index','show','create','store','destroy']),
+            new Middleware(PermissionMiddleware::using('delete product'), only: ['destroy']),
+            new Middleware(PermissionMiddleware::using('delete product'), except: ['index','create','show','store','edit','update']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $query = Product::query();
+
+        if ($request->filled('product_name')) {
+            $query->where('product_name', 'like', '%' . $request->product_name . '%');
+        }
+
+        if ($request->filled('brand_id')) {
+            $query->where('brand_id', $request->brand_id);
+        }
+
         return view('Product/products', [
             'Products' => Product::with(['brand', 'catalog', 'tax'])->get(),
             'Brands' => Brand::get(),
@@ -47,23 +74,15 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProductPostRequest $request)
     {
-        $validated = $request->validate([
-            'brand_id' => 'required|numeric',
-            'product_name' => 'required|unique:products',
-            'ean' => 'required|numeric',
-            'sale_price' => 'numeric',
-            'tax_id' => 'required|numeric',
-            'catalog_id' => 'required|numeric'
-        ]);
-        Product::create($validated);
+        Product::create($request->all());
 
         $product_id = Product::orderby('created_at', 'desc')->first();
 
         Transaction::create(['product_id' => $product_id->product_id, 'type' => 'SETTLE', 'qty' => 0, 'status' => 'COMPLETED']);
 
-        return redirect("/products")->with("success", "Succesfull create!");
+        return redirect("/products")->with("success", "Succesfull created!");
     }
 
     /**
@@ -103,20 +122,18 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function update(ProductPostRequest $request, Product $product)
     {
-        $validated = $request->validate([
-            'brand_id' => 'required|numeric',
-            'product_name' => 'required|unique:products,product_name,'.$product->product_id.',product_id',
-            'ean' => 'required|numeric',
-            'sale_price' => 'required|numeric',
-            'tax_id' => 'required|numeric',
-            'catalog_id' => 'required|numeric'
+        Product::where('product_id', $product->product_id)->update([
+            'brand_id' => $request->brand_id,
+            'product_name' => $request->product_name,
+            'ean' => $request->ean,
+            'sale_price' => $request->sale_price,
+            'tax_id' => $request->tax_id,
+            'catalog_id' => $request->catalog_id,
         ]);
 
-        Product::where('product_id', $product->product_id)->update($validated);
-
-        return redirect("/products")->with("success", "Succesfull update!");
+        return redirect("/products")->with("success", "Succesfull updated!");
     }
 
     /**
@@ -130,6 +147,6 @@ class ProductController extends Controller
         $deleteProduct = Product::findOrFail($product->product_id);
         $deleteProduct->delete();
         
-        return redirect("/products")->with("success", "Succesfull delete!");
+        return redirect("/products")->with("success", "Succesfull deleted!");
     }
 }

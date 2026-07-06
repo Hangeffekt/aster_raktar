@@ -68,8 +68,7 @@ Route::middleware(['auth'])->post("productsearch/store", [ProductSearchControlle
 Route::middleware(['auth'])->post("productsearch/index", [ProductSearchController::class, "index"])->name("advancedproductsearch");
 Route::middleware(['auth'])->post("productsearch/update", [ProductSearchController::class, "update"])->name("productsearchstore");
 
-Route::middleware(['auth'])->post("editarrival/update", [ArrivalItemController::class, "update"])->name("arrivalItemEdit");
-Route::middleware(['auth'])->post("editarrival/delete", [ArrivalItemController::class, "destroy"])->name("arrivalItemDelete");
+Route::middleware(['auth'])->resource('arrivalitem', ArrivalItemController::class);
 
 Route::middleware(['auth'])->resource('sales', SaleController::class);
 

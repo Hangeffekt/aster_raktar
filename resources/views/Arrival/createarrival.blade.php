@@ -4,19 +4,20 @@
 
 <form action="{{ route('arrivals.store') }}" method="post" class="col-xl-3 col-md-6 col-sm-12">
 @csrf
+    <h4>Create arrival</h4>
     <div class="form-group">
         <label for="">Suplier name</label>
-        <select name="suplier_id" id="" class="form-select">
+        <select name="suplier_uuid" id="" class="form-select">
             <option>-- Kérjük válasszon --</option>
             @foreach($Supliers as $Suplier)
-                <option value="{{ $Suplier->suplier_id }}"
-                @if(old('suplier_id') && old('suplier_id') == $Suplier->suplier_id)
+                <option value="{{ $Suplier->uuid }}"
+                @if(old('suplier_uuid') && old('suplier_uuid') == $Suplier->uuid)
                     selected
                 @endif
                 >{{ $Suplier->suplier_name }}</option>
             @endforeach
         </select>
-        @error('suplier_id')
+        @error('suplier_uuid')
             <div class="alert alert-danger">{{ $message }}</div>
         @enderror
     </div>

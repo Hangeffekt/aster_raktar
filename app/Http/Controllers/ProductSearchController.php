@@ -82,22 +82,11 @@ class ProductSearchController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
     {
-        $validated = $request->validate([
-            'arrival_table_id' => 'required',
-            'item_id' => 'required|numeric',
-            'net_price' => 'required|numeric',
-            'sale_price' => 'required|numeric',
-            'qty' => 'required|numeric'
-        ]);
-        
-        ArrivalItem::create($validated);
-        
-        return redirect()->back()->with("success", "Succesfull create!");
+        //
     }
 
     /**

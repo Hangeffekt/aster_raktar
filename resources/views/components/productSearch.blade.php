@@ -62,7 +62,7 @@
                             <input type="submit" value="Search" class="btn btn-success">
                         </form>
                     </div>
-                    <div id="product_list" data-url="@if(Request::is('arrivals/*/edit')){{route('productsearchstore')}}
+                    <div id="product_list" data-url="@if(Request::is('arrivals/*/edit')){{route('arrivalitem.store')}}
                                                     @elseif(Request::is('sales/*/edit')){{route('cart.store')}}
                                                     @elseif(Request::is('transfer/*/edit')){{route('transferitem.store')}}
                                                     @endif"

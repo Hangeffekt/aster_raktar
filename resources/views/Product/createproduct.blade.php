@@ -5,17 +5,17 @@
     <h4>Create product</h4>
     @csrf
     <div class="form-group"><label>Brand</label>
-        <select name="brand_id" id="brand_id" class="form-select">
+        <select name="brand_uuid" id="brand_uuid" class="form-select">
             <option>-- Please choose --</option>
             @foreach($Brands as $Brand)
-                <option value="{{ $Brand->brand_id }}"
-                @if(old('brand_id') && old('brand_id') == $Brand->brand_id)
+                <option value="{{ $Brand->uuid }}"
+                @if(old('brand_uuid') && old('brand_uuid') == $Brand->brand_uuid)
                     selected
                 @endif
                 >{{ $Brand->brand_name }}</option>
             @endforeach
         </select>
-        @error('brand_id')
+        @error('brand_uuid')
             <div class="alert alert-danger">{{ $message }}</div>
         @enderror
     </div>
@@ -26,17 +26,17 @@
         @enderror
     </div>
     <div class="form-group"><label>Tax</label>
-        <select name="tax_id" id="" class="form-select">
+        <select name="tax_uuid" id="tax_uuid" class="form-select">
             <option>-- Please choose --</option>
             @foreach($Taxes as $Tax)
-                <option value="{{ $Tax->tax_id }}"
-                @if(old('tax_id') && old('tax_id') == $Tax->tax_id)
+                <option value="{{ $Tax->uuid }}"
+                @if(old('tax_uuid') && old('tax_uuid') == $Tax->uuid)
                     selected
                 @endif
                 >{{ $Tax->tax_value }}</option>
             @endforeach
         </select>
-        @error('tax_id')
+        @error('tax_uuid')
             <div class="alert alert-danger">{{ $message }}</div>
         @enderror
     </div>
@@ -49,17 +49,17 @@
     </div>
     <div class="form-group">
         <label>Catalog</label>
-        <select name="catalog_id" id="" class="form-select">
+        <select name="catalog_uuid" id="catalog_uuid" class="form-select">
             <option value="">-- Please choose --</option>
             @foreach($Catalogs as $Catalog)
-                <option value="{{ $Catalog->catalog_id }}"
-                @if(old('catalog_id') && old('catalog_id') == $Catalog->catalog_id)
+                <option value="{{ $Catalog->uuid }}"
+                @if(old('catalog_uuid') && old('catalog_uuid') == $Catalog->uuid)
                     selected
                 @endif
                 >{{ $Catalog->catalog_name }}</option>
             @endforeach
         </select>
-        @error('catalog_id')
+        @error('catalog_uuid')
             <div class="alert alert-danger">{{ $message }}</div>
         @enderror
     </div>

@@ -3,51 +3,39 @@
         <div class="card-body">
             <div class="mb-3">
                 <h4>Net value:</h4>
-                <div>
-                @if(count($Arrivalitems) != 0)
-                        @php
-                            $net_value = 0;
-                        @endphp
-                    @foreach($Arrivalitems as $Arrivalitem)
-                        @php
-                            $net_value +=  $Arrivalitem->net_price * $Arrivalitem->qty;
-                        @endphp
-                    @endforeach
-                    {{ $net_value }} Ft.
-                @else
-                    0 Ft.
-                @endif
-                </div>
+                <div>{{ arrivalNetValue($editArrival->uuid, $editArrival->arrival_status) }}</div>
             </div>
-            <form action="">
-                @csrf
-                <div class="mb-3">
-                    <label for="">Add Invioce image</label>
-                    <input class="form-control" type="file" id="formFile">
-                </div>
-                <input type="submit" value="Search" class="btn btn-success">
-            </form>
-            <form action="">
-                @csrf
-                <div class="mb-3">
-                    <label for="">Add suplier note image</label>
-                    <input class="form-control" type="file" id="formFile">
-                </div>
-                <input type="submit" value="Search" class="btn btn-success">
-            </form>
-            @if($editArrival->arrival_status == "PENDING")
-            <form action="{{ route('closeArrival') }}" method="post">
-                @csrf
-                <div class="mb-3">
-                    <input type="hidden" name="arrival_id" value="{{ $editArrival->uuid }}">
-                    <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" name="closeNote">
-                    <label class="form-check-label" for="flexSwitchCheckDefault">Close the note</label>
-                    @error('closeNote')
-                        <div class="alert alert-danger">{{ $message }}</div>
-                    @enderror
-                </div>
-                <input type="submit" value="Close" class="btn btn-success">
-            </form>
+            @can('edit arrival')
+                <form action="">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="">Add Invioce image</label>
+                        <input class="form-control" type="file" id="formFile">
+                    </div>
+                    <input type="submit" value="Search" class="btn btn-success">
+                </form>
+                <form action="">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="">Add suplier note image</label>
+                        <input class="form-control" type="file" id="formFile">
+                    </div>
+                    <input type="submit" value="Search" class="btn btn-success">
+                </form>
+                @if($editArrival->arrival_status == "PENDING")
+                <form action="{{ route('closeArrival') }}" method="post">
+                    @csrf
+                    <div class="mb-3">
+                        <input type="hidden" name="arrival_id" value="{{ $editArrival->uuid }}">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" name="closeNote">
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Close the note</label>
+                        @error('closeNote')
+                            <div class="alert alert-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <input type="submit" value="Close" class="btn btn-success">
+                </form>
+            @endcan
             @endif
         </div>
     @elseif (Request::is('arrivals'))

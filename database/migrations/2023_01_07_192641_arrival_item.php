@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('arrival_items', function (Blueprint $table) {
             $table->id("arrival_item_id");
+            $table->uuid('uuid');
             $table->uuid('arrival_table_id');
             $table->integer('item_id');
             $table->integer('net_price');

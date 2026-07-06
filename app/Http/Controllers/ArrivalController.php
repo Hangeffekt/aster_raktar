@@ -11,9 +11,26 @@ use App\Models\Transaction;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
+use App\Http\Requests\ArrivalPostRequest;
 
 class ArrivalController extends Controller
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware(PermissionMiddleware::using('show main_datas_arrivals'), only: ['index','show']),
+            new Middleware(PermissionMiddleware::using('show main_datas_arrivals'), except: ['create','store','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('create arrival'), only: ['create','store']),
+            new Middleware(PermissionMiddleware::using('create arrival'), except: ['index','show','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('edit arrival'), only: ['edit','update']),
+            new Middleware(PermissionMiddleware::using('edit arrival'), except: ['index','show','create','store','destroy']),
+            new Middleware(PermissionMiddleware::using('delete arrival'), only: ['destroy']),
+            new Middleware(PermissionMiddleware::using('delete arrival'), except: ['index','create','show','store','edit','update']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +49,12 @@ class ArrivalController extends Controller
         $productPayments = Arrival::where("payment_date", "<=", $days7)->where("arrival_status",  "COMPLETED")->get();
         $Arrivals = DB::table('arrivals as a')
                     ->join('supliers as s', 's.suplier_id', '=', 'a.suplier_id')
-                    ->selectRaw('s.suplier_name, a.arrival_status, a.uuid, a.created_at, a.updated_at')
+                    ->selectRaw('s.suplier_name, a.arrival_id, a.arrival_status, a.uuid, a.created_at, a.updated_at')
                     ->whereBetween("a.created_at", [$dFrom, $dTo])
                     ->paginate(20);
+        $Supliers = Suplier::get();
 
-        return view('Arrival/arrivals', compact('Arrivals','notCloseds', 'productArrivals', 'productPayments'));
+        return view('Arrival/arrivals', compact('Arrivals','notCloseds', 'productArrivals', 'productPayments', 'Supliers'));
     }
 
     /**
@@ -46,7 +64,7 @@ class ArrivalController extends Controller
      */
     public function create()
     {
-        return view("createarrival", [
+        return view("Arrival/createarrival", [
             'Supliers' => Suplier::get()
         ]);
     }
@@ -57,19 +75,11 @@ class ArrivalController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'suplier_id' => 'required',
-            'arrival_date' => 'date|required',
-            'payment_date' => 'date',
-            'suplier_note_number' => '',
-            'invoice_number' => ''
-        ]);
-        
-        Arrival::create($validated);
+    public function store(ArrivalPostRequest $request)
+    {   
+        Arrival::create($request->all());
 
-        return redirect("/arrivals")->with("success", "Sikeres felvétel!");
+        return redirect("/arrivals")->with("success", "Successfull created!");
     }
 
     /**
@@ -99,7 +109,7 @@ class ArrivalController extends Controller
         $Brands = Brand::get();
         $Catalogs = Catalog::get();
 
-        return view('editarrival', compact('editArrival','Arrivalitems', 'Brands', 'Catalogs'));
+        return view('Arrival/editarrival', compact('editArrival','Arrivalitems', 'Brands', 'Catalogs'));
     }
 
     /**
@@ -122,11 +132,15 @@ class ArrivalController extends Controller
      */
     public function destroy(Arrival $arrival)
     {
-        $deleteArrivalItem = ArrivalItem::where('arrival_table_id', $arrival->arrival_id)->delete();
-        $deleteArrival = Arrival::findOrFail($arrival->arrival_id);
-        $deleteArrival->delete();
-        
-        return redirect("/arrivals")->with("success", "Sikeres törlés!");
+        if($arrival->arrival_status == 'PENDING'){
+            ArrivalItem::where('arrival_table_id', $arrival->uuid)->delete();
+            $deleteArrival = Arrival::findOrFail($arrival->arrival_id);
+            $deleteArrival->delete();
+
+        return redirect("/arrivals")->with("success", "Successfull deleted!");
+        }
+        else
+            return redirect("/arrivals")->with("error", "You can't do that!");
     }
 
     public function closeArrival(Request $request)
