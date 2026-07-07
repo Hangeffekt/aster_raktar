@@ -4,9 +4,24 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ArrivalItem;
+use App\Http\Requests\ArrivalItemPostRequest;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
 
-class ArrivalItemController extends Controller
+class ArrivalItemController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware(PermissionMiddleware::using('create arrival'), only: ['store']),
+            new Middleware(PermissionMiddleware::using('create arrival'), except: ['create','index','show','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('edit arrival'), only: ['update']),
+            new Middleware(PermissionMiddleware::using('edit arrival'), except: ['edit','index','show','create','store','destroy']),
+            new Middleware(PermissionMiddleware::using('delete arrival'), only: ['destroy']),
+            new Middleware(PermissionMiddleware::using('delete arrival'), except: ['index','create','show','store','edit','update']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      *
@@ -33,20 +48,11 @@ class ArrivalItemController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ArrivalItemPostRequest $request)
     {
-        dd($request->all());
-        $validated = $request->validate([
-            'arrival_table_id' => 'required',
-            'item_id' => 'required|numeric',
-            'net_price' => 'required|numeric',
-            'sale_price' => 'required|numeric',
-            'qty' => 'required|numeric'
-        ]);
+        ArrivalItem::create($request->all());
         
-        ArrivalItem::create($validated);
-        
-        return redirect()->back()->with("success", "Succesfull create!");
+        return redirect()->back()->with("success", "Successfull created!");
     }
 
     /**
@@ -74,20 +80,19 @@ class ArrivalItemController extends Controller
     /**
      * Update the specified resource in storage.
      *
+     * @param  \App\Models\ArrivalItem  $arrivalitem
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(ArrivalItem  $arrivalitem, ArrivalItemPostRequest $request)
     {
-        $validated = $request->validate([
-            'arrival_item_id' => 'required|numeric',
-            'net_price' => 'required|numeric',
-            'sale_price' => 'required|numeric',
-            'qty' => 'required|numeric'
+        ArrivalItem::where("arrival_item_id", $arrivalitem->arrival_item_id)->update([
+            'net_price' => $request->net_price,
+            'sale_price' => $request->sale_price,
+            'qty' => $request->qty,
         ]);
-        $arrival = ArrivalItem::where("arrival_item_id", $request->arrival_item_id)->update($validated);
 
-        return redirect()->back()->with("success", "Sikeres módosítás!");
+        return redirect()->back()->with("success", "Successfull updated!");
     }
 
     /**
@@ -101,6 +106,6 @@ class ArrivalItemController extends Controller
         $deleteItem = ArrivalItem::findOrFail($arrivalitem->arrival_item_id);
         $deleteItem->delete();
         
-        return redirect()->back()->with("success", "Sikeres törlés!");
+        return redirect()->back()->with("success", "Successfull deleted!");
     }
 }

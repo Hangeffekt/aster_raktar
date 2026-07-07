@@ -23,10 +23,11 @@
                     <input type="submit" value="Search" class="btn btn-success">
                 </form>
                 @if($editArrival->arrival_status == "PENDING")
-                <form action="{{ route('closeArrival') }}" method="post">
+                <form action="{{ route('arrivals.update', $editArrival->uuid) }}" method="post" class="mt-3">
+                    <h4>Close arrival</h4>
                     @csrf
+                    @method('PATCH')
                     <div class="mb-3">
-                        <input type="hidden" name="arrival_id" value="{{ $editArrival->uuid }}">
                         <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" name="closeNote">
                         <label class="form-check-label" for="flexSwitchCheckDefault">Close the note</label>
                         @error('closeNote')

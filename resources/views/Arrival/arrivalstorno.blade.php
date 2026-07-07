@@ -4,6 +4,7 @@
 
 @include("components.sideMenu")
 <div class="col-9">
+    <h4>Arrival storno</h4>
     @if(count($Transactions) != 0)
         <div class="col-12">
             <table class="table table-hover">
@@ -19,14 +20,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($Transactions as $Sale)
+                    @foreach($Transactions as $arrival)
                     <tr>
-                        <input type="hidden" name="product_id" value="{{ $Sale->id }}">
-                        <td>{!! $Sale->product->full_name !!}</td>
-                        <td>{{ $Sale->net_price }}</td>
-                        <td><input type="text" name="sale_price_{{ $Sale->id }}" class="form-control" value="{{ $Sale->net_price }}"></td>
-                        <td>{{ abs($Sale->qty) }}</td>
-                        <td><input type="text" name="qty_{{ $Sale->id }}" class="form-control" value="{{ abs($Sale->qty) }}"></td>
+                        <td>{!! $arrival->product->full_name !!}</td>
+                        <td>{{ $arrival->net_price }}</td>
+                        <td>
+                            <input type="text" name="sale_price_{{ $arrival->uuid }}" class="form-control" value="{{ $arrival->net_price }}"></td>
+                        <td>{{ abs($arrival->qty) }}</td>
+                        <td><input type="text" name="qty_{{ $arrival->uuid }}" class="form-control" value="{{ abs($arrival->qty) }}"></td>
                     </tr>
                     @endforeach
                 </tbody>

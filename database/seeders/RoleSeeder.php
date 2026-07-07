@@ -127,10 +127,8 @@ class RoleSeeder extends Seeder
 
         //storno arrival
         $permission = Permission::create(['name' => 'create storno_arrival']);
-        $permission = Permission::create(['name' => 'edit storno_arrival']);
-        $permission = Permission::create(['name' => 'delete storno_arrival']);
-        $rolemanager->givePermissionTo(['create storno_arrival', 'edit storno_arrival', 'delete storno_arrival']);
-        $roleStorekeeper->givePermissionTo(['create storno_arrival', 'edit storno_arrival', 'delete storno_arrival']);
+        $rolemanager->givePermissionTo(['create storno_arrival']);
+        $roleStorekeeper->givePermissionTo(['create storno_arrival']);
 
         $admin = User::first();
         $admin->assignRole('admin');

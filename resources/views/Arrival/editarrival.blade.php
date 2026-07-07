@@ -40,7 +40,7 @@
                                     </td>
                                     <td>
                                         @can('delete edit_arrival')
-                                        <form action="{{ route('arrivalitem.destroy', $Arrivalitem->arrival_item_id)}}" method="post">
+                                        <form action="{{ route('arrivalitem.destroy', $Arrivalitem->uuid)}}" method="post">
                                             @csrf
                                             @method('DELETE')
                                             <button class="btn btn-danger" type="submit">Delete</button>
@@ -54,10 +54,9 @@
                                 @can('edit edit_arrival')
                                     <tr class="collapse" id="editProduct{{ $Arrivalitem->uuid }}">
                                         <td colspan="6">
-                                            <form action="{{ route('arrivalitem.update', $Arrivalitem->arrival_item_id) }}" method="post">
+                                            <form action="{{ route('arrivalitem.update', $Arrivalitem->uuid) }}" method="post">
                                                 @csrf
                                                 @method('PATCH')
-                                                <input type="hidden" name="arrival_item_id" value="{{ $Arrivalitem->arrival_item_id }}">
                                                 <div class="row">
                                                     <div class="col">
                                                         <label for="">Net price</label>

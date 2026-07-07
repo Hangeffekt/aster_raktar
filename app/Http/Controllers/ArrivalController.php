@@ -16,13 +16,13 @@ use Illuminate\Routing\Controllers\Middleware;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use App\Http\Requests\ArrivalPostRequest;
 
-class ArrivalController extends Controller
+class ArrivalController extends Controller implements HasMiddleware
 {
     public static function middleware(): array
     {
         return [
-            new Middleware(PermissionMiddleware::using('show main_datas_arrivals'), only: ['index','show']),
-            new Middleware(PermissionMiddleware::using('show main_datas_arrivals'), except: ['create','store','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('show arrivals'), only: ['index','show']),
+            new Middleware(PermissionMiddleware::using('show arrivals'), except: ['create','store','edit','update','destroy']),
             new Middleware(PermissionMiddleware::using('create arrival'), only: ['create','store']),
             new Middleware(PermissionMiddleware::using('create arrival'), except: ['index','show','edit','update','destroy']),
             new Middleware(PermissionMiddleware::using('edit arrival'), only: ['edit','update']),
@@ -121,7 +121,30 @@ class ArrivalController extends Controller
      */
     public function update(Request $request, Arrival $arrival)
     {
-        //
+        $validated = $request->validate([
+            'closeNote' => 'required'
+        ]);
+
+        $sumOfNetPrice = 0;
+
+        //close items
+        $closeArrivalItems = ArrivalItem::where('arrival_table_id', $arrival->uuid)->get();
+        foreach($closeArrivalItems as $closeArrivalItem){
+
+            Transaction::create(['product_id' => $closeArrivalItem->item_id,
+                'type' => 'IN',
+                'inner_table_id' => $arrival->uuid,
+                'qty' => $closeArrivalItem->qty,
+                'status' => 'COMPLETED',
+                'net_price' => $closeArrivalItem->net_price,
+                'sale_price' => $closeArrivalItem->sale_price,]);
+        }
+
+        //close note
+        ArrivalItem::where("arrival_table_id", $arrival->uuid)->delete();
+        Arrival::where("arrival_id", $arrival->arrival_id)->update(["arrival_status"=>"COMPLETED"]);
+        
+        return redirect("/arrivals")->with("success", "Successfull close!");
     }
 
     /**
@@ -141,35 +164,5 @@ class ArrivalController extends Controller
         }
         else
             return redirect("/arrivals")->with("error", "You can't do that!");
-    }
-
-    public function closeArrival(Request $request)
-    {
-        $validated = $request->validate([
-            'closeNote' => 'required'
-        ]);
-
-        $sumOfNetPrice = 0;
-
-        //close items
-        $closeArrivalItems = ArrivalItem::where('arrival_table_id', $request->arrival_id)->get();
-        foreach($closeArrivalItems as $closeArrivalItem){
-        
-        $sumOfNetPrice += $closeArrivalItem->qty * $closeArrivalItem->net_price;
-
-        Transaction::create(['product_id' => $closeArrivalItem->item_id,
-            'type' => 'IN',
-            'inner_table_id' => $request->arrival_id,
-            'qty' => $closeArrivalItem->qty,
-            'status' => 'COMPLETED',
-            'net_price' => $closeArrivalItem->net_price,
-            'sale_price' => $closeArrivalItem->sale_price,]);
-        }
-
-        //close note
-        ArrivalItem::where("arrival_table_id", $request->arrival_id)->delete();
-        Arrival::where("uuid", $request->arrival_id)->update(["arrival_status"=>"COMPLETED", 'total_net_value' => $sumOfNetPrice]);
-        
-        return redirect("/arrivals")->with("success", "Succesfull close!");
     }
 }

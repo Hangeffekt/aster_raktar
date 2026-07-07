@@ -42,7 +42,7 @@
                             @elseif($Arrival->arrival_status == 'COMPLETED')
                                 <td><a class="btn btn-info edit_item" type="button" href="{{ route('arrivals.edit', $Arrival->uuid) }}">Info</a></td>
                                 <td>
-                                    @can('edit arrival')
+                                    @can('create storno_arrival')
                                         <a class="btn btn-danger edit_item" type="button" href="{{ route('arrivalstorno.edit', $Arrival->uuid) }}">Storno</a>
                                     @endcan
                                 </td>

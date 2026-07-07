@@ -8,9 +8,19 @@ use App\Models\Transaction;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
 
-class ArrivalStornoController extends Controller
+class ArrivalStornoController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware(PermissionMiddleware::using('create storno_arrival'), only: ['edit','update']),
+            new Middleware(PermissionMiddleware::using('create storno_arrival'), except: ['store','create','index','show','destroy'])
+        ];
+    }
     /**
      * Display a listing of the resource.
      *
@@ -80,6 +90,7 @@ class ArrivalStornoController extends Controller
      */
     public function update(Request $request, $id)
     {
+        dd($request->all());
         $newArrival = null;
         $oldSale = Arrival::where('uuid', $id)->first();
         Arrival::where('uuid', $id)->update(['arrival_status' => "STORNOED"]);
