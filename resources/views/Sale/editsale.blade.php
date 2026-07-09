@@ -24,9 +24,9 @@
                     <tr>
                         <td>{!! $Sale->product->full_name !!}</td>
                         <td>{{ $Sale->sale_price }}</td>
-                        <td>{{ $Sale->qty * -1 }}</td>
+                        <td>{{ abs($Sale->qty) }}</td>
                         <td>
-                            @php $total_value = $Sale->sale_price * $Sale->qty * -1 @endphp
+                            @php $total_value = $Sale->sale_price * abs($Sale->qty) @endphp
                             {{ $total_value }}
                         </td>
                         @if($Sale->status == "PENDING")

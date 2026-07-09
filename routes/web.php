@@ -50,6 +50,7 @@ Route::middleware(['auth'])->resource('supliers', SuplierController::class);
 Route::middleware(['auth'])->resource('taxes', TaxController::class);
 Route::middleware(['auth'])->resource('catalogs', CatalogController::class);
 Route::middleware(['auth'])->resource('shops', ShopController::class);
+Route::middleware(['auth'])->resource('paymenttypes', PaymentTypeController::class);
 Route::middleware(['auth'])->resource('products', ProductController::class);
 Route::middleware(['auth'])->resource('roles', RoleController::class);
 Route::middleware(['auth'])->resource('permissions', RoleHasPermissionsController::class);
@@ -60,7 +61,6 @@ Route::middleware(['auth'])->resource('modul-locations', ModulLocatoinController
 
 Route::middleware(['auth'])->resource('arrivals', ArrivalController::class);
 Route::middleware(['auth'])->resource('arrivalstorno', ArrivalStornoController::class);
-Route::middleware(['auth'])->post("arrivals/closearrival", [ArrivalController::class, "closeArrival"])->name("closeArrival");
 
 Route::middleware(['auth'])->resource('productsearch', ProductSearchController::class);
 
@@ -71,14 +71,10 @@ Route::middleware(['auth'])->post("productsearch/update", [ProductSearchControll
 Route::middleware(['auth'])->resource('arrivalitem', ArrivalItemController::class);
 
 Route::middleware(['auth'])->resource('sales', SaleController::class);
-
 Route::middleware(['auth'])->resource('cart', CartController::class);
 Route::middleware(['auth'])->resource('salestorno', SaleStornoController::class);
 
 Route::middleware(['auth'])->resource('transfer', TransferController::class);
 Route::middleware(['auth'])->resource('transferitem', TransferItemController::class);
 Route::middleware(['auth'])->resource('transferstorno', TransferStornoController::class);
-
-Route::middleware(['auth'])->resource('paymenttypes', PaymentTypeController::class);
-
 

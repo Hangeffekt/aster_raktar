@@ -17,6 +17,7 @@
                     <tr>
                         <th>Suplier name</th>
                         <th>Total net value</th>
+                        <th>Approved</th>
                         <th>Status</th>
                         <th>Created at</th>
                         <th>Updated at</th>
@@ -29,9 +30,11 @@
                     <tr>
                         <td>{{ $Arrival->suplier_name }}</td>
                         <td>{{ arrivalNetValue($Arrival->uuid, $Arrival->arrival_status) }}</td>
+                        <td>{{ $Arrival->name }}</td>
                         <td>{{ $Arrival->arrival_status }}</td>
                         <td>{{ $Arrival->created_at }}</td>
                         <td>{{ $Arrival->updated_at }}</td>
+                        
                             @if($Arrival->arrival_status == "PENDING")
                                 <td>
                                     @can('edit arrival')

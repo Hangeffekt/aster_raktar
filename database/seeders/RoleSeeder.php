@@ -130,6 +130,45 @@ class RoleSeeder extends Seeder
         $rolemanager->givePermissionTo(['create storno_arrival']);
         $roleStorekeeper->givePermissionTo(['create storno_arrival']);
 
+        //sale
+        $permission = Permission::create(['name' => 'create sale']);
+        $permission = Permission::create(['name' => 'edit sale']);
+        $permission = Permission::create(['name' => 'delete sale']);
+        $rolemanager->givePermissionTo(['create sale', 'edit sale', 'delete sale']);
+        $roleStorekeeper->givePermissionTo(['create sale', 'edit sale', 'delete sale']);
+        $roleStocker->givePermissionTo(['create sale', 'edit sale']);
+
+        //edit sale
+        $permission = Permission::create(['name' => 'create edit_sale']);
+        $permission = Permission::create(['name' => 'edit edit_sale']);
+        $permission = Permission::create(['name' => 'delete edit_sale']);
+        $rolemanager->givePermissionTo(['create edit_sale', 'edit edit_sale', 'delete edit_sale']);
+        $roleStorekeeper->givePermissionTo(['create edit_sale', 'edit edit_sale', 'delete edit_sale']);
+        $roleStocker->givePermissionTo(['create edit_sale', 'edit edit_sale', 'delete edit_sale']);
+
+        //storno sale
+        $permission = Permission::create(['name' => 'create storno_sale']);
+        $rolemanager->givePermissionTo(['create storno_sale']);
+
+        //transfer
+        $permission = Permission::create(['name' => 'create transfer']);
+        $permission = Permission::create(['name' => 'edit transfer']);
+        $permission = Permission::create(['name' => 'delete transfer']);
+        $rolemanager->givePermissionTo(['create transfer', 'edit transfer', 'delete transfer']);
+        $roleStorekeeper->givePermissionTo(['create transfer', 'edit transfer', 'delete transfer']);
+
+        //edit transfer
+        $permission = Permission::create(['name' => 'create edit_transfer']);
+        $permission = Permission::create(['name' => 'edit edit_transfer']);
+        $permission = Permission::create(['name' => 'delete edit_transfer']);
+        $rolemanager->givePermissionTo(['create edit_transfer', 'edit edit_transfer', 'delete edit_transfer']);
+        $roleStorekeeper->givePermissionTo(['create edit_transfer', 'edit edit_transfer', 'delete edit_transfer']);
+
+        //storno transfer
+        $permission = Permission::create(['name' => 'create storno_transfer']);
+        $rolemanager->givePermissionTo(['create storno_transfer']);
+        $roleStorekeeper->givePermissionTo(['create storno_transfer']);
+
         $admin = User::first();
         $admin->assignRole('admin');
         $roleadmin->syncPermissions(Permission::all());

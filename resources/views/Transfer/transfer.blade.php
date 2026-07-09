@@ -4,7 +4,11 @@
 
 @include("components.sideMenu")
 <div class="col-9">
-    <h4>Transfers</h4><a href="/transfer/create" class="btn btn-warning">New transfer</a>
+    <h4>Transfers</h4>
+    @can('create transfer')
+        <a href="/transfer/create" class="btn btn-warning">New transfer</a>
+    @endcan
+    @include("components.filters")
     @if(count($Transfers) != 0)
         <div class="col-12">
             <table class="table table-hover">
@@ -12,6 +16,7 @@
                     <tr>
                         <th>Suplier</th>
                         <th>Total value</th>
+                        <th>Approved</th>
                         <th>Status</th>
                         <th>Created at</th>
                         <th>Updated at</th>
@@ -29,14 +34,30 @@
                                 @endif
                             @endforeach
                         </td>
+                        <td>{{ $Transfer->name }}</td>
                         <td>{{ $Transfer->status }}</td>
                         <td>{{ $Transfer->created_at }}</td>
                         <td>{{ $Transfer->updated_at }}</td>
                             @if($Transfer->status == 'PENDING')
-                                <td><a class="btn btn-warning edit_item" type="button" href="{{ route('transfer.edit', $Transfer->uuid) }}">Edit transfer</a></td>
+                                <td>
+                                    @can('edit transfer')
+                                        <a class="btn btn-warning edit_item" type="button" href="{{ route('transfer.edit', $Transfer->uuid) }}">Edit transfer</a>
+                                    @endcan
+                                    @can('delete transfer')
+                                        <form action="{{ route('transfer.destroy', $Transfer->uuid)}}" method="post">
+                                            @csrf
+                                            @method ('DELETE')
+                                            <button class="btn btn-danger" type="submit">Delete</button>
+                                        </form>
+                                    @endcan
+                                </td>    
                             @elseif($Transfer->status == 'COMPLETED')
                                 <td><a class="btn btn-info edit_item" type="button" href="{{ route('transfer.edit', $Transfer->uuid) }}">Info</a></td>
-                                <td><a class="btn btn-danger edit_item" type="button" href="{{ route('transferstorno.edit', $Transfer->uuid) }}">Storno</a></td>
+                                <td>
+                                    @can('create storno_transfer')
+                                        <a class="btn btn-danger edit_item" type="button" href="{{ route('transferstorno.edit', $Transfer->uuid) }}">Storno</a>
+                                    @endcan
+                                </td>
                             @else
                                 <td><a class="btn btn-info edit_item" type="button" href="{{ route('transfer.edit', $Transfer->uuid) }}">Info</a></td>
                             @endif

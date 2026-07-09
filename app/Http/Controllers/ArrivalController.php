@@ -15,6 +15,7 @@ use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use App\Http\Requests\ArrivalPostRequest;
+use Illuminate\Support\Facades\Auth;
 
 class ArrivalController extends Controller implements HasMiddleware
 {
@@ -49,7 +50,8 @@ class ArrivalController extends Controller implements HasMiddleware
         $productPayments = Arrival::where("payment_date", "<=", $days7)->where("arrival_status",  "COMPLETED")->get();
         $Arrivals = DB::table('arrivals as a')
                     ->join('supliers as s', 's.suplier_id', '=', 'a.suplier_id')
-                    ->selectRaw('s.suplier_name, a.arrival_id, a.arrival_status, a.uuid, a.created_at, a.updated_at')
+                    ->leftJoin('users as u', 'a.approves', '=', 'u.id')
+                    ->selectRaw('u.name, s.suplier_name, a.arrival_id, a.arrival_status, a.uuid, a.created_at, a.updated_at')
                     ->whereBetween("a.created_at", [$dFrom, $dTo])
                     ->paginate(20);
         $Supliers = Suplier::get();
@@ -142,7 +144,7 @@ class ArrivalController extends Controller implements HasMiddleware
 
         //close note
         ArrivalItem::where("arrival_table_id", $arrival->uuid)->delete();
-        Arrival::where("arrival_id", $arrival->arrival_id)->update(["arrival_status"=>"COMPLETED"]);
+        Arrival::where("arrival_id", $arrival->arrival_id)->update(["arrival_status"=>"COMPLETED", "approves" => Auth::id()]);
         
         return redirect("/arrivals")->with("success", "Successfull close!");
     }

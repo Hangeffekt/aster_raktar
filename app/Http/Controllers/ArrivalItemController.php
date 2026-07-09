@@ -14,12 +14,12 @@ class ArrivalItemController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware(PermissionMiddleware::using('create arrival'), only: ['store']),
-            new Middleware(PermissionMiddleware::using('create arrival'), except: ['create','index','show','edit','update','destroy']),
-            new Middleware(PermissionMiddleware::using('edit arrival'), only: ['update']),
-            new Middleware(PermissionMiddleware::using('edit arrival'), except: ['edit','index','show','create','store','destroy']),
-            new Middleware(PermissionMiddleware::using('delete arrival'), only: ['destroy']),
-            new Middleware(PermissionMiddleware::using('delete arrival'), except: ['index','create','show','store','edit','update']),
+            new Middleware(PermissionMiddleware::using('create edit_sale'), only: ['store']),
+            new Middleware(PermissionMiddleware::using('create edit_sale'), except: ['create','index','show','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('edit edit_sale'), only: ['update']),
+            new Middleware(PermissionMiddleware::using('edit edit_sale'), except: ['edit','index','show','create','store','destroy']),
+            new Middleware(PermissionMiddleware::using('delete edit_sale'), only: ['destroy']),
+            new Middleware(PermissionMiddleware::using('delete edit_sale'), except: ['index','create','show','store','edit','update']),
         ];
     }
     /**

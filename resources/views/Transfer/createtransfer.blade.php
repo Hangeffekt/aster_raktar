@@ -9,8 +9,8 @@
         <select name="suplier_id" id="" class="form-select">
             <option>-- Please choose --</option>
             @foreach($Supliers as $Suplier)
-                <option value="{{ $Suplier->suplier_id }}"
-                @if(old('suplier_id') && old('suplier_id') == $Suplier->suplier_id)
+                <option value="{{ $Suplier->uuid }}"
+                @if(old('suplier_id') && old('suplier_id') == $Suplier->uuid)
                     selected
                 @endif
                 >{{ $Suplier->suplier_name }}</option>

@@ -9,11 +9,24 @@ use App\Models\Sale;
 use App\Models\SaleStatus;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
-use Monolog\LogRecord;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
+use App\Http\Requests\CartPostRequest;
 
-class CartController extends Controller
+class CartController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware(PermissionMiddleware::using('create arrival'), only: ['store']),
+            new Middleware(PermissionMiddleware::using('create arrival'), except: ['create','index','show','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('edit arrival'), only: ['update']),
+            new Middleware(PermissionMiddleware::using('edit arrival'), except: ['edit','index','show','create','store','destroy']),
+            new Middleware(PermissionMiddleware::using('delete arrival'), only: ['destroy']),
+            new Middleware(PermissionMiddleware::using('delete arrival'), except: ['index','create','show','store','edit','update']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      *
@@ -21,12 +34,7 @@ class CartController extends Controller
      */
     public function index()
     {
-        $cartItems = Cart::where('user_id', 1)->paginate(50);
-        $Brands = Brand::get();
-        $Catalogs = Catalog::get();
-        $SaleStatus = SaleStatus::get();
-
-        return view('cart', compact('cartItems', 'Brands', 'Catalogs', 'SaleStatus'));
+        //
     }
 
     /**
@@ -45,21 +53,15 @@ class CartController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CartPostRequest $request)
     {
-        $validated = $request->validate([
-            'inner_table_id' => 'required',
-            'product_id' => 'required|numeric',
-            'qty' => 'required|numeric',
-            'sale_price' => 'required|numeric'
-        ]);
         
-        Transaction::create(['inner_table_id' => $validated['inner_table_id'],
-                                        'qty' => $validated['qty'] * -1,
-                                        'sale_price' => $validated['sale_price'],
-                                        'product_id' => $validated['product_id'],
+        Transaction::create(['inner_table_id' => $request['inner_table_id'],
+                                        'qty' => $request['qty'] * -1,
+                                        'sale_price' => $request['sale_price'],
+                                        'product_id' => $request['product_id'],
                                         'type' => 'OUT']);
-        return redirect("/sales/".$validated['inner_table_id']."/edit")->with("success", "Sikeres felvétel!");
+        return redirect()->back()->with("success", "Successfull created!");
     }
 
     /**
@@ -81,9 +83,7 @@ class CartController extends Controller
      */
     public function edit(Cart $cart)
     {
-        $cartItems = Transaction::where('type', 'OUT')->where('inner_table_id', $cart)->paginate(50);
-
-        return view('cart', compact('cartItems'));
+        //
     }
 
     /**
@@ -93,16 +93,12 @@ class CartController extends Controller
      * @param  \App\Models\Transaction  $cart
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Transaction $cart)
+    public function update(CartPostRequest $request, Transaction $cart)
     {
-        $validated = $request->validate([
-            'sale_price' => 'required|numeric',
-            'qty' => 'required|numeric'
-        ]);
-        Transaction::where("id", $cart->id)->update(['qty' => $validated['qty'] * -1,
-                                            'sale_price' => $validated['sale_price'],]);
+        Transaction::where("id", $cart->id)->update(['qty' => $request['qty'] * -1,
+                                            'sale_price' => $request['sale_price'],]);
 
-        return redirect("/sales/".$cart->inner_table_id."/edit")->with("success", "Sikeres módosítás!");
+        return redirect()->back()->with("success", "Successfull updated!");
     }
 
     /**
@@ -116,7 +112,7 @@ class CartController extends Controller
         $deleteCart = Transaction::findOrFail($cart->id);
         $deleteCart->delete();
         
-        return redirect("/sales/".$cart->inner_table_id."/edit")->with("success", "Sikeres törlés!");
+        return redirect()->back()->with("success", "Successfull deleted!");;
     }
 
     public function closeCart(Request $request)

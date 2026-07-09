@@ -160,10 +160,18 @@
                             <option value="{{$status->uuid }}">{{$status->payment_type}}</option>
                         @endforeach
                         </select>
+                        @error('payment_type')
+                            <div class="alert alert-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3">
-                        <input type="submit" value="Close" class="btn btn-success">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" name="closeNote">
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Close the note</label>
+                        @error('closeNote')
+                            <div class="alert alert-danger">{{ $message }}</div>
+                        @enderror
                     </div>
+                    <input type="submit" value="Close" class="btn btn-success">
                 </form>
             @endif
         </div>
@@ -173,6 +181,13 @@
         <form action="{{ route('salestorno.update', $Sale->uuid) }}" method="post">
             @csrf
             @method("PATCH")
+            <div class="mb-3">
+                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" name="closeNote">
+                <label class="form-check-label" for="flexSwitchCheckDefault">Close the note</label>
+                @error('closeNote')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+            </div>
             <input type="submit" value="Close" class="btn btn-success">
     </div>
     @elseif (Request::is('arrivalstorno/*/edit'))
@@ -181,6 +196,13 @@
         <form action="{{ route('arrivalstorno.update', $Arrival->uuid) }}" method="post">
             @csrf
             @method("PATCH")
+            <div class="mb-3">
+                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" name="closeNote">
+                <label class="form-check-label" for="flexSwitchCheckDefault">Close the note</label>
+                @error('closeNote')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+            </div>
             <input type="submit" value="Close" class="btn btn-success">
     </div>
     @elseif (Request::is('transferstorno/*/edit'))
@@ -189,6 +211,13 @@
         <form action="{{ route('transferstorno.update', $Transfer->uuid) }}" method="post">
             @csrf
             @method("PATCH")
+            <div class="mb-3">
+                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" name="closeNote">
+                <label class="form-check-label" for="flexSwitchCheckDefault">Close the note</label>
+                @error('closeNote')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+            </div>
             <input type="submit" value="Close" class="btn btn-success">
     </div>
     @elseif (Request::is('cart'))
@@ -211,16 +240,18 @@
                 @endif
                 </div>
             </div>
-            <form action="{{ route('closeCart') }}" method="post">
-                @csrf
-                <label for="sale_status">Sale status</label>
-                <select name="sale_status" class="form-select">
-                @foreach($SaleStatus as $status)
-                    <option value="{{$status->sale_status_id }}">{{$status->sale_status_name}}</option>
-                @endforeach
-                </select>
-                <input type="submit" value="Close" class="btn btn-success">
-            </form>
+            @can('edit sale')
+                <form action="{{ route('closeCart') }}" method="post">
+                    @csrf
+                    <label for="sale_status">Sale status</label>
+                    <select name="sale_status" class="form-select">
+                    @foreach($SaleStatus as $status)
+                        <option value="{{$status->sale_status_id }}">{{$status->sale_status_name}}</option>
+                    @endforeach
+                    </select>
+                    <input type="submit" value="Close" class="btn btn-success">
+                </form>
+            @endcan
         </div>
     @elseif (Request::is('transfer'))
         <div class="card-body">

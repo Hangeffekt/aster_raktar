@@ -7,9 +7,19 @@ use Illuminate\Http\Request;
 use App\Models\Sale;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
 
-class SaleStornoController extends Controller
+class SaleStornoController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware(PermissionMiddleware::using('create storno_sale'), only: ['edit','update']),
+            new Middleware(PermissionMiddleware::using('create storno_sale'), except: ['store','create','index','show','destroy'])
+        ];
+    }
     /**
      * Display a listing of the resource.
      *
@@ -71,7 +81,7 @@ class SaleStornoController extends Controller
             ->with(['product.brand', 'product.catalog'])
             ->paginate();
         
-        return view('editsalestorno', compact('Transactions', 'Sale'));
+        return view('Sale/editsalestorno', compact('Transactions', 'Sale'));
     }
 
     /**

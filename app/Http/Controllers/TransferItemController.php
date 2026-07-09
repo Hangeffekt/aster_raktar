@@ -6,9 +6,24 @@ use App\Http\Controllers\Controller;
 use App\Models\Transaction;
 use App\Models\Transfer;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
+use App\Http\Requests\TransferItemPostRequest;
 
-class TransferItemController extends Controller
+class TransferItemController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware(PermissionMiddleware::using('create edit_transfer'), only: ['store']),
+            new Middleware(PermissionMiddleware::using('create edit_transfer'), except: ['create','index','show','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('edit edit_transfer'), only: ['update']),
+            new Middleware(PermissionMiddleware::using('edit edit_transfer'), except: ['edit','index','show','create','store','destroy']),
+            new Middleware(PermissionMiddleware::using('delete edit_transfer'), only: ['destroy']),
+            new Middleware(PermissionMiddleware::using('delete edit_transfer'), except: ['index','create','show','store','edit','update']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      *
@@ -35,21 +50,15 @@ class TransferItemController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TransferItemPostRequest $request)
     {
-        $validated = $request->validate([
-            'inner_table_id' => 'required',
-            'product_id' => 'required|numeric',
-            'qty' => 'required|numeric',
-            'sale_price' => 'required|numeric'
-        ]);
 
-        Transaction::create(['inner_table_id' => $validated['inner_table_id'],
-                                        'qty' => $validated['qty'] * -1,
-                                        'sale_price' => $validated['sale_price'],
-                                        'product_id' => $validated['product_id'],
+        Transaction::create(['inner_table_id' => $request['inner_table_id'],
+                                        'qty' => $request['qty'] * -1,
+                                        'sale_price' => $request['sale_price'],
+                                        'product_id' => $request['product_id'],
                                         'type' => 'TRANSFER']);
-        return redirect("/transfer/".$validated['inner_table_id']."/edit")->with("success", "Succesfull create!");
+        return redirect()->back()->with("success", "Successfull created!");
     }
 
     /**
@@ -81,17 +90,12 @@ class TransferItemController extends Controller
      * @param  \App\Models\Transaction  $transferitem
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Transaction $transferitem)
+    public function update(TransferItemPostRequest $request, Transaction $transferitem)
     {
-        $validated = $request->validate([
-            'sale_price' => 'required|numeric',
-            'qty' => 'required|numeric'
-        ]);
-        
-        Transaction::where("id", $transferitem->id)->update(['qty' => $validated['qty'] * -1,
-                                            'sale_price' => $validated['sale_price'],]);
+        Transaction::where("id", $transferitem->id)->update(['qty' => $request['qty'] * -1,
+                                            'sale_price' => $request['sale_price'],]);
 
-        return redirect("/transfer/".$transferitem->inner_table_id."/edit")->with("success", "Succesfull update!");
+        return redirect()->back()->with("success", "Successfull updated!");
     }
 
     /**
@@ -105,6 +109,6 @@ class TransferItemController extends Controller
         $deleteTransfer = Transaction::findOrFail($transferitem->id);
         $deleteTransfer->delete();
         
-        return redirect("/transfer/".$transferitem->inner_table_id."/edit")->with("success", "Succesfull delete!");
+        return redirect()->back()->with("success", "Successfull deleted!");
     }
 }

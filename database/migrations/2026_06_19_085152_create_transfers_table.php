@@ -16,11 +16,13 @@ return new class extends Migration
         Schema::create('transfers', function (Blueprint $table) {
             $table->id('transfer_id');
             $table->uuid('uuid');
+            $table->integer('approves');
             $table->foreignId('suplier_id');
             $table->enum('status', ['PENDING', 'COMPLETED', 'STORNOED', 'STORNO'])->default('PENDING');
             $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable();
             $table->timestamp('created_at')->useCurrent();
 
+            $table->foreign('approves')->references('id')->on('users');
             $table->foreign('suplier_id')->references('suplier_id')->on('supliers');
 
             $table->index('transfer_id');

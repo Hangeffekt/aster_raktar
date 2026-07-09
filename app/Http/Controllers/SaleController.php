@@ -10,9 +10,26 @@ use App\Models\Transaction;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
+use Illuminate\Support\Facades\Auth;
 
-class SaleController extends Controller
+class SaleController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware(PermissionMiddleware::using('show sales'), only: ['index','show']),
+            new Middleware(PermissionMiddleware::using('show sales'), except: ['create','store','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('create sale'), only: ['store']),
+            new Middleware(PermissionMiddleware::using('create sale'), except: ['create','index','show','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('edit sale'), only: ['edit','update']),
+            new Middleware(PermissionMiddleware::using('edit sale'), except: ['index','show','create','store','destroy']),
+            new Middleware(PermissionMiddleware::using('delete sale'), only: ['destroy']),
+            new Middleware(PermissionMiddleware::using('delete sale'), except: ['index','create','show','store','edit','update']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      *
@@ -26,8 +43,9 @@ class SaleController extends Controller
         $dToInput = $request->input('date-to') ?? Carbon::now()->format('Y-m-d');
         $dTo = Carbon::parse($dToInput)->endOfDay()->toDateTimeString();
         $Sales = DB::table('sales as s')
-                ->selectRaw('s.uuid, s.sale_status, t.payment_type, s.created_at, s.updated_at')
+                ->selectRaw('u.name, s.uuid, s.sale_status, t.payment_type, s.created_at, s.updated_at')
                 ->join('payment_types as t', 't.payment_id', '=', 's.payment_type')
+                ->leftJoin('users as u', 's.approves', '=', 'u.id')
                 ->whereBetween("s.created_at", [$dFrom, $dTo])
                 ->orderBy('s.created_at', 'asc')
                 ->paginate(20);
@@ -54,8 +72,9 @@ class SaleController extends Controller
                 ->where('t.type', 'OUT')
                 ->groupBy('s.payment_type')
                 ->get();
+        $PaymentTypes = PaymentType::get();
 
-        return view('sales', compact('Sales', 'Groups', 'Today', 'Cashes'));
+        return view('Sale/sales', compact('Sales', 'Groups', 'Today', 'Cashes', 'PaymentTypes'));
     }
 
     /**
@@ -65,7 +84,7 @@ class SaleController extends Controller
      */
     public function create()
     {
-        
+        //
     }
 
     /**
@@ -114,7 +133,7 @@ class SaleController extends Controller
         $Catalogs = Catalog::get();
         $SaleStatus = PaymentType::get();
 
-        return view('editsale', compact('Transactions', 'Sale', 'Brands', 'Catalogs', 'SaleStatus'));
+        return view('Sale/editsale', compact('Transactions', 'Sale', 'Brands', 'Catalogs', 'SaleStatus'));
     }
 
     /**
@@ -127,6 +146,11 @@ class SaleController extends Controller
      */
     public function update(Request $request, Sale $sale)
     {
+        $validated = $request->validate([
+            'closeNote' => 'required',
+            'payment_type' => 'required|uuid|exists:payment_types,uuid',
+        ]);
+
         $FinishTransactions = Transaction::where('inner_table_id', $sale->uuid)
             ->where('type', 'OUT')
             ->get();
@@ -202,7 +226,7 @@ class SaleController extends Controller
         }
 
         $payment_id = PaymentType::where('uuid', $request->payment_type)->first();
-        Sale::where('sale_id', $sale->sale_id)->update(['payment_type' => $payment_id->payment_id, 'sale_status' => 'COMPLETED']);
+        Sale::where('sale_id', $sale->sale_id)->update(['payment_type' => $payment_id->payment_id, 'sale_status' => 'COMPLETED', 'approves' => Auth::id()]);
         return redirect()->back()->with("success", "Successful save!");
     }
 

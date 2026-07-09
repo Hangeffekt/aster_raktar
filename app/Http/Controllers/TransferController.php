@@ -11,9 +11,26 @@ use App\Models\Catalog;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
+use Illuminate\Support\Facades\Auth;
 
-class TransferController extends Controller
+class TransferController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware(PermissionMiddleware::using('show transfers'), only: ['index','show']),
+            new Middleware(PermissionMiddleware::using('show transfers'), except: ['create','store','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('create transfer'), only: ['store']),
+            new Middleware(PermissionMiddleware::using('create transfer'), except: ['create','index','show','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('edit transfer'), only: ['edit','update']),
+            new Middleware(PermissionMiddleware::using('edit transfer'), except: ['index','show','create','store','destroy']),
+            new Middleware(PermissionMiddleware::using('delete transfer'), only: ['destroy']),
+            new Middleware(PermissionMiddleware::using('delete transfer'), except: ['index','create','show','store','edit','update']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      *
@@ -27,7 +44,8 @@ class TransferController extends Controller
         $dTo = Carbon::parse($dToInput)->endOfDay()->toDateTimeString();
         $Transfers = DB::table('transfers as t')
                     ->join('supliers as s', 's.suplier_id', '=', 't.suplier_id')
-                    ->selectRaw('s.suplier_name, t.status, t.uuid, t.created_at, t.updated_at')
+                    ->leftJoin('users as u', 't.approves', '=', 'u.id')
+                    ->selectRaw('u.name, s.suplier_name, t.status, t.uuid, t.created_at, t.updated_at')
                     ->whereBetween("t.created_at", [$dFrom, $dTo]) 
                     ->paginate(20);
 
@@ -62,12 +80,13 @@ class TransferController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'suplier_id' => 'required'
+            'suplier_id' => 'required|uuid|exists:supliers,uuid'
         ]);
         
-        $transfer = Transfer::create($validated);
+        $suplierId = Suplier::where('uuid', $validated['suplier_id'])->first();
+        $transfer = Transfer::create(['suplier_id' => $suplierId->suplier_id]);
 
-        return redirect("/transfer/".$transfer->uuid."/edit")->with("success", "Sikeres felvétel!");
+        return redirect("/transfer/".$transfer->uuid."/edit")->with("success", "Successfull created!");
     }
 
     /**
@@ -90,9 +109,9 @@ class TransferController extends Controller
     public function edit(Transfer $transfer)
     {
         $Transfer = DB::table('transfers as t')
-        ->where('t.transfer_id', '=', $transfer->transfer_id)
-        ->select('t.transfer_id', 't.uuid', 't.status', 't.created_at', 't.updated_at')
-        ->first();
+            ->where('t.transfer_id', '=', $transfer->transfer_id)
+            ->select('t.transfer_id', 't.uuid', 't.status', 't.created_at', 't.updated_at')
+            ->first();
 
         $Transactions = Transaction::where('inner_table_id', $transfer->uuid)
             ->where('type', 'TRANSFER')
@@ -188,7 +207,7 @@ class TransferController extends Controller
         
         }
 
-        Transfer::where('transfer_id', $transfer->transfer_id)->update(['status' => 'COMPLETED']);
+        Transfer::where('transfer_id', $transfer->transfer_id)->update(['status' => 'COMPLETED', 'approves' => Auth::id()]);
         return redirect()->back()->with("success", "Successful save!");
     }
 

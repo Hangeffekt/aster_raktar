@@ -24,9 +24,9 @@
                     <tr>
                         <td>{!! $Transfer->product->full_name !!}</td>
                         <td>{{ $Transfer->sale_price }}</td>
-                        <td>{{ $Transfer->qty * -1 }}</td>
+                        <td>{{ abs($Transfer->qty) }}</td>
                         <td>
-                            @php $total_value = $Transfer->sale_price * $Transfer->qty * -1 @endphp
+                            @php $total_value = $Transfer->sale_price * abs($Transfer->qty) @endphp
                             {{ $total_value }}
                         </td>
                         @if($Transfer->status == "PENDING")

@@ -19,7 +19,6 @@ if (!function_exists('currentStock')) {
                     ->where('type', 'SETTLE')
                     ->where('product_id', $product_id);
             })
-            ->where('status', '!=', 'PENDING')
             ->select('id', 'type', 'qty', 'sale_price', 'net_price', 'created_at')
             ->orderBy('created_at', 'ASC')
             ->get();
