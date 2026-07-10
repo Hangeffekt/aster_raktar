@@ -198,7 +198,7 @@
             @method("PATCH")
             <div class="mb-3">
                 <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" name="closeNote">
-                <label class="form-check-label" for="flexSwitchCheckDefault">Close the note</label>
+                <label class="form-check-label" for="flexSwitchCheckDefault">Close arrival</label>
                 @error('closeNote')
                     <div class="alert alert-danger">{{ $message }}</div>
                 @enderror

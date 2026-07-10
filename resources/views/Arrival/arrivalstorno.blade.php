@@ -25,9 +25,17 @@
                         <td>{!! $arrival->product->full_name !!}</td>
                         <td>{{ $arrival->net_price }}</td>
                         <td>
-                            <input type="text" name="sale_price_{{ $arrival->uuid }}" class="form-control" value="{{ $arrival->net_price }}"></td>
+                            <input type="text" name="net_price_{{ $arrival->uuid }}" class="form-control" value="{{ $arrival->net_price }}">
+                            @error('net_price_{{ $arrival->uuid }}')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                            @enderror
+                        </td>
                         <td>{{ abs($arrival->qty) }}</td>
-                        <td><input type="text" name="qty_{{ $arrival->uuid }}" class="form-control" value="{{ abs($arrival->qty) }}"></td>
+                        <td><input type="text" name="qty_{{ $arrival->uuid }}" class="form-control" value="{{ abs($arrival->qty) }}">
+                            @error('qty_{{ $arrival->uuid }}')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                            @enderror
+                        </td>
                     </tr>
                     @endforeach
                 </tbody>

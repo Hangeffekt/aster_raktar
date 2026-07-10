@@ -9,6 +9,7 @@ use App\Models\Brand;
 use App\Models\Suplier;
 use App\Models\Catalog;
 use App\Models\Transaction;
+use App\Models\SystemAlert;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -176,6 +177,8 @@ class TransferController extends Controller implements HasMiddleware
             }
             
             $saleQty = $FinishTransaction->qty * -1;
+            $last_price = 0;
+            $product_id = null;
             
             foreach ($fifoPrices as $key => $batch) {
                 if ($saleQty <= 0)
@@ -195,14 +198,23 @@ class TransferController extends Controller implements HasMiddleware
                     $takeAmount = $batch['qty'];
 
                     Transaction::where('id', $FinishTransaction->id)->update(['net_price' => $fifoPrices[$key]['net_price']]);
-                    
+                    $last_price = $fifoPrices[$key]['net_price'];
+                    $product_id = $FinishTransaction->id;
+
                     $fifoPrices[$key]['qty'] = 0;
                     $saleQty -= $takeAmount;
                 }
             }
 
             if ($saleQty > 0) {
-                // Itt kezelheted a hibát (pl. hibaüzenet, vagy a maradékot beírod az aktuális legfrissebb áron)
+                Transaction::where('id', $FinishTransaction->id)->update(['net_price' => $last_price]);
+
+                SystemAlert::create([
+                    'level' => 'error',
+                    'message' => 'negativ stock',
+                    'product_uuid' => $product_id,
+                    'trigger_by' => Auth::id()
+                ]);
             }
         
         }

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Spatie\Permission\Middleware\PermissionMiddleware;
+use App\Http\Requests\ArrvalStornoPostRequest;
 
 class SaleStornoController extends Controller implements HasMiddleware
 {
@@ -91,39 +92,42 @@ class SaleStornoController extends Controller implements HasMiddleware
      * @param  string  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ArrvalStornoPostRequest $request, $id)
     {
         $newSale = null;
+
+        //set stornoed the old arrival and create new storno arrival
         $oldSale = Sale::where('uuid', $id)->first();
         Sale::where('uuid', $id)->update(['sale_status' => "STORNOED"]);
         $stornoSale = Sale::create(['payment_type' => $oldSale->payment_type,
                             'sale_status' => 'STORNO']);
-        $Transactions = Transaction::where('inner_table_id', $id)->get();
 
-        foreach($Transactions as $Transaction){
-            Transaction::where('id', $Transaction->id)->update(['status' => 'STORNOED']);
-            Transaction::where('inner_table_id', array_slice(explode(',', $Transaction->reference), 0, 0))->first();
-            Transaction::create(['product_id' => $Transaction->product_id,
+        foreach($request->storno_items as $Key => $Transaction){
+
+            //set transaction stornoed and create new storno transaction
+            Transaction::where('uuid', $Key)->update(['status' => 'STORNOED']);
+            $oldTransaction = Transaction::where('uuid', $Key)->first();
+            Transaction::create(['product_id' => $oldTransaction->product_id,
                         'inner_table_id' => $stornoSale->uuid,
-                        'type' => $oldSale->type,
-                        'qty' => $Transaction->qty * -1,
-                        'sale_price' => $Transaction->sale_price,
+                        'type' => $oldTransaction->type,
+                        'qty' => $oldTransaction->qty * -1,
+                        'sale_price' => $oldTransaction->sale_price,
                         'status' => 'STORNO']);
 
-            if(isset($request['qty_'.$Transaction->id]) && $request['qty_'.$Transaction->id] > 0 )
+            if($Transaction['sale_price'] != $oldTransaction->sale_price || $Transaction['qty'] != $oldTransaction->qty )
             {
                 if($newSale == null)
                     $newSale = Sale::create(['sale_status' => 'COMPLETED',
-                    'customer_code' => $oldSale->customer_code,
-                    'payment_type' => $oldSale->payment_type]);
+                        'customer_code' => $oldSale->customer_code,
+                        'payment_type' => $oldSale->payment_type]);
 
-                Transaction::create(['product_id' => $Transaction->product_id,
-                            'qty' => $request['qty_'.$Transaction->id] * -1,
-                            'net_price' => $Transaction->net_price,
-                            'sale_price' => $request['sale_price_'.$Transaction->id],
-                            'inner_table_id' => $newSale->uuid,
-                            'type' => 'OUT',
-                            'status' => 'COMPLETED']);
+                Transaction::create(['product_id' => $oldTransaction->product_id,
+                    'qty' => $Transaction['qty'] * -1,
+                    'net_price' => $Transaction['net_price'],
+                    'sale_price' => $Transaction['sale_price'],
+                    'inner_table_id' => $newSale->uuid,
+                    'type' => 'OUT',
+                    'status' => 'COMPLETED']);
             }
         }
 

@@ -7,6 +7,7 @@ use App\Models\Brand;
 use App\Models\Catalog;
 use App\Models\PaymentType;
 use App\Models\Transaction;
+use App\Models\SystemAlert;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -194,6 +195,8 @@ class SaleController extends Controller implements HasMiddleware
             }
             
             $saleQty = $FinishTransaction->qty * -1;
+            $last_price = 0;
+            $product_id = null;
             
             foreach ($fifoPrices as $key => $batch) {
                 if ($saleQty <= 0)
@@ -213,6 +216,8 @@ class SaleController extends Controller implements HasMiddleware
                     $takeAmount = $batch['qty'];
 
                     Transaction::where('id', $FinishTransaction->id)->update(['net_price' => $fifoPrices[$key]['net_price']]);
+                    $last_price = $fifoPrices[$key]['net_price'];
+                    $product_id = $FinishTransaction->id;
                     
                     $fifoPrices[$key]['qty'] = 0;
                     $saleQty -= $takeAmount;
@@ -220,7 +225,14 @@ class SaleController extends Controller implements HasMiddleware
             }
 
             if ($saleQty > 0) {
-                Transaction::where('id', $FinishTransaction->id)->update(['status' => 'COMPLETED', 'reference' => 'NOTSET']);
+                Transaction::where('id', $FinishTransaction->id)->update(['net_price' => $last_price]);
+
+                SystemAlert::create([
+                    'level' => 'error',
+                    'message' => 'negativ stock',
+                    'product_uuid' => $product_id,
+                    'trigger_by' => Auth::id()
+                ]);
             }
         
         }
