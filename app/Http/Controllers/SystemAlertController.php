@@ -13,7 +13,7 @@ class SystemAlertController extends Controller
      */
     public function index()
     {
-        //
+        return view('System/systemalerts', $Systemalerts = Systemalert::get());
     }
 
     /**
@@ -35,9 +35,11 @@ class SystemAlertController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(SystemAlert $systemAlert)
+    public function show()
     {
-        //
+        $Systemalerts = SystemAlert::limit(5)->orderBy('created_at', 'desc')->get();
+
+        return response()->json(['Systemalerts' => $Systemalerts]);
     }
 
     /**

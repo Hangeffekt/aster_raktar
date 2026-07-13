@@ -110,8 +110,9 @@ class TransferController extends Controller implements HasMiddleware
     public function edit(Transfer $transfer)
     {
         $Transfer = DB::table('transfers as t')
+            ->join('supliers as s', 's.suplier_id', '=', 't.suplier_id')
             ->where('t.transfer_id', '=', $transfer->transfer_id)
-            ->select('t.transfer_id', 't.uuid', 't.status', 't.created_at', 't.updated_at')
+            ->select('s.suplier_name','t.transfer_id', 't.uuid', 't.status', 't.created_at', 't.updated_at')
             ->first();
 
         $Transactions = Transaction::where('inner_table_id', $transfer->uuid)
@@ -178,11 +179,11 @@ class TransferController extends Controller implements HasMiddleware
             
             $saleQty = $FinishTransaction->qty * -1;
             $last_price = 0;
-            $product_id = null;
             
             foreach ($fifoPrices as $key => $batch) {
                 if ($saleQty <= 0)
                     break;
+                    
 
                 if ($batch['qty'] <= 0)
                     continue;
@@ -199,20 +200,19 @@ class TransferController extends Controller implements HasMiddleware
 
                     Transaction::where('id', $FinishTransaction->id)->update(['net_price' => $fifoPrices[$key]['net_price']]);
                     $last_price = $fifoPrices[$key]['net_price'];
-                    $product_id = $FinishTransaction->id;
 
                     $fifoPrices[$key]['qty'] = 0;
                     $saleQty -= $takeAmount;
                 }
             }
-
+            
             if ($saleQty > 0) {
-                Transaction::where('id', $FinishTransaction->id)->update(['net_price' => $last_price]);
+                Transaction::where('id', $FinishTransaction->id)->update(['net_price' => $last_price, 'status' => 'COMPLETED']);
 
                 SystemAlert::create([
                     'level' => 'error',
                     'message' => 'negativ stock',
-                    'product_uuid' => $product_id,
+                    'product_uuid' => $FinishTransaction->id,
                     'trigger_by' => Auth::id()
                 ]);
             }

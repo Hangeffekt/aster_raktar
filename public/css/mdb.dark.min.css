@@ -765,3 +765,167 @@ h1, h2, h3, h4, h5 {
             0 0 35px rgba(0,217,255,.2);
     }
 }
+
+.notification-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.notification-btn {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 42px;
+    height: 42px;
+
+    border-radius: 50%;
+    text-decoration: none;
+
+    color: #00d9ff;
+    background: rgba(0, 217, 255, 0.08);
+
+    border: 1px solid rgba(0, 217, 255, 0.25);
+
+    transition: all .3s ease;
+}
+
+.notification-btn:hover {
+    color: #fff;
+
+    box-shadow:
+        0 0 10px rgba(0,217,255,.4),
+        0 0 20px rgba(0,217,255,.2);
+
+    transform: translateY(-2px);
+}
+
+.notification-btn i {
+    font-size: 1.3rem;
+}
+
+/* =====================
+   BADGE
+   ===================== */
+
+.notification-badge {
+    position: absolute;
+
+    top: -6px;
+    right: -6px;
+
+    min-width: 22px;
+    height: 22px;
+
+    padding: 0 6px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    border-radius: 50px;
+
+    background: #ff3366;
+    color: #fff;
+
+    border: 2px solid #08101d;
+
+    box-shadow:
+        0 0 10px rgba(255,51,102,.8),
+        0 0 20px rgba(255,51,102,.4);
+
+    animation: badgePulse 1.8s infinite;
+}
+
+/* =====================
+   PULSE ANIMATION
+   ===================== */
+
+@keyframes badgePulse {
+
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.12);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+
+}
+
+/* =====================
+   DROPDOWN MENU
+   ===================== */
+
+.dropdown-menu {
+    background: rgba(10, 15, 30, 0.98);
+    backdrop-filter: blur(15px);
+
+    border: 1px solid rgba(0, 217, 255, 0.25);
+    border-radius: 12px;
+
+    box-shadow:
+        0 0 20px rgba(0, 217, 255, 0.15),
+        0 0 40px rgba(0, 217, 255, 0.05);
+
+    padding: .5rem;
+}
+
+/* Elemek */
+
+.dropdown-item {
+    color: #d8f8ff;
+    border-radius: 8px;
+
+    transition: all .25s ease;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background: rgba(0, 217, 255, 0.1);
+    color: #00d9ff;
+
+    text-shadow: 0 0 8px rgba(0, 217, 255, 0.4);
+}
+
+/* Aktív elem */
+
+.dropdown-item.active,
+.dropdown-item:active {
+    background: rgba(0, 217, 255, 0.2);
+    color: #00d9ff;
+}
+
+/* Elválasztó */
+
+.dropdown-divider {
+    border-top-color: rgba(0, 217, 255, 0.15);
+}
+
+/* Fejléc */
+
+.dropdown-header {
+    color: #00d9ff;
+    font-weight: 600;
+}
+
+/* Szöveg */
+
+.dropdown-item-text {
+    color: #d8f8ff;
+}
+
+/* Bootstrap 5 */
+
+.dropdown-menu[data-bs-popper] {
+    margin-top: .5rem;
+}

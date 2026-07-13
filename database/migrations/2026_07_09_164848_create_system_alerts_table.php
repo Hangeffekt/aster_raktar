@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('message'); 
             $table->uuid('product_uuid')->nullable();
             $table->string('trigger_by'); //user id
+            $table->bool('solved');
+            $table->string('solved_by');//user id
             $table->timestamps();
         });
     }

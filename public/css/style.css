@@ -1,3 +1,7 @@
 .permission-table th {
     word-break: break-all;
 }
+
+.notification-badge {
+    display: none;
+}

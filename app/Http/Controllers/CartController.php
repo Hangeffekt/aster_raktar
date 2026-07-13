@@ -112,7 +112,7 @@ class CartController extends Controller implements HasMiddleware
         $deleteCart = Transaction::findOrFail($cart->id);
         $deleteCart->delete();
         
-        return redirect()->back()->with("success", "Successfull deleted!");;
+        return redirect()->back()->with("success", "Successfull deleted!");
     }
 
     public function closeCart(Request $request)

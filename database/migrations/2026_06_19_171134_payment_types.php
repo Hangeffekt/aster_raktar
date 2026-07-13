@@ -17,8 +17,14 @@ return new class extends Migration
             $table->id('payment_id');
             $table->uuid('uuid');
             $table->string('payment_type');
-            $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable();
-            $table->timestamp('created_at')->useCurrent();
+            $table->timestamps();
+        });
+
+        Schema::create('adjustment_types', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('uuid');
+            $table->string('adjustment_type');
+            $table->timestamps();
         });
     }
 

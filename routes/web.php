@@ -24,6 +24,9 @@ use App\Http\Controllers\ModulLocatoinController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RoleHasPermissionsController;
+use App\Http\Controllers\SystemAlertController;
+use App\Http\Controllers\InventoryAdjustmentController;
+use App\Http\Controllers\InventoryAdjustmentItemController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,6 +57,7 @@ Route::middleware(['auth'])->resource('paymenttypes', PaymentTypeController::cla
 Route::middleware(['auth'])->resource('products', ProductController::class);
 Route::middleware(['auth'])->resource('roles', RoleController::class);
 Route::middleware(['auth'])->resource('permissions', RoleHasPermissionsController::class);
+Route::middleware(['auth'])->resource('systemalerts', SystemAlertController::class);
 
 Route::middleware(['auth'])->resource('zones', ZoneController::class);
 Route::middleware(['auth'])->resource('moduls', ModulController::class);
@@ -61,6 +65,8 @@ Route::middleware(['auth'])->resource('modul-locations', ModulLocatoinController
 
 Route::middleware(['auth'])->resource('arrivals', ArrivalController::class);
 Route::middleware(['auth'])->resource('arrivalstorno', ArrivalStornoController::class);
+Route::middleware(['auth'])->resource('inventory-adjustments', InventoryAdjustmentController::class);
+Route::middleware(['auth'])->resource('inventory-adjustment-item', InventoryAdjustmentItemController::class);
 
 Route::middleware(['auth'])->resource('productsearch', ProductSearchController::class);
 

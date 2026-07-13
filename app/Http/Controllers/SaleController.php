@@ -97,7 +97,7 @@ class SaleController extends Controller implements HasMiddleware
     public function store(Request $request)
     {
         $Sale = Sale::create();
-        return redirect("/sales/".$Sale->uuid."/edit")->with("success", "Successful create!");
+        return redirect("/sales/".$Sale->uuid."/edit")->with("success", "Successfull created!");
     }
 
     /**
@@ -196,7 +196,6 @@ class SaleController extends Controller implements HasMiddleware
             
             $saleQty = $FinishTransaction->qty * -1;
             $last_price = 0;
-            $product_id = null;
             
             foreach ($fifoPrices as $key => $batch) {
                 if ($saleQty <= 0)
@@ -217,7 +216,7 @@ class SaleController extends Controller implements HasMiddleware
 
                     Transaction::where('id', $FinishTransaction->id)->update(['net_price' => $fifoPrices[$key]['net_price']]);
                     $last_price = $fifoPrices[$key]['net_price'];
-                    $product_id = $FinishTransaction->id;
+                    
                     
                     $fifoPrices[$key]['qty'] = 0;
                     $saleQty -= $takeAmount;
@@ -225,12 +224,12 @@ class SaleController extends Controller implements HasMiddleware
             }
 
             if ($saleQty > 0) {
-                Transaction::where('id', $FinishTransaction->id)->update(['net_price' => $last_price]);
+                Transaction::where('id', $FinishTransaction->id)->update(['net_price' => $last_price, 'status' => 'COMPLETED']);
 
                 SystemAlert::create([
                     'level' => 'error',
                     'message' => 'negativ stock',
-                    'product_uuid' => $product_id,
+                    'product_uuid' => $FinishTransaction->id,
                     'trigger_by' => Auth::id()
                 ]);
             }

@@ -1,0 +1,73 @@
+@extends('index')
+
+@section("content")
+
+@include("components.sideMenu")
+<div class="col-9">
+    @if($Adjustment->status != 'COMPLETED')
+        @include("components.productSearch")
+    @endif
+    @if(count($Transactions) != 0)
+        <div class="col-12">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Product name</th>
+                        <th>Net value</th>
+                        <th>Qty</th>
+                        <th>Total value</th>
+                        <th></th><th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($Transactions as $Sale)
+                    <tr>
+                        <td>{!! $Sale->product->full_name !!}</td>
+                        <td>{{ $Sale->sale_price }}</td>
+                        <td>{{ abs($Sale->qty) }}</td>
+                        <td>
+                            @php $total_value = $Sale->sale_price * abs($Sale->qty) @endphp
+                            {{ $total_value }}
+                        </td>
+                        @if($Sale->status == "PENDING")
+                        <td><button class="btn btn-warning edit_item" type="button" data-bs-toggle="collapse" data-bs-target="#editProduct{{ $Sale->id }}" aria-expanded="false" aria-controls="collapseExample">Edit item</button></td>
+                        <td>
+                            @if($Sale->status != "COMPLETED" )
+                            <form action="{{ route('inventory-adjustment-item.destroy', $Sale->uuid)}}" method="post">
+                                @csrf
+                                @method ('DELETE')
+                                <button class="btn btn-danger" type="submit">Delete</button>
+                            </form>
+                            @endif
+                        </td>
+                        @else
+                            <td colspan="2"></td>
+                        @endif
+                    </tr>
+                    <tr class="collapse" id="editProduct{{ $Sale->id }}">
+                        <td colspan="6">
+                            <form action="{{ route('inventory-adjustment-item.update', $Sale->uuid) }}" method="post">
+                                @csrf
+                                @method('PATCH')
+                                <div class="row">
+                                    <div class="col">
+                                        <label for="">Qty</label>
+                                        <input type="text" name="qty" class="form-control" value="{{ abs($Sale->qty) }}">
+                                    </div>
+                                    <input type="submit" value="Save" class="mt-3 btn btn-success">
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        {{ $Transactions->onEachSide(4)->links() }}
+    @else
+        <div class="col-12 alert alert-info">There are no products!</div>
+    @endif
+</div>
+    
+            
+@endsection

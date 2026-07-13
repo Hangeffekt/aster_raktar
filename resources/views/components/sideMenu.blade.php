@@ -259,6 +259,8 @@
         </div>
     @elseif (Request::is('transfer/*/edit'))
         <div class="mb-3">
+            <h5>Suplier</h5>
+            {{ $Transfer->suplier_name }}
             <h5>Status</h5>
             {{ $Transfer->status ?? "" }}
             <h5>Created at</h5>

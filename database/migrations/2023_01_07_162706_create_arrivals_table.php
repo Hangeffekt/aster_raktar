@@ -22,7 +22,6 @@ return new class extends Migration
             $table->date('payment_date')->nullable();
             $table->string('suplier_note_number')->nullable();
             $table->string('invoice_number')->nullable();
-            $table->integer('total_net_value')->nullable();
             $table->enum('arrival_status', ['PENDING', 'COMPLETED', 'CANCELLED', 'STORNOED', 'STORNO'])->default('PENDING');
             $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable();
             $table->timestamp('created_at')->useCurrent();

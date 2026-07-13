@@ -27,7 +27,7 @@ return new class extends Migration
 
             $table->foreignId('product_id');
             
-            $table->enum('type', ['IN', 'OUT', 'SETTLE', 'TRANSFER']);
+            $table->enum('type', ['IN', 'OUT', 'SETTLE', 'TRANSFER', 'ADJUSTMENT']);
             $table->string('document_type')->nullable(); 
             $table->uuid('inner_table_id')->nullable();
             $table->enum('status', ['PENDING', 'COMPLETED', 'CANCELLED', 'STORNOED', 'STORNO'])->default('PENDING');
