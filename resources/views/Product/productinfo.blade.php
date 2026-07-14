@@ -53,6 +53,8 @@
                         <a href="/sales/{{ $Transaction->inner_table_id }}/edit" class="btn btn-info">Info</a></td>
                     @elseif($Transaction->type == "TRANSFER")
                         <a href="/transfer/{{ $Transaction->inner_table_id }}/edit" class="btn btn-info">Info</a></td>
+                    @elseif($Transaction->type == "ADJUSTMENT")
+                        <a href="/inventory-adjustments/{{ $Transaction->inner_table_id }}/edit" class="btn btn-info">Info</a></td>
                     @endif
                 </td>
             </tr>

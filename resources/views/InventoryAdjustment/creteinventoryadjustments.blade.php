@@ -4,10 +4,10 @@
 
 <form action="{{ route('inventory-adjustments.store') }}" method="post" class="col-xl-3 col-md-6 col-sm-12">
 @csrf
-    <h4>Create arrival</h4>
+    <h4>Create adjustment</h4>
     <div class="form-group">
-        <label for="">Suplier name</label>
-        <select name="suplier_uuid" id="" class="form-select">
+        <label for="">Adjustment type</label>
+        <select name="adjustment_uuid" id="" class="form-select">
             <option>-- Kérjük válasszon --</option>
             @foreach($AdjustmentTypes as $AdjustmentType)
                 <option value="{{ $AdjustmentType->uuid }}"

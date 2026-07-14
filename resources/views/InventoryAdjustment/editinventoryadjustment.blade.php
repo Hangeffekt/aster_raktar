@@ -23,10 +23,10 @@
                     @foreach($Transactions as $Sale)
                     <tr>
                         <td>{!! $Sale->product->full_name !!}</td>
-                        <td>{{ $Sale->sale_price }}</td>
-                        <td>{{ abs($Sale->qty) }}</td>
+                        <td>{{ $Sale->net_price }}</td>
+                        <td>{{ $Sale->qty * -1 }}</td>
                         <td>
-                            @php $total_value = $Sale->sale_price * abs($Sale->qty) @endphp
+                            @php $total_value = $Sale->net_price * $Sale->qty * -1 @endphp
                             {{ $total_value }}
                         </td>
                         @if($Sale->status == "PENDING")
@@ -52,7 +52,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <label for="">Qty</label>
-                                        <input type="text" name="qty" class="form-control" value="{{ abs($Sale->qty) }}">
+                                        <input type="text" name="qty" class="form-control" value="{{ $Sale->qty }}">
                                     </div>
                                     <input type="submit" value="Save" class="mt-3 btn btn-success">
                                 </div>

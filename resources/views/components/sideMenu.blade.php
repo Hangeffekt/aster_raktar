@@ -275,5 +275,30 @@
                 </form>
             @endif
         </div>
+    @elseif (Request::is('inventory-adjustments/*/edit'))
+        <div class="mb-3">
+            <h5>Suplier</h5>
+            {{ $Adjustment->adjustment_type }}
+            <h5>Status</h5>
+            {{ $Adjustment->status ?? "" }}
+            <h5>Created at</h5>
+            {{ $Adjustment->created_at ?? "" }}
+            <h5>Updated at</h5>
+            {{ $Adjustment->updated_at ?? "" }}
+            @if($Adjustment->status == 'PENDING')
+                <form action="{{ route('inventory-adjustments.update', $Adjustment->uuid) }}" method="post">
+                    @method('PATCH')
+                    @csrf
+                    <div class="mb-3">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" name="closeNote">
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Close the note</label>
+                        @error('closeNote')
+                            <div class="alert alert-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <input type="submit" value="Close" class="btn btn-success">
+                </form>
+            @endif
+        </div>
     @endif
 </div>

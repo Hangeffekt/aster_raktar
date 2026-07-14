@@ -8,6 +8,7 @@ use App\Models\ArrivalItem;
 use App\Models\Brand;
 use App\Models\Catalog;
 use App\Models\Transaction;
+use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -15,6 +16,7 @@ use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use App\Http\Requests\ArrivalPostRequest;
+
 use Illuminate\Support\Facades\Auth;
 
 class ArrivalController extends Controller implements HasMiddleware
@@ -140,6 +142,8 @@ class ArrivalController extends Controller implements HasMiddleware
                 'status' => 'COMPLETED',
                 'net_price' => $closeArrivalItem->net_price,
                 'sale_price' => $closeArrivalItem->sale_price,]);
+
+            Product::where('product_id', $closeArrivalItem->item_id)->update(['net_price' => $closeArrivalItem->net_price]);
         }
 
         //close note

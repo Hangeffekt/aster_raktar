@@ -16,6 +16,7 @@
                 <thead>
                     <tr>
                         <th>Total net value</th>
+                        <th>Adjustment type</th>
                         <th>Approved</th>
                         <th>Status</th>
                         <th>Created at</th>
@@ -28,6 +29,7 @@
                     @foreach($Adjustments as $Adjustment)
                     <tr>
                         <td>{{ arrivalNetValue($Adjustment->uuid, $Adjustment->status) }}</td>
+                        <td>{{ $Adjustment->adjustment_type }}</td>
                         <td>{{ $Adjustment->name }}</td>
                         <td>{{ $Adjustment->status }}</td>
                         <td>{{ $Adjustment->created_at }}</td>
@@ -41,7 +43,7 @@
                                 </td>
                                 <td></td>
                             @else
-                                <td><a class="btn btn-info edit_item" type="button" href="{{ route('arrivals.edit', $Adjustment->uuid) }}">Info</a></td>
+                                <td><a class="btn btn-info edit_item" type="button" href="{{ route('inventory-adjustments.edit', $Adjustment->uuid) }}">Info</a></td>
                                 <td></td>
                             @endif
                     </tr>

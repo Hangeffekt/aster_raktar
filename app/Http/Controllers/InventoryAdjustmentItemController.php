@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
-use App\Http\Requests\InventoryAdjustmentPostRequest;
+use App\Http\Requests\InventoryAdjustmentItemPostRequest;
 
 class InventoryAdjustmentItemController extends Controller
 {
@@ -28,11 +28,12 @@ class InventoryAdjustmentItemController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(InventoryAdjustmentPostRequest $request)
+    public function store(InventoryAdjustmentItemPostRequest $request)
     {
         Transaction::create(['inner_table_id' => $request['inner_table_id'],
-                                        'qty' => $request['qty'],
+                                        'qty' => $request['qty'] * -1,
                                         'product_id' => $request['product_id'],
+                                        'net_price' => $request['net_price'],
                                         'type' => 'ADJUSTMENT']);
         
         return redirect()->back()->with("success", "Successfull created!");
@@ -61,9 +62,9 @@ class InventoryAdjustmentItemController extends Controller
      * @param  \App\Models\Transaction  $inventory_adjustment_item;
      * @return \Illuminate\Http\Response
      */
-    public function update(InventoryAdjustmentPostRequest $request, Transaction $inventory_adjustment_item)
+    public function update(InventoryAdjustmentItemPostRequest $request, Transaction $inventory_adjustment_item)
     {
-        Transaction::where("id", $inventory_adjustment_item->id)->update(['qty' => $request['qty']]);
+        Transaction::where("id", $inventory_adjustment_item->id)->update(['qty' => $request['qty'] * -1]);
 
         return redirect()->back()->with("success", "Successfull updated!");
     }

@@ -10,6 +10,7 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\ProductPostRequest;
+use App\Http\Requests\ProductFilterGetRequest;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Spatie\Permission\Middleware\PermissionMiddleware;
@@ -34,20 +35,19 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(ProductFilterGetRequest $request)
     {
-        $query = Product::query();
-
-        if ($request->filled('product_name')) {
-            $query->where('product_name', 'like', '%' . $request->product_name . '%');
-        }
-
-        if ($request->filled('brand_id')) {
-            $query->where('brand_id', $request->brand_id);
-        }
+        $query = Product::query()
+            ->OfBrand($request['brand_id'])
+            ->OfTax($request['tax_id'])
+            ->OfCatalog($request['catalog_id'])
+            ->OfName($request['product_name'])
+            ->OfEan($request['ean'])
+            ->with(['brand', 'catalog', 'tax'])
+            ->get();
 
         return view('Product/products', [
-            'Products' => Product::with(['brand', 'catalog', 'tax'])->get(),
+            'Products' => $query,
             'Brands' => Brand::get(),
             'Taxes' => Tax::get(),
             'Catalogs' => Catalog::get()
@@ -144,8 +144,7 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        $deleteProduct = Product::findOrFail($product->product_id);
-        $deleteProduct->delete();
+        $deleteProduct = Product::findOrFail($product->product_id)->delete();
         
         return redirect("/products")->with("success", "Succesfull deleted!");
     }

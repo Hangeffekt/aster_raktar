@@ -4,8 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
-use App\Models\Product;
+use Illuminate\Support\Facades\DB;
 
 class InventoryAdjustmentPostRequest extends FormRequest
 {
@@ -24,30 +23,15 @@ class InventoryAdjustmentPostRequest extends FormRequest
      */
     public function rules(): array
     {
-        $adjustmentItemId = $this->route('inventory_adjustment_item')?->id ?? $this->route('inventory_adjustment_item');
-
         return [
-            'inner_table_id' => ['nullable',
-                Rule::requiredIf(function () use ($adjustmentItemId) {
-                    return ($adjustmentItemId == null) ?? true;
-                }),'uuid',
-                'exists:inventory_adjustments,uuid'],
-            'product_id' => ['nullable',
-                Rule::requiredIf(function () use ($adjustmentItemId) {
-                    return ($adjustmentItemId == null) ?? true;
-                }),
-                'uuid',
-                'exists:products,uuid'],
-            'qty' => 'required|numeric'
+            'adjustment_uuid' => 'required|uuid|exists:adjustment_types,uuid'
         ];
     }
 
     protected function passedValidation(): void
     {
-        if($this->product_id){
-            $productId = Product::where('uuid', $this->product_id)->first();
-            $this->merge(['product_id' => $productId->product_id]);
-        }
-        
+        $adjustmentId = DB::table('adjustment_types')->where('uuid', $this->adjustment_uuid)->first();
+        $this->merge(['adjustmentId' => $adjustmentId->id]);
+        $this->request->remove('suplier_uuid');
     }
 }

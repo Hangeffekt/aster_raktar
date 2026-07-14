@@ -5,10 +5,11 @@
         <a class="nav-link active" aria-current="page" href="#">Kezdőlap</a>
           @can('show arrivals')<li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Dropdown
+              Stock
             </a>
             <ul class="dropdown-menu">
-              @can('show arrivals')<a class="dropdown-item" href="/arrivals">Arrival</a>@endcan
+              @can('show arrivals')<li><a class="dropdown-item" href="/arrivals">Arrival</a></li>@endcan
+              @can('show transfers')<li><a class="dropdown-item" href="/transfer">Transfer</a></li>@endcan
               <li><a class="dropdown-item" href="/inventory-adjustments">Inventory adjustment</a></li>
               <li><a class="dropdown-item" href="#">Stocktake</a></li>
             </ul>
@@ -16,7 +17,6 @@
         @endcan
         
         @can('show sales')<a class="nav-link" href="/sales">Sale</a>@endcan
-        @can('show transfers')<a class="nav-link" href="/transfer">Transfer</a>@endcan
         @can('show main_datas')<a class="nav-link" href="/products">Main datas</a>@endcan
         @can('show arrivals')<a class="nav-link" href="">Finance</a>@endcan
       </div>
