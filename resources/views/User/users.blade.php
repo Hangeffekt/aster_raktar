@@ -7,6 +7,7 @@
     <div class="col-12">
         <h4>Users</h4>
         @can('create user')<a href="/users/create" class="btn btn-warning">New user</a>@endcan
+        @include("components.filters")
     </div>
 
     @if(count($Users) != 0)
@@ -33,6 +34,7 @@
                     @endforeach
                 </tbody>
             </table>
+            {{ $Users->onEachSide(4)->links() }}
         </div>
     @else
         <div class="col-12 alert alert-info">There are no users!</div>

@@ -55,7 +55,7 @@ class ArrivalController extends Controller implements HasMiddleware
                     ->leftJoin('users as u', 'a.approves', '=', 'u.id')
                     ->selectRaw('u.name, s.suplier_name, a.arrival_id, a.arrival_status, a.uuid, a.created_at, a.updated_at')
                     ->whereBetween("a.created_at", [$dFrom, $dTo])
-                    ->paginate(20);
+                    ->paginate(10);
         $Supliers = Suplier::get();
 
         return view('Arrival/arrivals', compact('Arrivals','notCloseds', 'productArrivals', 'productPayments', 'Supliers'));
@@ -107,9 +107,9 @@ class ArrivalController extends Controller implements HasMiddleware
     {
         $editArrival = Arrival::findOrFail($arrival->arrival_id) ?? [];
         if(!empty($editArrival) && $editArrival->arrival_status == "PENDING")
-            $Arrivalitems = ArrivalItem::where('arrival_table_id', $arrival->uuid)->with(['product'])->paginate(50);
+            $Arrivalitems = ArrivalItem::where('arrival_table_id', $arrival->uuid)->with(['product'])->paginate(10);
         else if(!empty($editArrival))
-            $Arrivalitems = Transaction::where(['inner_table_id' => $arrival->uuid, "type" => "IN"])->with(['product'])->paginate(50);
+            $Arrivalitems = Transaction::where(['inner_table_id' => $arrival->uuid, "type" => "IN"])->with(['product'])->paginate(10);
         $Brands = Brand::get();
         $Catalogs = Catalog::get();
 

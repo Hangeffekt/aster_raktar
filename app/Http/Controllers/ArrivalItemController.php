@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\ArrivalItem;
 use App\Http\Requests\ArrivalItemPostRequest;
 use Illuminate\Routing\Controllers\HasMiddleware;

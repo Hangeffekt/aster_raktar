@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Builder;
 
 class User extends Authenticatable
 {
@@ -42,4 +43,15 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    //filter scopes
+    protected function scopeOfName(Builder $query, ?string $name): Builder
+    {
+        return $name ? $query->whereLike('name', '%'.$name.'%') : $query;
+    }
+
+    protected function scopeOfEmail(Builder $query, ?string $email): Builder
+    {
+        return $email ? $query->whereLike('email', '%'.$email.'%') : $query;
+    }
 }

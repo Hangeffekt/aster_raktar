@@ -6,7 +6,7 @@
 <div class="col-9">
     <div class="col-12">
         <h4>Inventory adjustments</h4>
-        @can('create arrival')<a href="/inventory-adjustments/create" class="btn btn-warning">New adjustment</a>@endcan
+        @can('create adjustment')<a href="/inventory-adjustments/create" class="btn btn-warning">New adjustment</a>@endcan
         @include("components.filters")
     </div>
 
@@ -37,7 +37,7 @@
                         
                             @if($Adjustment->status == "PENDING")
                                 <td>
-                                    @can('edit arrival')
+                                    @can('edit adjustment')
                                         <a href="{{ route('inventory-adjustments.edit', $Adjustment->uuid)}}" class="btn btn-warning">Edit</a>
                                     @endcan    
                                 </td>

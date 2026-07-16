@@ -32,7 +32,7 @@ class BrandController extends Controller implements HasMiddleware
     {
         //
         return view('Brand/brands', [
-            'Brands' => Brand::get()
+            'Brands' => Brand::paginate(10)
         ]);
     }
 

@@ -31,7 +31,7 @@ class CatalogController extends Controller implements HasMiddleware
     public function index()
     {
         return view('Catalog/catalogs', [
-            'Catalogs' => Catalog::get()
+            'Catalogs' => Catalog::paginate(10)
         ]);
     }
 

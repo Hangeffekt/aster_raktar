@@ -4,11 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
-use Illuminate\Http\Request;
 use App\Http\Requests\InventoryAdjustmentItemPostRequest;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
 
-class InventoryAdjustmentItemController extends Controller
+class InventoryAdjustmentItemController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware(PermissionMiddleware::using('create edit_sale'), only: ['store']),
+            new Middleware(PermissionMiddleware::using('create edit_sale'), except: ['create','index','show','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('edit edit_sale'), only: ['update']),
+            new Middleware(PermissionMiddleware::using('edit edit_sale'), except: ['edit','index','show','create','store','destroy']),
+            new Middleware(PermissionMiddleware::using('delete edit_sale'), only: ['destroy']),
+            new Middleware(PermissionMiddleware::using('delete edit_sale'), except: ['index','create','show','store','edit','update']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */

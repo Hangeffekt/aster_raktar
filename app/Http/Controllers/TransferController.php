@@ -48,7 +48,7 @@ class TransferController extends Controller implements HasMiddleware
                     ->leftJoin('users as u', 't.approves', '=', 'u.id')
                     ->selectRaw('u.name, s.suplier_name, t.status, t.uuid, t.created_at, t.updated_at')
                     ->whereBetween("t.created_at", [$dFrom, $dTo]) 
-                    ->paginate(20);
+                    ->paginate(10);
 
         $Groups = DB::table('transactions')
                 ->selectRaw('inner_table_id, SUM(sale_price * qty * -1) as total_sum')
@@ -118,7 +118,7 @@ class TransferController extends Controller implements HasMiddleware
         $Transactions = Transaction::where('inner_table_id', $transfer->uuid)
             ->where('type', 'TRANSFER')
             ->with(['product.brand', 'product.catalog'])
-            ->paginate();
+            ->paginate(10);
 
         $Brands = Brand::get();
         $Catalogs = Catalog::get();

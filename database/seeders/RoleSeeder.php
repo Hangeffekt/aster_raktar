@@ -23,7 +23,9 @@ class RoleSeeder extends Seeder
 
         //menu bar
         $permission = Permission::create(['name' => 'show dashboard']);
+        $permission = Permission::create(['name' => 'show stocks']);
         $permission = Permission::create(['name' => 'show arrivals']);
+        $permission = Permission::create(['name' => 'show adjustments']);
         $permission = Permission::create(['name' => 'show sales']);
         $permission = Permission::create(['name' => 'show transfers']);
         $permission = Permission::create(['name' => 'show main_datas']);
@@ -42,12 +44,12 @@ class RoleSeeder extends Seeder
         $permission = Permission::create(['name' => 'show main_datas_permissions']);
 
         //set emnu permissions to roles
-        $rolemanager->givePermissionTo(['show dashboard', 'show arrivals','show sales','show transfers','show main_datas','show main_datas_products',
+        $rolemanager->givePermissionTo(['show dashboard','show stocks','show adjustments','show arrivals', 'show sales','show transfers','show main_datas','show main_datas_products',
         'show main_datas_catalogs','show main_datas_shop','show main_datas_taxes','show main_datas_supliers','show main_datas_brands','show main_datas_payment_types',
         'show main_datas_users','show main_datas_roles','show main_datas_permissions']);
-        $roleStorekeeper->givePermissionTo(['show dashboard', 'show arrivals','show sales','show transfers','show main_datas','show main_datas_products',
+        $roleStorekeeper->givePermissionTo(['show dashboard','show stocks','show adjustments','show arrivals','show sales','show transfers','show main_datas','show main_datas_products',
         'show main_datas_users']);
-        $roleStocker->givePermissionTo(['show dashboard', 'show arrivals','show sales','show main_datas','show main_datas_products',
+        $roleStocker->givePermissionTo(['show dashboard','show arrivals','show sales','show main_datas','show main_datas_products',
         'show main_datas_users']);
 
         //brand
@@ -124,6 +126,20 @@ class RoleSeeder extends Seeder
         $permission = Permission::create(['name' => 'delete edit_arrival']);
         $rolemanager->givePermissionTo(['create edit_arrival', 'edit edit_arrival', 'delete edit_arrival']);
         $roleStorekeeper->givePermissionTo(['create edit_arrival', 'edit edit_arrival', 'delete edit_arrival']);
+ 
+        //adjustment
+        $permission = Permission::create(['name' => 'create adjustment']);
+        $permission = Permission::create(['name' => 'edit adjustment']);
+        $permission = Permission::create(['name' => 'delete adjustment']);
+        $rolemanager->givePermissionTo(['create adjustment', 'edit adjustment', 'delete adjustment']);
+        $roleStorekeeper->givePermissionTo(['create adjustment', 'edit adjustment', 'delete adjustment']);
+
+        //edit adjustment
+        $permission = Permission::create(['name' => 'create edit_adjustment']);
+        $permission = Permission::create(['name' => 'edit edit_adjustment']);
+        $permission = Permission::create(['name' => 'delete edit_adjustment']);
+        $rolemanager->givePermissionTo(['create edit_adjustment', 'edit edit_adjustment', 'delete edit_adjustment']);
+        $roleStorekeeper->givePermissionTo(['create edit_adjustment', 'edit edit_adjustment', 'delete edit_adjustment']);
 
         //storno arrival
         $permission = Permission::create(['name' => 'create storno_arrival']);

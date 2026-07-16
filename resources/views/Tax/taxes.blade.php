@@ -37,6 +37,7 @@
                     @endforeach
                 </tbody>
             </table>
+            {{ $Taxes->onEachSide(4)->links() }}
         </div>
     @else
         <div class="col-12 alert alert-info">There are no taxes!</div>

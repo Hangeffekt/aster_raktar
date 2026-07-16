@@ -21,6 +21,7 @@
     <h5>Ean</h5>
     {{ $Product->ean }}
 </div>
+@include("components.filters")
 <div class="col-12">
     <table class="table table-hover">
         <thead>
@@ -61,6 +62,7 @@
             @endforeach
         </tbody>
     </table>
+    {{ $History->withQueryString()->onEachSide(4)->links() }}
 </div>
             
 @endsection

@@ -3,14 +3,14 @@
   <div class="container-fluid">
       <div class="navbar-nav">
         <a class="nav-link active" aria-current="page" href="#">Kezdőlap</a>
-          @can('show arrivals')<li class="nav-item dropdown">
+          @can('show stocks')<li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Stock
             </a>
             <ul class="dropdown-menu">
               @can('show arrivals')<li><a class="dropdown-item" href="/arrivals">Arrival</a></li>@endcan
               @can('show transfers')<li><a class="dropdown-item" href="/transfer">Transfer</a></li>@endcan
-              <li><a class="dropdown-item" href="/inventory-adjustments">Inventory adjustment</a></li>
+              @can('show adjustments')<li><a class="dropdown-item" href="/inventory-adjustments">Inventory adjustment</a></li>@endcan
               <li><a class="dropdown-item" href="#">Stocktake</a></li>
             </ul>
           </li>

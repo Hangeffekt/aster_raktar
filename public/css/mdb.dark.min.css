@@ -929,3 +929,82 @@ h1, h2, h3, h4, h5 {
 .dropdown-menu[data-bs-popper] {
     margin-top: .5rem;
 }
+
+/* =====================
+   PAGINATION
+   ===================== */
+
+.pagination {
+    gap: 4px;
+}
+
+/* Alap link */
+
+.page-link {
+    background: rgba(15, 23, 42, 0.9);
+    color: #00d9ff;
+
+    border: 1px solid rgba(0, 217, 255, 0.25);
+
+    transition: all .3s ease;
+}
+
+/* Hover */
+
+.page-link:hover {
+    background: rgba(0, 217, 255, 0.12);
+    color: #ffffff;
+
+    border-color: #00d9ff;
+
+    box-shadow:
+        0 0 10px rgba(0, 217, 255, 0.3);
+}
+
+/* Focus */
+
+.page-link:focus {
+    color: #ffffff;
+
+    border-color: #00d9ff;
+
+    box-shadow:
+        0 0 0 .15rem rgba(0, 217, 255, .25),
+        0 0 15px rgba(0, 217, 255, .25);
+}
+
+/* Aktív oldal */
+
+.page-item.active .page-link {
+    background: #00d9ff;
+    border-color: #00d9ff;
+    color: #000;
+
+    font-weight: 700;
+
+    box-shadow:
+        0 0 10px rgba(0, 217, 255, .6),
+        0 0 20px rgba(0, 217, 255, .3);
+}
+
+/* Letiltott */
+
+.page-item.disabled .page-link {
+    background: rgba(17, 24, 39, 0.8);
+    color: #4b5563;
+
+    border-color: rgba(75, 85, 99, 0.3);
+}
+
+/* Első / utolsó gomb */
+
+.page-item:first-child .page-link,
+.page-item:last-child .page-link {
+    color: #7cecff;
+}
+
+/* Kerekebb stílus */
+
+.pagination-rounded .page-link {
+    border-radius: 8px;
+}

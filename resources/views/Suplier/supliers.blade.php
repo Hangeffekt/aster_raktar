@@ -7,6 +7,7 @@
     <div class="col-12">
         <h4>Supliers</h4>
         @can('create suplier')<a href="/supliers/create" class="btn btn-warning">New suplier</a>@endcan
+        @include("components.filters")
     </div>
 
     @if(count($Supliers) != 0)
@@ -37,6 +38,7 @@
                     @endforeach
                 </tbody>
             </table>
+            {{ $Supliers->onEachSide(4)->links() }}
         </div>
     @else
         <div class="col-12 alert alert-info">There are no supliers!</div>

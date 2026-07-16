@@ -8,6 +8,8 @@ use Illuminate\Validation\Rule;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Spatie\Permission\Middleware\PermissionMiddleware;
+use App\Http\Requests\SuplierPostRequest;
+use App\Http\Requests\SuplierGetRequest;
 
 class SuplierController extends Controller implements HasMiddleware
 {
@@ -29,10 +31,20 @@ class SuplierController extends Controller implements HasMiddleware
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(SuplierGetRequest $request)
     {
+        $query = Suplier::query()
+            ->OfSuplierName($request['suplier_name'])
+            ->OfSuplierSettlement($request['suplier_settlement'])
+            ->OfSuplierAddress($request['suplier_address'])
+            ->OfSuplierZipCode($request['suplier_zip_code'])
+            ->OfSuplierTaxNumber($request['suplier_tax_number'])
+            ->OfSuplierPhone($request['suplier_phone'])
+            ->OfSuplierEmail($request['suplier_email'])
+            ->paginate(10);
+
         return view('Suplier/supliers', [
-            'Supliers' => Suplier::get()
+            'Supliers' => $query
         ]);
     }
 
@@ -52,19 +64,10 @@ class SuplierController extends Controller implements HasMiddleware
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(SuplierPostRequest $request)
     {
-        $validated = $request->validate([
-            'suplier_name' => 'required|unique:supliers',
-            'suplier_zip_code' => 'numeric|min_digits:4|max_digits:4',
-            'suplier_address' => 'required|string|min:4|max:255',
-            'suplier_settlement' => 'required|string|min:2|max:255',
-            'suplier_tax_number' => 'numeric|unique:supliers,suplier_tax_number',
-            'suplier_phone' => 'numeric|min_digits:8|max_digits:11',
-            'suplier_email' => 'required|string|email|max:255|unique:supliers,suplier_email',
-        ]);
         
-        Suplier::create($validated);
+        Suplier::create($request->all());
 
         return redirect("/supliers")->with("success", "Successfull created!");
     }
@@ -100,19 +103,9 @@ class SuplierController extends Controller implements HasMiddleware
      * @param  \App\Models\Suplier  $suplier
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Suplier $suplier)
+    public function update(SuplierPostRequest $request, Suplier $suplier)
     {
-        $validated = $request->validate([
-            'suplier_name' => ['required','string','max:255',Rule::unique('supliers')->ignore($suplier->suplier_id, 'suplier_id')],
-            'suplier_zip_code' => 'numeric|min_digits:4|max_digits:4',
-            'suplier_address' => 'required|string|min:4|max:255',
-            'suplier_settlement' => 'required|string|min:2|max:255',
-            'suplier_tax_number' => ['required','numeric','max_digits:255',Rule::unique('supliers')->ignore($suplier->suplier_id, 'suplier_id')],
-            'suplier_phone' => 'numeric|min_digits:8|max_digits:11',
-            'suplier_email' => ['required','string','email','max:255',Rule::unique('supliers')->ignore($suplier->suplier_id, 'suplier_id')],
-        ]);
-
-        Suplier::where('suplier_id', $suplier->suplier_id)->update($validated);
+        Suplier::where('suplier_id', $suplier->suplier_id)->update($request->validated());
 
         return redirect("/supliers")->with("success", "Successfull updated!");
     }

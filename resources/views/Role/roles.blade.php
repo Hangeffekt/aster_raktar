@@ -6,6 +6,7 @@
 <div class="col-9">
     <div class="col-12">
         <h4>Roles</h4>
+        @can('create role')<a href="/roles/create" class="btn btn-warning">New role</a>@endcan
     </div>
 
     @if(count($Roles) != 0)

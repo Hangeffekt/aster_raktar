@@ -44,7 +44,7 @@ class ProductController extends Controller
             ->OfName($request['product_name'])
             ->OfEan($request['ean'])
             ->with(['brand', 'catalog', 'tax'])
-            ->get();
+            ->paginate(10);
 
         return view('Product/products', [
             'Products' => $query,
@@ -91,10 +91,17 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function show(Product $product)
+    public function show(Product $product, Request $request)
     {
         $Product = Product::findOrFail($product->product_id);
-        $History = Transaction::where('product_id', $product->product_id)->get();
+        $History = Transaction::query()
+            ->where('product_id', $product->product_id)
+            ->OfTransactionType($request->transaction_type)
+            ->OfTransactionStatus($request->transaction_status)
+            ->OfNetPrice($request->net_price)
+            ->OfSalePrice($request->sale_price)
+            ->OfQty($request->qty)
+            ->paginate(10);
 
         return view('Product/productinfo', compact('Product', 'History'));
     }

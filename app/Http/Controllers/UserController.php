@@ -12,6 +12,8 @@ use Illuminate\Validation\Rule;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Spatie\Permission\Middleware\PermissionMiddleware;
+use App\Http\Requests\UserPostRequest;
+use App\Http\Requests\UserGetRequest;
 
 class UserController extends Controller implements HasMiddleware
 {
@@ -31,10 +33,15 @@ class UserController extends Controller implements HasMiddleware
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(UserGetRequest $request)
     {
+        $query = User::query()
+            ->OfName($request['name'])
+            ->OfEmail($request['email'])
+            ->paginate(10);
+
         return view('User/users', [
-            'Users' => User::get()
+            'Users' => $query
         ]);
     }
 
@@ -50,16 +57,11 @@ class UserController extends Controller implements HasMiddleware
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(UserPostRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email',
-        ]);
-
         $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
+            'name' => $request['name'],
+            'email' => $request['email'],
             'password' => Hash::make(Str::random(16)),
         ]);
             
@@ -96,17 +98,10 @@ class UserController extends Controller implements HasMiddleware
      * 
      * @param  \App\Models\User  $user
      */
-    public function update(Request $request, User $user)
+    public function update(UserPostRequest $request, User $user)
     {
-
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => ['required','string','email','max:255',Rule::unique('users')->ignore($user->id, 'id')],
-        ]);
         
-        User::where('id', $user->id)->update([
-            'name' => $validated['name'],
-            'email' => $validated['email']]);
+        User::where('id', $user->id)->update($request->validated());
         $user->assignRole($request->role);
 
         return redirect("/users")->with("success", "Successfull updated!");

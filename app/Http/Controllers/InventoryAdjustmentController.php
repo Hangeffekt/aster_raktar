@@ -12,10 +12,26 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
 use App\Http\Requests\InventoryAdjustmentPostRequest;
 
-class InventoryAdjustmentController extends Controller
+class InventoryAdjustmentController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware(PermissionMiddleware::using('show adjustments'), only: ['index','show']),
+            new Middleware(PermissionMiddleware::using('show adjustments'), except: ['create','store','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('create adjustment'), only: ['create','store']),
+            new Middleware(PermissionMiddleware::using('create adjustment'), except: ['index','show','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('edit adjustment'), only: ['edit','update']),
+            new Middleware(PermissionMiddleware::using('edit adjustment'), except: ['index','show','create','store','destroy']),
+            new Middleware(PermissionMiddleware::using('delete adjustment'), only: ['destroy']),
+            new Middleware(PermissionMiddleware::using('delete adjustment'), except: ['index','create','show','store','edit','update']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */

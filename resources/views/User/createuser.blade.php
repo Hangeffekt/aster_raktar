@@ -19,29 +19,24 @@
             <div class="alert alert-danger">{{ $message }}</div>
         @enderror
     </div>
-    <div class="mt-3 form-group">
-        <label for="">Password</label>
-        <input type="password" name="password" value="" class="form-control">
-        @error('password')
-            <div class="alert alert-danger">{{ $message }}</div>
-        @enderror
-    </div>
-    <div class="mt-3 form-group">
-        <label for="">Role</label>
-        <select name="role" id="" class="form-select">
-            <option value="">-- Please choose --</option>
-            @foreach($Roles as $Role)
-                <option value="{{ $Role->name }}"
-                @if(old('role') && old('role') == $Role->id)
-                    selected
-                @endif
-                >{{ $Role->name }}</option>
-            @endforeach
-        </select>
-        @error('role')
-            <div class="alert alert-danger">{{ $message }}</div>
-        @enderror
-    </div>
+    @hasrole(['admin','warehouse_manager'])
+        <div class="mt-3 form-group">
+            <label for="">Role</label>
+            <select name="role" id="" class="form-select">
+                <option value="">-- Please choose --</option>
+                @foreach($Roles as $Role)
+                    <option value="{{ $Role->name }}"
+                    @if(old('role') && old('role') == $Role->id)
+                        selected
+                    @endif
+                    >{{ $Role->name }}</option>
+                @endforeach
+            </select>
+            @error('role')
+                <div class="alert alert-danger">{{ $message }}</div>
+            @enderror
+        </div>
+    @endhasrole
     <input type="submit" value="Save" class="mt-3 btn btn-success">
 </form>
 

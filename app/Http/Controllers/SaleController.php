@@ -49,7 +49,7 @@ class SaleController extends Controller implements HasMiddleware
                 ->leftJoin('users as u', 's.approves', '=', 'u.id')
                 ->whereBetween("s.created_at", [$dFrom, $dTo])
                 ->orderBy('s.created_at', 'asc')
-                ->paginate(20);
+                ->paginate(10);
                 
         $Today = Transaction::whereDate('created_at', $d)
                             ->where('type', 'OUT')
@@ -128,7 +128,7 @@ class SaleController extends Controller implements HasMiddleware
         $Transactions = Transaction::where('inner_table_id', $sale->uuid)
             ->where('type', 'OUT')
             ->with(['product.brand', 'product.catalog'])
-            ->paginate(20);
+            ->paginate(10);
 
         $Brands = Brand::get();
         $Catalogs = Catalog::get();

@@ -31,7 +31,7 @@ class TaxController extends Controller implements HasMiddleware
     public function index()
     {
         return view('Tax/taxes', [
-            'Taxes' => Tax::get()
+            'Taxes' => Tax::paginate(10)
         ]);
     }
 
