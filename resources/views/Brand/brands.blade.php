@@ -2,24 +2,18 @@
 
 @section("content")
 
-@include("components.sideMenu")
-<div class="col-9">
-    <div class="col-12">
-        <h4>Brands</h4>
-        @can('create brand')<a href="/brands/create" class="btn btn-warning">New brand</a>@endcan
-    </div>
-
-
+    <x-actionline
+        :page="['brands','brand']"
+        :filter="['off']"
+    >
+    </x-actionline>
     <x-table 
         :headers="['Name']" 
         :keys="['brand_name']" 
         :items="$Brands"
+        :page="['brands','brand']"
+        :actionTypes="['create','edit','delete']"
     >
-        <x-slot:actions>
-            <a href="" class="btn btn-warning">Edit</a>
-        </x-slot>
+        <x-slot:actions></x-slot>
     </x-table>
-
-</div>
-            
 @endsection

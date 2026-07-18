@@ -54,7 +54,7 @@ class TaxController extends Controller implements HasMiddleware
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'tax_value' => 'required|unique:taxes'
+            'tax_value' => 'required|numeric|unique:taxes'
         ]);
         $Tax = Tax::create($validated);
 
@@ -95,7 +95,7 @@ class TaxController extends Controller implements HasMiddleware
     public function update(Request $request, Tax $tax)
     {
         $validated = $request->validate([
-            'tax_value' => 'required|unique:taxes'
+            'tax_value' => 'required|integer|unique:taxes'
         ]);
 
         $updateBrand = Tax::where('tax_id', $tax->tax_id)->update($validated);

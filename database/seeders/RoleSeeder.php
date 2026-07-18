@@ -70,6 +70,12 @@ class RoleSeeder extends Seeder
         $permission = Permission::create(['name' => 'delete catalog']);
         $rolemanager->givePermissionTo(['create catalog', 'edit catalog','delete catalog']);
 
+        //paymenttype
+        $permission = Permission::create(['name' => 'create paymenttype']);
+        $permission = Permission::create(['name' => 'edit paymenttype']);
+        $permission = Permission::create(['name' => 'delete paymenttype']);
+        $rolemanager->givePermissionTo(['create paymenttype', 'edit paymenttype', 'delete paymenttype']);
+
         //suplier
         $permission = Permission::create(['name' => 'create suplier']);
         $permission = Permission::create(['name' => 'edit suplier']);
@@ -85,10 +91,10 @@ class RoleSeeder extends Seeder
         $permission = Permission::create(['name' => 'create product']);
         $permission = Permission::create(['name' => 'edit product']);
         $permission = Permission::create(['name' => 'delete product']);
-        $permission = Permission::create(['name' => 'show product_info']);
-        $rolemanager->givePermissionTo(['create product', 'edit product','delete product','show product_info']);
-        $roleStorekeeper->givePermissionTo(['show product_info']);
-        $roleStocker->givePermissionTo(['show product_info']);
+        $permission = Permission::create(['name' => 'show product']);
+        $rolemanager->givePermissionTo(['create product', 'edit product','delete product','show product']);
+        $roleStorekeeper->givePermissionTo(['show product']);
+        $roleStocker->givePermissionTo(['show product']);
 
         //user
         $permission = Permission::create(['name' => 'create user']);

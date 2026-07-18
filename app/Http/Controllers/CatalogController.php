@@ -54,7 +54,7 @@ class CatalogController extends Controller implements HasMiddleware
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'catalog_name' => 'required|unique:catalogs'
+            'catalog_name' => 'required|string|max:255|unique:catalogs'
         ]);
         Catalog::create($validated);
 
@@ -95,7 +95,7 @@ class CatalogController extends Controller implements HasMiddleware
     public function update(Request $request, Catalog $catalog)
     {
         $validated = $request->validate([
-            'catalog_name' => 'required|unique:catalogs'
+            'catalog_name' => 'required|string|max:255|unique:catalogs'
         ]);
 
         Catalog::where('catalog_id', $catalog->catalog_id)->update($validated);

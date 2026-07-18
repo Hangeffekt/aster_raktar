@@ -47,6 +47,7 @@
     @else
         <div class="col-12 alert alert-info">There are no roles!</div>
     @endif
+
 </div>
             
 @endsection

@@ -16,19 +16,16 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body>
-<div class="container">
-        <div class="row">
-            <div class="col-12">
-                @include("menu")
-                @include("alert")
-            </div>
-            <div class="col-lg-12 col-sm-12">
-                <div class="row mt-3">
-                    @yield("content")
-                </div>
-            </div>
+<div class="container-fluid">
+    <div class="row">
+        @include("menu")
+        @include("alert")
+        <main class="col-12 col-md-9 col-lg-10">
+            @include("topmenu")
+            @yield("content")
         </div>
     </div>
+</div>
    
 
 </body>

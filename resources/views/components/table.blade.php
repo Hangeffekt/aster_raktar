@@ -1,7 +1,9 @@
 @props([
     'headers' => [],
     'keys' => [],
-    'items' => null
+    'items' => null,
+    'page' => null,
+    'actionTypes' => []
 ])
 
 <table class="table table-hover">
@@ -13,7 +15,7 @@
                 </th>
             @endforeach
             @if(isset($actions))
-                <th>
+                <th colspan="{{ count($actionTypes) }}">
                     Actions
                 </th>
             @endif
@@ -26,12 +28,28 @@
                     <td>
                         {{ data_get($item, $key) }}
                     </td>
-                @endforeach
-                @if(isset($actions))
+                    @endforeach
+                    @if (in_array('show', $actionTypes))
                     <td>
-                        {{ $actions }}
+                        @can('show '.$page[1])<a href="{{ route($page[0] . '.show', $item->uuid) }}" class="btn btn-info">Info</a>@endcan
                     </td>
-                @endif
+                    @endif
+                    @if (in_array('edit', $actionTypes))
+                    <td>
+                        @can('edit '.$page[1])<a href="{{ route($page[0] . '.edit', $item->uuid) }}" class="btn btn-warning">Edit</a>@endcan
+                    </td>
+                    @endif
+                    @if (in_array('delete', $actionTypes))
+                        @can('delete '.$page[1])
+                            <td>
+                                <form action="{{ route($page[0] . '.destroy', $item->uuid) }}" method="post">
+                                    @csrf
+                                    @method ('DELETE')
+                                    <button class="btn btn-danger" type="submit">Delete</button>
+                                </form>
+                            </td>
+                        @endcan
+                    @endif
             </tr>
         @empty
             <tr>
@@ -42,3 +60,4 @@
         @endforelse
     </tbody>
 </table>
+{{ $items->withQueryString()->onEachSide(4)->links() }}

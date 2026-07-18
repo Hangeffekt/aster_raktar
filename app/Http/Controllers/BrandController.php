@@ -55,7 +55,7 @@ class BrandController extends Controller implements HasMiddleware
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'brand_name' => 'required|unique:brands'
+            'brand_name' => 'required|string|max:255|unique:brands'
         ]);
         $Brand = Brand::create($validated);
         
@@ -96,7 +96,7 @@ class BrandController extends Controller implements HasMiddleware
     public function update(Request $request, Brand $brand)
     {
         $validated = $request->validate([
-            'brand_name' => 'required|unique:brands'
+            'brand_name' => 'required|string|max:255|unique:brands'
         ]);
 
         $update = Brand::where('brand_id', $brand->brand_id)->update($validated);

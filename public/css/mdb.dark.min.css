@@ -1008,3 +1008,131 @@ h1, h2, h3, h4, h5 {
 .pagination-rounded .page-link {
     border-radius: 8px;
 }
+
+/* =====================
+   NAV LINK
+   ===================== */
+
+.nav-link {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    padding: 12px 18px;
+    margin: 4px 8px;
+
+    color: #8fdfff;
+    text-decoration: none;
+
+    border-radius: 10px;
+
+    transition: all .3s ease;
+}
+
+/* Hover */
+
+.nav-link:hover {
+    color: #ffffff;
+
+    background: rgba(0, 217, 255, 0.08);
+
+    box-shadow:
+        0 0 10px rgba(0, 217, 255, 0.15);
+
+    transform: translateX(4px);
+}
+
+/* Hover fénycsík */
+
+.nav-link:hover::before {
+    opacity: 1;
+
+    box-shadow:
+        0 0 10px #00d9ff,
+        0 0 20px #00d9ff;
+}
+
+/* Aktív menüpont */
+
+.nav-link.active,
+.nav-link[aria-current="page"] {
+    color: #00d9ff;
+
+    background: rgba(0, 217, 255, 0.12);
+
+    text-shadow:
+        0 0 8px rgba(0, 217, 255, .6);
+
+    box-shadow:
+        0 0 15px rgba(0, 217, 255, .15);
+}
+
+.nav-link.active::before,
+.nav-link[aria-current="page"]::before {
+    opacity: 1;
+
+    box-shadow:
+        0 0 10px #00d9ff,
+        0 0 20px #00d9ff;
+}
+
+/* Ikonok */
+
+.nav-link i,
+.nav-link svg {
+    margin-right: 12px;
+    font-size: 1.1rem;
+}
+
+/* Letiltott */
+
+.nav-link.disabled {
+    color: #4b5563;
+    cursor: not-allowed;
+}
+
+/* Aktív menüpont */
+
+.nav-link.active {
+    color: #00d9ff !important;
+
+    background: linear-gradient(
+        90deg,
+        rgba(0,217,255,0.20) 0%,
+        rgba(0,217,255,0.08) 100%
+    );
+
+    border-left: 4px solid #00d9ff;
+
+    text-shadow:
+        0 0 5px #00d9ff,
+        0 0 10px #00d9ff;
+
+    box-shadow:
+        0 0 15px rgba(0,217,255,0.20),
+        inset 0 0 15px rgba(0,217,255,0.08);
+
+    font-weight: 600;
+}
+
+/* Ikon az aktív menüben */
+
+.nav-link.active i,
+.nav-link.active svg {
+    color: #00d9ff;
+
+    filter:
+        drop-shadow(0 0 5px #00d9ff)
+        drop-shadow(0 0 10px #00d9ff);
+}
+
+/* Hover aktív elemnél */
+
+.nav-link.active:hover {
+    color: #ffffff !important;
+
+    box-shadow:
+        0 0 20px rgba(0,217,255,0.35),
+        inset 0 0 20px rgba(0,217,255,0.10);
+}

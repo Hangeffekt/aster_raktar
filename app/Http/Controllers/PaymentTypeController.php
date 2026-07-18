@@ -5,9 +5,25 @@ namespace App\Http\Controllers;
 use App\Models\PaymentType;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
 
-class PaymentTypeController extends Controller
+class PaymentTypeController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware(PermissionMiddleware::using('show main_datas_payment_types'), only: ['index','show']),
+            new Middleware(PermissionMiddleware::using('show main_datas_payment_types'), except: ['create','store','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('create payment_type'), only: ['create','store']),
+            new Middleware(PermissionMiddleware::using('create payment_type'), except: ['index','show','edit','update','destroy']),
+            new Middleware(PermissionMiddleware::using('edit payment_type'), only: ['edit','update']),
+            new Middleware(PermissionMiddleware::using('edit payment_type'), except: ['index','show','create','store','destroy']),
+            new Middleware(PermissionMiddleware::using('delete payment_type'), only: ['destroy']),
+            new Middleware(PermissionMiddleware::using('delete payment_type'), except: ['index','create','store','edit','update']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +32,7 @@ class PaymentTypeController extends Controller
     public function index()
     {
         return view('PaymentType/paymenttypes', [
-            'PaymentTypes' => PaymentType::get()
+            'PaymentTypes' => PaymentType::paginate(10)
         ]);
     }
 
@@ -39,7 +55,7 @@ class PaymentTypeController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'payment_type' => 'required|unique:payment_types'
+            'payment_type' => 'required|string|max:255|unique:payment_types'
         ]);
         PaymentType::create($validated);
 
@@ -80,7 +96,7 @@ class PaymentTypeController extends Controller
     public function update(Request $request, PaymentType $paymenttype)
     {
         $validated = $request->validate([
-            'payment_type' => 'required|unique:payment_types'
+            'payment_type' => 'required|string|max:255|unique:payment_types'
         ]);
 
         PaymentType::where('payment_id', $paymenttype->payment_id)->update($validated);
