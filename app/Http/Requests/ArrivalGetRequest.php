@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Suplier;
 
-class ArrivalPostRequest extends FormRequest
+class ArrivalGetRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,17 +24,19 @@ class ArrivalPostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'suplier_uuid' => 'required|uuid|exists:supliers,uuid',
-            'arrival_date' => 'required|date',
-            'payment_date' => 'required|date',
-            'suplier_note_number' => 'string|max:255',
-            'invoice_number' => 'string|max:255'
+            'arrival_status' => 'nullable|string|max:255|in:PENDING,COMPLETED,STORNOED,STORNO',
+            'suplier_uuid' => 'nullable|string|max:36',
+            'from' => 'nullable|date',
+            'to' => 'nullable|date',
+            'suplier_note_number' => 'nullable|string|max:255',
+            'invoice_number' => 'nullable|string|max:255'
         ];
     }
 
     protected function passedValidation(): void
     {
-        $suplierId = Suplier::where('uuid', $this->suplier_uuid)->first();
-        $this->merge(['suplier_id' => $suplierId->suplier_id]);
+        $suplier = Suplier::where('uuid', $this->suplier_uuid)->first();
+        $this->merge(['suplier_id' => $suplier->suplier_id ?? null]);
+        $this->request->remove('suplier_uuid');
     }
 }

@@ -9,13 +9,13 @@ use App\Models\Brand;
 use App\Models\Catalog;
 use App\Models\Transaction;
 use App\Models\Product;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use App\Http\Requests\ArrivalPostRequest;
+use App\Http\Requests\ArrivalGetRequest;
 
 use Illuminate\Support\Facades\Auth;
 
@@ -39,23 +39,27 @@ class ArrivalController extends Controller implements HasMiddleware
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(ArrivalGetRequest $request)
     {
-
-        $dFromInput = $request->input('date-from') ?? Carbon::now()->format('Y-m-d');
-        $dFrom = Carbon::parse($dFromInput)->startOfDay()->toDateTimeString();
-        $dToInput = $request->input('date-to') ?? Carbon::now()->format('Y-m-d');
-        $dTo = Carbon::parse($dToInput)->endOfDay()->toDateTimeString();
         $days7 = Carbon::now()->addDays(7)->format('Y-m-d');
         $notCloseds = Arrival::where("arrival_status",  "PENDING")->get();
         $productArrivals = Arrival::where("arrival_date", "<=", $days7)->where('arrival_status', 'PENDING')->get();
         $productPayments = Arrival::where("payment_date", "<=", $days7)->where("arrival_status",  "COMPLETED")->get();
-        $Arrivals = DB::table('arrivals as a')
-                    ->join('supliers as s', 's.suplier_id', '=', 'a.suplier_id')
-                    ->leftJoin('users as u', 'a.approves', '=', 'u.id')
-                    ->selectRaw('u.name, s.suplier_name, a.arrival_id, a.arrival_status, a.uuid, a.created_at, a.updated_at')
-                    ->whereBetween("a.created_at", [$dFrom, $dTo])
-                    ->paginate(10);
+        $Arrivals = Arrival::query()
+            ->from('arrivals as a')
+            ->join('supliers as s', 's.suplier_id', '=', 'a.suplier_id')
+            ->leftJoin('users as u', 'a.approves', '=', 'u.id')
+            ->selectRaw('u.name as user_name, s.suplier_name, a.arrival_id, a.arrival_status, a.uuid, a.created_at, a.updated_at')
+            ->ofArrivalStatus($request->arrival_status)
+            ->ofSuplier($request->suplier_id)
+            ->ofSuplierNoteNumber($request->suplier_note_number)
+            ->ofInvoiceNumber($request->invoice_number)
+            ->ofCreatedAt(
+                $request->filled('from') ? Carbon::parse($request->from) : null,
+                $request->filled('to') ? Carbon::parse($request->to) : null
+            )
+            ->orderBy('created_at')
+            ->paginate(10);
         $Supliers = Suplier::get();
 
         return view('Arrival/arrivals', compact('Arrivals','notCloseds', 'productArrivals', 'productPayments', 'Supliers'));
@@ -81,7 +85,13 @@ class ArrivalController extends Controller implements HasMiddleware
      */
     public function store(ArrivalPostRequest $request)
     {   
-        Arrival::create($request->all());
+        Arrival::create([
+            'suplier_id' => $request->suplier_id,
+            'arrival_date' => $request->arrival_date,
+            'payment_date' => $request->payment_date,
+            'suplier_note_number' => $request->suplier_note_number,
+            'invoice_number' => $request->invoice_number,
+        ]);
 
         return redirect("/arrivals")->with("success", "Successfull created!");
     }
@@ -128,8 +138,6 @@ class ArrivalController extends Controller implements HasMiddleware
         $validated = $request->validate([
             'closeNote' => 'required'
         ]);
-
-        $sumOfNetPrice = 0;
 
         //close items
         $closeArrivalItems = ArrivalItem::where('arrival_table_id', $arrival->uuid)->get();

@@ -26,7 +26,11 @@
             <tr>
                 @foreach($keys as $key)
                     <td>
-                        {{ data_get($item, $key) }}
+                        @if($key == 'total_value')
+                            {!! arrivalNetValue($item->uuid, $item->arrival_status) !!}
+                        @else
+                            {!! data_get($item, $key) !!}
+                        @endif
                     </td>
                     @endforeach
                     @if (in_array('show', $actionTypes))

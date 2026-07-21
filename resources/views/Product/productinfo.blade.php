@@ -64,5 +64,19 @@
     </table>
     {{ $History->withQueryString()->onEachSide(4)->links() }}
 </div>
-            
+<x-actionline
+        :page="['products','product']"
+        :filter="['on']"
+        :Product="$Product"
+    >
+    </x-actionline>
+    <x-table 
+        :headers="['Created at','User','Transaction type','Transaction status','Net price','Sale price','Qty']" 
+        :keys="['created_at','customer_id','type','status','net_price','sale_price','qty']" 
+        :items="$History"
+        :page="['products','product']"
+        :actionTypes="['show']"
+    >
+        <x-slot:actions></x-slot>
+    </x-table>
 @endsection

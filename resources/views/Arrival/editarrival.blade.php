@@ -2,7 +2,7 @@
 
 @section("content")
 
-@include("components.sideMenu")
+<x-tile></x-tile>
 
 <div class="col-9">
     <div class="container">

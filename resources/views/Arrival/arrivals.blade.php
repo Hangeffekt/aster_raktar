@@ -1,8 +1,6 @@
 @extends('index')
 
 @section("content")
-
-@include("components.sideMenu")
 <div class="col-9">
     <div class="col-12">
         <h4>Arrivals</h4>
@@ -63,6 +61,22 @@
         <div class="col-12 alert alert-info">There are no arrivals!</div>
     @endif
 </div>
-    
+
+<x-actionline
+        :page="['arrivals','arrival']"
+        :filter="['on']"
+        :Supliers="$Supliers"
+    >
+    </x-actionline>
+    <x-table 
+        :headers="['Suplier name','Total net value','Approved','Status','Created at','Updated at']" 
+        :keys="['suplier_name','total_value','name','arrival_status','created_at','updated_at']" 
+        :items="$Arrivals"
+        :page="['arrivals','arrival']"
+        :actionTypes="['create','edit','delete']"
+        
+    >
+        <x-slot:actions></x-slot>
+    </x-table>
             
 @endsection
